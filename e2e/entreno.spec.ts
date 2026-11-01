@@ -4,10 +4,12 @@ import { createSampleRoutine, logSet, onboard } from './helpers'
 const section = (page: Page, name: string) => page.getByRole('region', { name })
 
 async function check(page: Page, block: string, index: number) {
-  await section(page, block)
-    .getByRole('button', { name: 'Marcar serie como hecha' })
-    .nth(index)
-    .click()
+  const scope = section(page, block)
+  const done = scope.getByRole('button', { name: /Serie hecha/ })
+  const before = await done.count()
+  await scope.getByRole('button', { name: 'Marcar serie como hecha' }).nth(index).click()
+  // Espera a que la fila quede marcada antes de seguir
+  await expect(done).toHaveCount(before + 1)
 }
 
 test('entreno completo con dropset, negativa, unilateral y superserie; cierre y resumen', async ({
