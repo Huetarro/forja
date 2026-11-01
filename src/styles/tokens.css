@@ -34,6 +34,8 @@
   --c-warm-soft: rgba(255, 204, 0, 0.22);
   --c-neg: #7c3fb5;
   --c-neg-soft: rgba(142, 78, 198, 0.16);
+  --c-chart-run: #0a7cff;
+  --c-chart-gym: #c2410c;
   --c-segment: #ffffff;
   --c-tabbar: rgba(249, 249, 249, 0.86);
   --c-overlay: rgba(0, 0, 0, 0.32);
@@ -63,6 +65,8 @@
     --c-warm-soft: rgba(255, 214, 10, 0.2);
     --c-neg: #c58af9;
     --c-neg-soft: rgba(191, 90, 242, 0.22);
+    --c-chart-run: #2f8cf5;
+    --c-chart-gym: #e2581a;
     --c-segment: #636366;
     --c-tabbar: rgba(22, 22, 24, 0.86);
     --c-overlay: rgba(0, 0, 0, 0.6);
@@ -92,6 +96,8 @@
   --c-warm-soft: rgba(255, 214, 10, 0.2);
   --c-neg: #c58af9;
   --c-neg-soft: rgba(191, 90, 242, 0.22);
+  --c-chart-run: #2f8cf5;
+  --c-chart-gym: #e2581a;
   --c-segment: #636366;
   --c-tabbar: rgba(22, 22, 24, 0.86);
   --c-overlay: rgba(0, 0, 0, 0.6);
@@ -127,6 +133,8 @@
   --color-warm-soft: var(--c-warm-soft);
   --color-neg: var(--c-neg);
   --color-neg-soft: var(--c-neg-soft);
+  --color-chart-run: var(--c-chart-run);
+  --color-chart-gym: var(--c-chart-gym);
   --color-segment: var(--c-segment);
   --color-tabbar: var(--c-tabbar);
   --color-overlay: var(--c-overlay);

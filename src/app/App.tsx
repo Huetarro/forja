@@ -67,6 +67,7 @@ export function App() {
             <Route path="calendario" element={<CalendarPage />} />
             <Route path="estadisticas" element={<StatsPage />} />
             <Route path="running" element={<RunningPage />} />
+            <Route path="running/:id" element={<RunningPage />} />
             <Route path="ajustes" element={<SettingsPage />} />
             <Route path="ejercicios" element={<ExercisesPage />} />
             <Route path="ejercicios/:id" element={<ExerciseDetailPage />} />

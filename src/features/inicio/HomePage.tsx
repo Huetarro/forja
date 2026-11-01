@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Archive, Dumbbell, FolderOpen, Plus, type LucideIcon } from 'lucide-react'
+import { Archive, Dumbbell, FolderOpen, Footprints, Plus, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -84,6 +84,9 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-3">
             <QuickAction icon={Plus} onClick={() => setCreating(true)}>
               Nueva rutina
+            </QuickAction>
+            <QuickAction icon={Footprints} to="/running?nueva=1">
+              Registrar carrera
             </QuickAction>
             <QuickAction icon={Dumbbell} to="/ejercicios">
               Ejercicios

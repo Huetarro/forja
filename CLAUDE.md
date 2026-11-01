@@ -26,6 +26,11 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - `src/features/<pantalla>/` — cada pantalla se carga con `React.lazy` desde `src/app/App.tsx`.
 - `src/stores/ui.ts` — Zustand: `toast(text, undo?)` y `confirm({...})`.
 
+## Gráficas
+
+- Recharts solo en componentes cargados con `React.lazy` (p. ej. `RunCharts.tsx`); piezas comunes en `src/components/charts/`.
+- Colores de gráfica: tokens `--c-chart-run` y `--c-chart-gym` (validados con la skill dataviz en claro y oscuro). Un solo eje, sin leyenda si hay una serie, tooltip siempre y tabla `sr-only`.
+
 ## Convenciones
 
 - Sin `any`. Componentes pequeños. Lógica de negocio en `src/domain/`.
@@ -44,4 +49,5 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 2 (Biblioteca, rutinas y programas): terminada.
 - Fase 3 (Entreno en curso, cierre, resumen, compartir, historial): terminada.
 - Fase 4 (Calendario, registro diario, racha, mapa de calor): terminada.
-- Siguiente: fase 5 (running).
+- Fase 5 (Running): terminada.
+- Siguiente: fase 6 (estadísticas, figura muscular, récords, calculadora 1RM).
