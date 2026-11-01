@@ -1,0 +1,169 @@
+/*
+ * Forja — sistema de diseño. ÚNICO sitio con colores, radios, espaciados y tipografía.
+ * Los colores son variables CSS que cambian según el tema (claro / oscuro).
+ * Tailwind los expone como utilidades: bg-bg, bg-card, text-ink, text-accent-ink, etc.
+ */
+@import 'tailwindcss';
+
+/* Paleta por tema --------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --c-bg: #f2f2f7;
+  --c-card: #ffffff;
+  --c-card-2: #e9e9ee;
+  --c-fill: rgba(120, 120, 128, 0.12);
+  --c-fill-strong: rgba(120, 120, 128, 0.2);
+  --c-sep: rgba(60, 60, 67, 0.16);
+  --c-ink: #000000;
+  --c-ink-2: rgba(60, 60, 67, 0.72);
+  --c-ink-3: rgba(60, 60, 67, 0.45);
+  /* Naranja forja: relleno idéntico en ambos temas, texto encima en negro (7,3:1) */
+  --c-accent: #ff6a1a;
+  --c-on-accent: #000000;
+  /* Naranja para texto/iconos sobre el fondo: oscurecido en claro para AA (4,6:1) */
+  --c-accent-ink: #c2410c;
+  --c-accent-soft: rgba(255, 106, 26, 0.14);
+  --c-success: #1f8a3b;
+  --c-success-soft: rgba(52, 199, 89, 0.16);
+  --c-danger: #d70015;
+  --c-danger-soft: rgba(255, 59, 48, 0.12);
+  --c-run: #0a7cff;
+  --c-run-soft: rgba(10, 124, 255, 0.14);
+  --c-rest: #8e8e93;
+  --c-segment: #ffffff;
+  --c-tabbar: rgba(249, 249, 249, 0.86);
+  --c-overlay: rgba(0, 0, 0, 0.32);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --c-bg: #000000;
+    --c-card: #1c1c1e;
+    --c-card-2: #2c2c2e;
+    --c-fill: rgba(120, 120, 128, 0.24);
+    --c-fill-strong: rgba(120, 120, 128, 0.36);
+    --c-sep: rgba(84, 84, 88, 0.55);
+    --c-ink: #ffffff;
+    --c-ink-2: rgba(235, 235, 245, 0.68);
+    --c-ink-3: rgba(235, 235, 245, 0.4);
+    --c-accent-ink: #ff7a33;
+    --c-accent-soft: rgba(255, 106, 26, 0.2);
+    --c-success: #30d158;
+    --c-success-soft: rgba(48, 209, 88, 0.2);
+    --c-danger: #ff453a;
+    --c-danger-soft: rgba(255, 69, 58, 0.2);
+    --c-run: #409cff;
+    --c-run-soft: rgba(64, 156, 255, 0.2);
+    --c-segment: #636366;
+    --c-tabbar: rgba(22, 22, 24, 0.86);
+    --c-overlay: rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --c-bg: #000000;
+  --c-card: #1c1c1e;
+  --c-card-2: #2c2c2e;
+  --c-fill: rgba(120, 120, 128, 0.24);
+  --c-fill-strong: rgba(120, 120, 128, 0.36);
+  --c-sep: rgba(84, 84, 88, 0.55);
+  --c-ink: #ffffff;
+  --c-ink-2: rgba(235, 235, 245, 0.68);
+  --c-ink-3: rgba(235, 235, 245, 0.4);
+  --c-accent-ink: #ff7a33;
+  --c-accent-soft: rgba(255, 106, 26, 0.2);
+  --c-success: #30d158;
+  --c-success-soft: rgba(48, 209, 88, 0.2);
+  --c-danger: #ff453a;
+  --c-danger-soft: rgba(255, 69, 58, 0.2);
+  --c-run: #409cff;
+  --c-run-soft: rgba(64, 156, 255, 0.2);
+  --c-segment: #636366;
+  --c-tabbar: rgba(22, 22, 24, 0.86);
+  --c-overlay: rgba(0, 0, 0, 0.6);
+}
+
+/* Tokens de Tailwind ------------------------------------------------------ */
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-bg: var(--c-bg);
+  --color-card: var(--c-card);
+  --color-card-2: var(--c-card-2);
+  --color-fill: var(--c-fill);
+  --color-fill-strong: var(--c-fill-strong);
+  --color-sep: var(--c-sep);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-accent: var(--c-accent);
+  --color-on-accent: var(--c-on-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-success: var(--c-success);
+  --color-success-soft: var(--c-success-soft);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-run: var(--c-run);
+  --color-run-soft: var(--c-run-soft);
+  --color-rest: var(--c-rest);
+  --color-segment: var(--c-segment);
+  --color-tabbar: var(--c-tabbar);
+  --color-overlay: var(--c-overlay);
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', 'Segoe UI', Roboto,
+    system-ui, sans-serif;
+
+  /* Escala tipográfica estilo iOS */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-footnote: 0.8125rem;
+  --text-footnote--line-height: 1.125rem;
+  --text-subhead: 0.9375rem;
+  --text-subhead--line-height: 1.25rem;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.375rem;
+  --text-title3: 1.25rem;
+  --text-title3--line-height: 1.5rem;
+  --text-title2: 1.375rem;
+  --text-title2--line-height: 1.75rem;
+  --text-title1: 1.75rem;
+  --text-title1--line-height: 2.125rem;
+  --text-large: 2.125rem;
+  --text-large--line-height: 2.5rem;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 1;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-card: 18px;
+  --radius-sheet: 22px;
+  --radius-full: 9999px;
+
+  --spacing-gutter: 1rem;
+  --spacing-touch: 2.75rem;
+
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Paleta de rutinas (8-10 colores armónicos, legibles en ambos temas) */
+:root {
+  --routine-1: #ff6a1a;
+  --routine-2: #ff9f0a;
+  --routine-3: #e5484d;
+  --routine-4: #d6409f;
+  --routine-5: #8e4ec6;
+  --routine-6: #3e63dd;
+  --routine-7: #0091ff;
+  --routine-8: #12a594;
+  --routine-9: #30a46c;
+  --routine-10: #8d8d86;
+}
