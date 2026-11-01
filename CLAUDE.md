@@ -20,7 +20,7 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 ## Estructura
 
 - `src/domain/` — funciones puras con tests `*.test.ts` al lado (fechas, unidades, cronómetro, superseries, rotación, búsqueda, tipos de serie…).
-- `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `settings.ts`).
+- `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `days.ts`, `settings.ts`).
 - Entreno: `src/features/entreno/` (ActiveWorkoutPage, WorkoutExercises → ExerciseBlock → SetRow). El mismo editor sirve para entrenos pasados (`mode="edit"`). Unilaterales: cada serie planificada = dos filas (`side` izq/der) con el mismo `order`.
 - `src/components/ui/` — piezas reutilizables (BottomSheet, Overlays con confirmación y avisos con Deshacer, SortableList, Form, NavBar…).
 - `src/features/<pantalla>/` — cada pantalla se carga con `React.lazy` desde `src/app/App.tsx`.
@@ -43,4 +43,5 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 1 (Base): terminada.
 - Fase 2 (Biblioteca, rutinas y programas): terminada.
 - Fase 3 (Entreno en curso, cierre, resumen, compartir, historial): terminada.
-- Siguiente: fase 4 (calendario, registro diario, racha y mapa de calor).
+- Fase 4 (Calendario, registro diario, racha, mapa de calor): terminada.
+- Siguiente: fase 5 (running).

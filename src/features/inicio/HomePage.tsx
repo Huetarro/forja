@@ -18,6 +18,9 @@ import { ProgramsSheet } from '@/features/rutinas/ProgramsSheet'
 import { RoutineMetaSheet } from '@/features/rutinas/RoutineMetaSheet'
 import { NextRoutineCard } from './NextRoutineCard'
 import { ActiveWorkoutCard } from './ActiveWorkoutCard'
+import { BackupWarning } from './BackupWarning'
+import { TodayChecks } from './TodayChecks'
+import { WeekCard } from './WeekCard'
 import { useActiveWorkout } from '@/db/workouts'
 import { RoutineList } from './RoutineList'
 
@@ -57,6 +60,9 @@ export default function HomePage() {
             <NextRoutineCard routine={suggested} exerciseCount={counts.get(suggested.id) ?? 0} />
           )}
 
+          <WeekCard />
+          <TodayChecks />
+
           {visibleRoutines.length === 0 ? (
             <EmptyState
               icon={Dumbbell}
@@ -72,6 +78,8 @@ export default function HomePage() {
               lastDates={lastDates}
             />
           )}
+
+          <BackupWarning />
 
           <div className="grid grid-cols-2 gap-3">
             <QuickAction icon={Plus} onClick={() => setCreating(true)}>

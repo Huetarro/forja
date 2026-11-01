@@ -22,7 +22,8 @@ for (const scheme of ['light', 'dark']) {
   await page.screenshot({ path: `screens/${scheme}-1-bienvenida.png` })
   await page.getByRole('button', { name: 'Empezar' }).click()
   await page.waitForTimeout(400)
-  for (const r of routes) {
+  for (const raw of routes) {
+    const r = raw === 'inicio' ? '' : raw
     await page.goto(`${BASE}#/${r}`)
     await page.waitForTimeout(500)
     await page.screenshot({ path: `screens/${scheme}-${r || 'inicio'}.png` })
