@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Archive, ArchiveRestore, History, Trash2 } from 'lucide-react'
-import { EmptyState } from '@/components/ui/EmptyState'
+import { Archive, ArchiveRestore, Trash2 } from 'lucide-react'
 import { Group } from '@/components/ui/Form'
 import { NavBar, NavButton } from '@/components/ui/NavBar'
 import {
@@ -13,6 +12,7 @@ import {
 } from '@/db/library'
 import { confirm, toast } from '@/stores/ui'
 import { ExerciseFormSheet } from './ExerciseFormSheet'
+import { ExerciseSessions } from './ExerciseSessions'
 import { exerciseMeta } from '@/lib/exerciseMeta'
 
 export default function ExerciseDetailPage() {
@@ -90,11 +90,7 @@ export default function ExerciseDetailPage() {
 
         <section>
           <h2 className="mb-2 px-1 text-title3 font-bold">Historial</h2>
-          <EmptyState
-            icon={History}
-            title="Aún no lo has entrenado"
-            text="Cuando lo hagas en un entreno, aquí verás cada sesión, tus récords y sus gráficas."
-          />
+          <ExerciseSessions exercise={exercise} />
         </section>
 
         <Group>

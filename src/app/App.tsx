@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { requestPersistentStorage } from '@/db/db'
 import { useSettings } from '@/db/settings'
@@ -7,6 +7,7 @@ import { Welcome } from '@/features/bienvenida/Welcome'
 import { installScreenSkipped, isStandalone, skipInstallScreen } from '@/lib/standalone'
 import { useApplyTheme } from '@/lib/theme'
 import { Layout } from './Layout'
+import { ResumeActiveWorkout } from './ResumeActiveWorkout'
 import { UpdatePrompt } from './UpdatePrompt'
 import { Overlays } from '@/components/ui/Overlays'
 
@@ -20,6 +21,10 @@ const ExerciseDetailPage = lazy(() => import('@/features/ejercicios/ExerciseDeta
 const RoutineDetailPage = lazy(() => import('@/features/rutinas/RoutineDetailPage'))
 const RoutineEditorPage = lazy(() => import('@/features/rutinas/RoutineEditorPage'))
 const ArchivedPage = lazy(() => import('@/features/rutinas/ArchivedPage'))
+const ActiveWorkoutPage = lazy(() => import('@/features/entreno/ActiveWorkoutPage'))
+const SummaryPage = lazy(() => import('@/features/entreno/SummaryPage'))
+const HistoryPage = lazy(() => import('@/features/historial/HistoryPage'))
+const WorkoutDetailPage = lazy(() => import('@/features/historial/WorkoutDetailPage'))
 
 export function App() {
   const settings = useSettings()
@@ -47,7 +52,16 @@ export function App() {
   } else {
     content = (
       <HashRouter>
+        <ResumeActiveWorkout />
         <Routes>
+          <Route
+            path="entreno"
+            element={
+              <Suspense fallback={null}>
+                <ActiveWorkoutPage />
+              </Suspense>
+            }
+          />
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="calendario" element={<CalendarPage />} />
@@ -59,6 +73,9 @@ export function App() {
             <Route path="rutinas/:id" element={<RoutineDetailPage />} />
             <Route path="rutinas/:id/editar" element={<RoutineEditorPage />} />
             <Route path="archivados" element={<ArchivedPage />} />
+            <Route path="historial" element={<HistoryPage />} />
+            <Route path="historial/:id" element={<WorkoutDetailPage />} />
+            <Route path="historial/:id/resumen" element={<SummaryPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

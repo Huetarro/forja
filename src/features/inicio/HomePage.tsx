@@ -17,6 +17,8 @@ import { suggestNextRoutine } from '@/domain/rotation'
 import { ProgramsSheet } from '@/features/rutinas/ProgramsSheet'
 import { RoutineMetaSheet } from '@/features/rutinas/RoutineMetaSheet'
 import { NextRoutineCard } from './NextRoutineCard'
+import { ActiveWorkoutCard } from './ActiveWorkoutCard'
+import { useActiveWorkout } from '@/db/workouts'
 import { RoutineList } from './RoutineList'
 
 export default function HomePage() {
@@ -27,6 +29,7 @@ export default function HomePage() {
   const counts = useRoutineExerciseCounts()
   const lastDates = useLastWorkoutDates()
   const lastRoutineId = useLastRoutineId()
+  const active = useActiveWorkout()
   const [creating, setCreating] = useState(false)
   const [managingPrograms, setManagingPrograms] = useState(false)
 
@@ -48,7 +51,9 @@ export default function HomePage() {
 
       {loaded && (
         <div className="space-y-7">
-          {suggested && (
+          {active && <ActiveWorkoutCard workout={active} />}
+
+          {suggested && !active && (
             <NextRoutineCard routine={suggested} exerciseCount={counts.get(suggested.id) ?? 0} />
           )}
 

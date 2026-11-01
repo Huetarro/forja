@@ -1,5 +1,15 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Archive, ArchiveRestore, Copy, Pencil, Play, Trash2 } from 'lucide-react'
+import {
+  Archive,
+  ArchiveRestore,
+  CalendarPlus,
+  Copy,
+  History,
+  Pencil,
+  Play,
+  Trash2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Group } from '@/components/ui/Form'
@@ -22,6 +32,7 @@ import { confirm, toast } from '@/stores/ui'
 import { RoutineBadge } from './RoutineBadge'
 import { SupersetBar } from './RoutineExerciseCard'
 import { useStartWorkout } from './useStartWorkout'
+import { PastWorkoutSheet } from './PastWorkoutSheet'
 
 export default function RoutineDetailPage() {
   const { id } = useParams()
@@ -32,6 +43,7 @@ export default function RoutineDetailPage() {
   const programs = usePrograms(true)
   const lastDates = useLastWorkoutDates()
   const start = useStartWorkout()
+  const [pastOpen, setPastOpen] = useState(false)
 
   if (routine === null) {
     return (
@@ -170,6 +182,17 @@ export default function RoutineDetailPage() {
       )}
 
       <Group className="mt-8">
+        <MenuRow
+          icon={<History size={20} />}
+          onClick={() => navigate(`/historial?rutina=${routine.id}`)}
+        >
+          Historial de la rutina
+        </MenuRow>
+        {items.length > 0 && (
+          <MenuRow icon={<CalendarPlus size={20} />} onClick={() => setPastOpen(true)}>
+            Añadir entreno pasado
+          </MenuRow>
+        )}
         <MenuRow icon={<Copy size={20} />} onClick={() => void duplicate()}>
           Duplicar rutina
         </MenuRow>
@@ -183,6 +206,7 @@ export default function RoutineDetailPage() {
           Eliminar rutina
         </MenuRow>
       </Group>
+      <PastWorkoutSheet open={pastOpen} onClose={() => setPastOpen(false)} routineId={routine.id} />
     </>
   )
 }
