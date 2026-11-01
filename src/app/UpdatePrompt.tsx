@@ -27,6 +27,7 @@ export function UpdatePrompt() {
         <RefreshCw size={16} className="text-accent-ink" aria-hidden />
         <span className="text-subhead font-medium">Nueva versión disponible</span>
         <button
+          type="button"
           onClick={() => void updateServiceWorker(true)}
           className="min-h-9 rounded-full bg-accent px-4 text-subhead font-semibold text-on-accent"
         >

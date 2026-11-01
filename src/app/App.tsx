@@ -8,12 +8,18 @@ import { installScreenSkipped, isStandalone, skipInstallScreen } from '@/lib/sta
 import { useApplyTheme } from '@/lib/theme'
 import { Layout } from './Layout'
 import { UpdatePrompt } from './UpdatePrompt'
+import { Overlays } from '@/components/ui/Overlays'
 
 const HomePage = lazy(() => import('@/features/inicio/HomePage'))
 const CalendarPage = lazy(() => import('@/features/calendario/CalendarPage'))
 const StatsPage = lazy(() => import('@/features/estadisticas/StatsPage'))
 const RunningPage = lazy(() => import('@/features/running/RunningPage'))
 const SettingsPage = lazy(() => import('@/features/ajustes/SettingsPage'))
+const ExercisesPage = lazy(() => import('@/features/ejercicios/ExercisesPage'))
+const ExerciseDetailPage = lazy(() => import('@/features/ejercicios/ExerciseDetailPage'))
+const RoutineDetailPage = lazy(() => import('@/features/rutinas/RoutineDetailPage'))
+const RoutineEditorPage = lazy(() => import('@/features/rutinas/RoutineEditorPage'))
+const ArchivedPage = lazy(() => import('@/features/rutinas/ArchivedPage'))
 
 export function App() {
   const settings = useSettings()
@@ -48,6 +54,11 @@ export function App() {
             <Route path="estadisticas" element={<StatsPage />} />
             <Route path="running" element={<RunningPage />} />
             <Route path="ajustes" element={<SettingsPage />} />
+            <Route path="ejercicios" element={<ExercisesPage />} />
+            <Route path="ejercicios/:id" element={<ExerciseDetailPage />} />
+            <Route path="rutinas/:id" element={<RoutineDetailPage />} />
+            <Route path="rutinas/:id/editar" element={<RoutineEditorPage />} />
+            <Route path="archivados" element={<ArchivedPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
@@ -59,6 +70,7 @@ export function App() {
     <>
       <UpdatePrompt />
       {content}
+      <Overlays />
     </>
   )
 }

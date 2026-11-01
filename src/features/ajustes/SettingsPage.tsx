@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Archive, ChevronRight, Dumbbell } from 'lucide-react'
+import { Group } from '@/components/ui/Form'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { updateSettings, useSettings } from '@/db/settings'
@@ -49,8 +52,35 @@ export default function SettingsPage() {
           />
         </div>
 
+        <Group>
+          <SettingsLink to="/ejercicios" icon={<Dumbbell size={20} />}>
+            Biblioteca de ejercicios
+          </SettingsLink>
+          <SettingsLink to="/archivados" icon={<Archive size={20} />}>
+            Rutinas y programas archivados
+          </SettingsLink>
+        </Group>
+
         <p className="tnum pt-4 text-center text-footnote text-ink-3">Forja v{__APP_VERSION__}</p>
       </section>
     </>
+  )
+}
+
+function SettingsLink({
+  to,
+  icon,
+  children,
+}: {
+  to: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <Link to={to} className="flex min-h-12 items-center gap-3 px-4 active:bg-fill">
+      <span className="text-accent-ink">{icon}</span>
+      <span className="flex-1 text-body">{children}</span>
+      <ChevronRight size={18} className="text-ink-3" aria-hidden />
+    </Link>
   )
 }

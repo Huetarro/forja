@@ -19,6 +19,7 @@ export function SegmentedControl<T extends string>({ value, options, onChange, l
         const active = o.value === value
         return (
           <button
+            type="button"
             key={o.value}
             role="radio"
             aria-checked={active}

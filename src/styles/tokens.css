@@ -30,6 +30,10 @@
   --c-run: #0a7cff;
   --c-run-soft: rgba(10, 124, 255, 0.14);
   --c-rest: #8e8e93;
+  --c-warm: #946c00;
+  --c-warm-soft: rgba(255, 204, 0, 0.22);
+  --c-neg: #7c3fb5;
+  --c-neg-soft: rgba(142, 78, 198, 0.16);
   --c-segment: #ffffff;
   --c-tabbar: rgba(249, 249, 249, 0.86);
   --c-overlay: rgba(0, 0, 0, 0.32);
@@ -55,6 +59,10 @@
     --c-danger-soft: rgba(255, 69, 58, 0.2);
     --c-run: #409cff;
     --c-run-soft: rgba(64, 156, 255, 0.2);
+    --c-warm: #ffd60a;
+    --c-warm-soft: rgba(255, 214, 10, 0.2);
+    --c-neg: #c58af9;
+    --c-neg-soft: rgba(191, 90, 242, 0.22);
     --c-segment: #636366;
     --c-tabbar: rgba(22, 22, 24, 0.86);
     --c-overlay: rgba(0, 0, 0, 0.6);
@@ -80,6 +88,10 @@
   --c-danger-soft: rgba(255, 69, 58, 0.2);
   --c-run: #409cff;
   --c-run-soft: rgba(64, 156, 255, 0.2);
+  --c-warm: #ffd60a;
+  --c-warm-soft: rgba(255, 214, 10, 0.2);
+  --c-neg: #c58af9;
+  --c-neg-soft: rgba(191, 90, 242, 0.22);
   --c-segment: #636366;
   --c-tabbar: rgba(22, 22, 24, 0.86);
   --c-overlay: rgba(0, 0, 0, 0.6);
@@ -111,6 +123,10 @@
   --color-run: var(--c-run);
   --color-run-soft: var(--c-run-soft);
   --color-rest: var(--c-rest);
+  --color-warm: var(--c-warm);
+  --color-warm-soft: var(--c-warm-soft);
+  --color-neg: var(--c-neg);
+  --color-neg-soft: var(--c-neg-soft);
   --color-segment: var(--c-segment);
   --color-tabbar: var(--c-tabbar);
   --color-overlay: var(--c-overlay);
