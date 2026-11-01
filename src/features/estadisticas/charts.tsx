@@ -76,7 +76,13 @@ export function BarsCard({
               ) : null
             }}
           />
-          <Bar dataKey="y" fill={color} radius={[4, 4, 0, 0]} maxBarSize={22} />
+          <Bar
+            dataKey="y"
+            fill={color}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={22}
+            isAnimationActive={false}
+          />
         </BarChart>
       </ResponsiveContainer>
     </ChartCard>

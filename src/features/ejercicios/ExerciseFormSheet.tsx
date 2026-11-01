@@ -61,7 +61,9 @@ function ExerciseForm({ onClose, exercise, onCreated, initialName }: Omit<Props,
   const [secondary, setSecondary] = useState<Muscle[]>(exercise?.secondaryMuscles ?? [])
   const [equipment, setEquipment] = useState<Equipment>(exercise?.equipment ?? 'Barra')
   const [unilateral, setUnilateral] = useState(exercise?.unilateral ?? false)
-  const [unit, setUnit] = useState<WeightUnit>(exercise?.unit ?? settings?.defaultUnit ?? 'kg')
+  // null = sin elegir: se usa la del ejercicio o la unidad por defecto de Ajustes (que puede cargar después)
+  const [chosenUnit, setUnit] = useState<WeightUnit | null>(null)
+  const unit: WeightUnit = chosenUnit ?? exercise?.unit ?? settings?.defaultUnit ?? 'kg'
   const [fixedNotes, setFixedNotes] = useState(exercise?.fixedNotes ?? '')
   const [rest, setRest] = useState(exercise?.restSeconds ? String(exercise.restSeconds) : '')
 

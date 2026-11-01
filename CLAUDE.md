@@ -53,4 +53,6 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 4 (Calendario, registro diario, racha, mapa de calor): terminada.
 - Fase 5 (Running): terminada.
 - Fase 6 (Estadísticas, figura muscular, récords, calculadora 1RM): terminada.
-- Siguiente: fase 7 (ajustes, copias, CSV, pulido y pruebas finales).
+- Fase 7 (Ajustes, copias JSON/CSV, datos de ejemplo, borrar todo, pulido y pruebas finales): terminada.
+
+Versión 1.0.0 publicada. Formato de copia: `src/domain/backup.ts` (`BACKUP_VERSION`); si cambia el esquema de Dexie, subir la versión de copia y aceptar las anteriores al importar.

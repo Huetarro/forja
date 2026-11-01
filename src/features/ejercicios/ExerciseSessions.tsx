@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { History } from 'lucide-react'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -11,6 +12,7 @@ import { isEffectiveSet } from '@/domain/volume'
 /** Historial de sesiones de un ejercicio (más reciente primero). */
 export function ExerciseSessions({ exercise }: { exercise: Exercise }) {
   const sessions = useExerciseSessions(exercise.id)
+  const [all, setAll] = useState(false)
   if (!sessions) return null
   if (sessions.length === 0)
     return (
@@ -20,39 +22,51 @@ export function ExerciseSessions({ exercise }: { exercise: Exercise }) {
         text="Cuando lo hagas en un entreno, aquí verás cada sesión, tus récords y sus gráficas."
       />
     )
+  const shown = all ? sessions : sessions.slice(0, 10)
   return (
-    <ul className="divide-y divide-sep overflow-hidden rounded-card bg-card">
-      {sessions.map(({ workout, sets }) => {
-        const eff = sets.filter(isEffectiveSet)
-        const rm = bestOneRm(sets)
-        return (
-          <li key={workout.id}>
-            <Link to={`/historial/${workout.id}`} className="block px-4 py-3 active:bg-fill">
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-subhead font-semibold">
-                  {capitalize(longDate(workout.date))}
-                </span>
-                {rm !== null && (
-                  <span className="tnum text-footnote text-ink-2">
-                    1RM {formatNumber(rm, 1)} {exercise.unit}
+    <>
+      <ul className="divide-y divide-sep overflow-hidden rounded-card bg-card">
+        {shown.map(({ workout, sets }) => {
+          const eff = sets.filter(isEffectiveSet)
+          const rm = bestOneRm(sets)
+          return (
+            <li key={workout.id}>
+              <Link to={`/historial/${workout.id}`} className="block px-4 py-3 active:bg-fill">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-subhead font-semibold">
+                    {capitalize(longDate(workout.date))}
                   </span>
-                )}
-              </div>
-              <div className="text-footnote text-ink-2">{workout.routineName}</div>
-              <div className="tnum mt-1 text-subhead">
-                {eff.length === 0
-                  ? '—'
-                  : eff
-                      .map(
-                        (s) =>
-                          `${s.side ? (s.side === 'izq' ? 'I ' : 'D ') : ''}${formatNumber(s.weight ?? 0, 2)}×${s.reps ?? 0}`,
-                      )
-                      .join('  ·  ')}
-              </div>
-            </Link>
-          </li>
-        )
-      })}
-    </ul>
+                  {rm !== null && (
+                    <span className="tnum text-footnote text-ink-2">
+                      1RM {formatNumber(rm, 1)} {exercise.unit}
+                    </span>
+                  )}
+                </div>
+                <div className="text-footnote text-ink-2">{workout.routineName}</div>
+                <div className="tnum mt-1 text-subhead">
+                  {eff.length === 0
+                    ? '—'
+                    : eff
+                        .map(
+                          (s) =>
+                            `${s.side ? (s.side === 'izq' ? 'I ' : 'D ') : ''}${formatNumber(s.weight ?? 0, 2)}×${s.reps ?? 0}`,
+                        )
+                        .join('  ·  ')}
+                </div>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+      {!all && sessions.length > 10 && (
+        <button
+          type="button"
+          onClick={() => setAll(true)}
+          className="mt-2 min-h-touch w-full rounded-md bg-fill text-subhead font-semibold"
+        >
+          Ver las {sessions.length} sesiones
+        </button>
+      )}
+    </>
   )
 }
