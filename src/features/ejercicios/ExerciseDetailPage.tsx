@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Archive, ArchiveRestore, Trash2 } from 'lucide-react'
 import { Group } from '@/components/ui/Form'
@@ -13,6 +13,9 @@ import {
 import { confirm, toast } from '@/stores/ui'
 import { ExerciseFormSheet } from './ExerciseFormSheet'
 import { ExerciseSessions } from './ExerciseSessions'
+import { useTrainingData } from '@/db/stats'
+
+const ExerciseStats = lazy(() => import('@/features/estadisticas/ExerciseStats'))
 import { exerciseMeta } from '@/lib/exerciseMeta'
 
 export default function ExerciseDetailPage() {
@@ -20,6 +23,11 @@ export default function ExerciseDetailPage() {
   const exercise = useExercise(id)
   const navigate = useNavigate()
   const [editing, setEditing] = useState(false)
+  const training = useTrainingData()
+  const statsInfo = exercise ? training?.exercises.get(exercise.id) : undefined
+  const hasSessions =
+    !!exercise &&
+    !!training?.sessions.some((s) => s.exercises.some((e) => e.exerciseId === exercise.id))
 
   if (!exercise) return <NavBar backLabel="Ejercicios" />
 
@@ -86,6 +94,19 @@ export default function ExerciseDetailPage() {
           <Group title="Notas fijas">
             <p className="px-4 py-3 text-body whitespace-pre-line">{exercise.fixedNotes}</p>
           </Group>
+        )}
+
+        {statsInfo && training && hasSessions && (
+          <section>
+            <h2 className="mb-2 px-1 text-title3 font-bold">Progreso</h2>
+            <Suspense fallback={<div className="h-[300px] rounded-card bg-card" />}>
+              <ExerciseStats
+                exercise={statsInfo}
+                sessions={training.sessions}
+                allSessions={training.sessions}
+              />
+            </Suspense>
+          </section>
         )}
 
         <section>

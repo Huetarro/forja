@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Archive, ChevronRight, Dumbbell } from 'lucide-react'
 import { Group } from '@/components/ui/Form'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { SampleDataGroup } from './SampleDataGroup'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { updateSettings, useSettings } from '@/db/settings'
 import type { ThemePref } from '@/db/schema'
@@ -60,6 +61,8 @@ export default function SettingsPage() {
             Rutinas y programas archivados
           </SettingsLink>
         </Group>
+
+        <SampleDataGroup />
 
         <p className="tnum pt-4 text-center text-footnote text-ink-3">Forja v{__APP_VERSION__}</p>
       </section>

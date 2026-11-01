@@ -14,13 +14,15 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - `npm run lint` · `npm run format`
 - `npm run test` — tests unitarios (Vitest)
 - `npm run test:e2e` — pruebas en navegador a 390×844 (Playwright, arranca `preview`)
+- `npm run check` — comprobación completa antes de publicar (formato, lint, tests, build, e2e); se detiene al primer fallo
 - `npm run icons` — regenera los PNG desde `public/icon.svg`
 - `node scripts/screens.mjs [rutas]` y `node scripts/screens-flow.mjs` — capturas claro/oscuro en `screens/` (con `preview` en marcha)
 
 ## Estructura
 
 - `src/domain/` — funciones puras con tests `*.test.ts` al lado (fechas, unidades, cronómetro, superseries, rotación, búsqueda, tipos de serie…).
-- `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `days.ts`, `settings.ts`).
+- `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `days.ts`, `runs.ts`, `stats.ts`, `sample.ts`, `settings.ts`).
+- Estadísticas: `useTrainingData()` carga todo normalizado (`SessionData`) y las pestañas calculan con `src/domain/stats.ts`.
 - Entreno: `src/features/entreno/` (ActiveWorkoutPage, WorkoutExercises → ExerciseBlock → SetRow). El mismo editor sirve para entrenos pasados (`mode="edit"`). Unilaterales: cada serie planificada = dos filas (`side` izq/der) con el mismo `order`.
 - `src/components/ui/` — piezas reutilizables (BottomSheet, Overlays con confirmación y avisos con Deshacer, SortableList, Form, NavBar…).
 - `src/features/<pantalla>/` — cada pantalla se carga con `React.lazy` desde `src/app/App.tsx`.
@@ -50,4 +52,5 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 3 (Entreno en curso, cierre, resumen, compartir, historial): terminada.
 - Fase 4 (Calendario, registro diario, racha, mapa de calor): terminada.
 - Fase 5 (Running): terminada.
-- Siguiente: fase 6 (estadísticas, figura muscular, récords, calculadora 1RM).
+- Fase 6 (Estadísticas, figura muscular, récords, calculadora 1RM): terminada.
+- Siguiente: fase 7 (ajustes, copias, CSV, pulido y pruebas finales).
