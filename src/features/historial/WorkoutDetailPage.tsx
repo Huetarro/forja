@@ -75,11 +75,9 @@ export default function WorkoutDetailPage() {
             <h2 className="mb-2 px-1 text-title3 font-bold">Datos de cierre</h2>
             <ClosingForm
               id="edit-closing"
-              showBodyWeight={false}
               initial={workout}
               onSubmit={(d) => {
-                const { bodyWeight: _bw, ...rest } = d
-                void updateWorkout(workout.id, rest).then(() => toast('Datos guardados'))
+                void updateWorkout(workout.id, d).then(() => toast('Datos guardados'))
               }}
             />
             <Button type="submit" form="edit-closing" block className="mt-4">

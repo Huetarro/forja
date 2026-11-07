@@ -1,27 +1,45 @@
-import { useEffect, useId, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useDragControls, useReducedMotion } from 'motion/react'
+import { hideKeyboard } from '@/lib/keyboard'
 
 interface Props {
   open: boolean
   onClose: () => void
   title: string
   children: ReactNode
-  /** Botón a la derecha de la cabecera (p. ej. "Guardar"). */
+  /** Botón a la derecha de la cabecera (p. ej. "Guardar"). Sin él, se muestra "Hecho". */
   action?: ReactNode
   /** Altura completa (para listas largas). */
   tall?: boolean
 }
 
-/** Hoja inferior al estilo iOS. Se cierra tocando fuera o arrastrando hacia abajo. */
+/**
+ * Hoja inferior al estilo iOS. Se cierra tocando fuera, deslizando hacia abajo o con
+ * "Hecho"/"Cerrar"; al cerrarse oculta el teclado. Nunca da el foco a un campo por su cuenta.
+ */
 export function BottomSheet({ open, onClose, title, children, action, tall }: Props) {
   const reduce = useReducedMotion()
   const titleId = useId()
   const controls = useDragControls()
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const close = () => {
+    hideKeyboard()
+    onClose()
+  }
 
   useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    if (!open) {
+      hideKeyboard()
+      return
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        hideKeyboard()
+        onClose()
+      }
+    }
     document.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -30,6 +48,15 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
       document.body.style.overflow = prev
     }
   }, [open, onClose])
+
+  /** Arrastre desde el contenido: solo si está arriba del todo y no se toca un control. */
+  const grabFromContent = (e: React.PointerEvent) => {
+    const target = e.target as HTMLElement
+    if (target.closest('button, a, input, textarea, select, [role="slider"], [data-no-drag]'))
+      return
+    if ((scrollRef.current?.scrollTop ?? 0) > 0) return
+    controls.start(e)
+  }
 
   return createPortal(
     <AnimatePresence>
@@ -41,7 +68,7 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            onClick={onClose}
+            onClick={close}
           />
           <motion.div
             role="dialog"
@@ -59,7 +86,7 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
             dragControls={controls}
             dragSnapToOrigin
             onDragEnd={(_, info) => {
-              if (info.offset.y > 120 || info.velocity.y > 600) onClose()
+              if (info.offset.y > 120 || info.velocity.y > 600) close()
             }}
           >
             <SheetHeader
@@ -68,10 +95,14 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
               }}
               titleId={titleId}
               title={title}
-              onClose={onClose}
+              onClose={close}
               action={action}
             />
-            <div className="pb-safe min-h-0 flex-1 overflow-y-auto overscroll-contain px-4">
+            <div
+              ref={scrollRef}
+              onPointerDown={grabFromContent}
+              className="pb-safe min-h-0 flex-1 overflow-y-auto overscroll-contain px-4"
+            >
               <div className="pb-6">{children}</div>
             </div>
           </motion.div>
@@ -99,17 +130,31 @@ function SheetHeader({
     <div className="shrink-0 touch-none px-2 pt-2" onPointerDown={onGrab}>
       <div className="mx-auto mb-1 h-[5px] w-9 rounded-full bg-fill-strong" aria-hidden />
       <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-        <button
-          type="button"
-          onClick={onClose}
-          className="min-h-touch justify-self-start px-3 text-body text-accent-ink"
-        >
-          Cerrar
-        </button>
+        <div className="justify-self-start">
+          {action && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="min-h-touch px-3 text-body text-accent-ink"
+            >
+              Cerrar
+            </button>
+          )}
+        </div>
         <h2 id={titleId} className="max-w-[55vw] truncate text-body font-semibold">
           {title}
         </h2>
-        <div className="justify-self-end">{action}</div>
+        <div className="justify-self-end">
+          {action ?? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="min-h-touch px-3 text-body font-semibold text-accent-ink"
+            >
+              Hecho
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

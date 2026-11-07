@@ -95,7 +95,6 @@ function RoutineMetaForm({ routine, onClose, onCreated, defaultProgramId }: Omit
           placeholder="Nombre (p. ej. Torso A)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          autoFocus={!routine}
           enterKeyHint="done"
           maxLength={40}
         />

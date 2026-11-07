@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { requestPersistentStorage } from '@/db/db'
 import { purgeOldSnapshot } from '@/db/snapshot'
+import { useTapOutsideHidesKeyboard } from '@/lib/keyboard'
 import { useSettings } from '@/db/settings'
 import { InstallScreen } from '@/features/instalar/InstallScreen'
 import { Welcome } from '@/features/bienvenida/Welcome'
@@ -31,6 +32,7 @@ export function App() {
   const settings = useSettings()
   const [showInstall, setShowInstall] = useState(() => !isStandalone() && !installScreenSkipped())
   useApplyTheme(settings?.theme)
+  useTapOutsideHidesKeyboard()
 
   useEffect(() => {
     void requestPersistentStorage()

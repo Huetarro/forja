@@ -123,7 +123,7 @@ test('programas: crear y agrupar rutinas', async ({ page }) => {
   await page.getByLabel('Nombre del nuevo programa').fill('Fuerza')
   await page.getByRole('button', { name: 'Crear', exact: true }).click()
   await expect(page.getByLabel('Nombre del programa Fuerza')).toBeVisible()
-  await page.getByRole('button', { name: 'Cerrar' }).click()
+  await page.getByRole('button', { name: 'Hecho' }).click()
 
   await page.getByRole('button', { name: 'Crear rutina' }).click()
   await page.getByLabel('Nombre de la rutina').fill('Empuje')

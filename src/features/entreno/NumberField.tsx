@@ -11,6 +11,8 @@ interface Props {
   label: string
   className?: string
   disabled?: boolean
+  /** Resalta la casilla (falta el dato) */
+  invalid?: boolean
 }
 
 const fmt = (n: number | null | undefined) =>
@@ -18,7 +20,7 @@ const fmt = (n: number | null | undefined) =>
 
 /** Campo numérico: teclado decimal (kg) o numérico (reps). Guarda en cada cambio. */
 export const NumberField = forwardRef<HTMLInputElement, Props>(function NumberField(
-  { value, placeholder, onCommit, decimal, label, className, disabled },
+  { value, placeholder, onCommit, decimal, label, className, disabled, invalid },
   ref,
 ) {
   const [text, setText] = useState(fmt(value))
@@ -39,6 +41,7 @@ export const NumberField = forwardRef<HTMLInputElement, Props>(function NumberFi
       autoComplete="off"
       aria-label={label}
       disabled={disabled}
+      aria-invalid={invalid || undefined}
       value={text}
       placeholder={fmt(placeholder ?? null)}
       onFocus={(e) => e.target.select()}
@@ -54,6 +57,7 @@ export const NumberField = forwardRef<HTMLInputElement, Props>(function NumberFi
       }}
       className={cn(
         'tnum h-10 w-full min-w-0 rounded-sm bg-fill text-center text-body font-semibold outline-none placeholder:font-normal placeholder:text-ink-3 focus:ring-2 focus:ring-accent',
+        invalid && 'ring-2 ring-danger',
         className,
       )}
     />

@@ -6,6 +6,7 @@ import { setDrops, setSetType, updateSet } from '@/db/workouts'
 import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
 import { formatNumber } from '@/domain/units'
 import { cn } from '@/lib/cn'
+import { toast } from '@/stores/ui'
 import { NumberField } from './NumberField'
 
 export interface PrevSet {
@@ -31,8 +32,8 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
   const reduce = useReducedMotion()
   const [rirOpen, setRirOpen] = useState(false)
   const [dragging, setDragging] = useState(false)
-  const weightRef = useRef<HTMLInputElement>(null)
-  const repsRef = useRef<HTMLInputElement>(null)
+  // Casilla que falta al intentar marcar (se resalta; el teclado no se abre solo)
+  const [missing, setMissing] = useState<'weight' | 'reps' | null>(null)
   // Último valor tecleado (la base de datos puede tardar unos ms en devolverlo)
   const typed = useRef<{ weight?: number | null; reps?: number | null }>({})
   const done = set.completed
@@ -46,8 +47,12 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
     const r = typed.current.reps !== undefined ? typed.current.reps : set.reps
     const weight = w ?? prev?.weight ?? (bodyweight ? 0 : null)
     const reps = r ?? prev?.reps ?? null
-    if (weight === null) return weightRef.current?.focus()
-    if (reps === null) return repsRef.current?.focus()
+    if (weight === null || reps === null) {
+      setMissing(weight === null ? 'weight' : 'reps')
+      toast(weight === null ? 'Apunta el peso de la serie' : 'Apunta las reps de la serie')
+      return
+    }
+    setMissing(null)
     const next = { ...set, weight, reps, completed: true }
     await updateSet(set.id, { weight, reps, completed: true })
     onCompleted(next)
@@ -116,23 +121,25 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
           </div>
 
           <NumberField
-            ref={weightRef}
             decimal
             label={`Peso serie ${number}${sideLabel ? ` ${sideLabel}` : ''}`}
             value={set.weight}
             placeholder={prev?.weight ?? null}
+            invalid={missing === 'weight'}
             onCommit={(weight) => {
               typed.current.weight = weight
+              setMissing(null)
               void updateSet(set.id, { weight })
             }}
           />
           <NumberField
-            ref={repsRef}
             label={`Reps serie ${number}${sideLabel ? ` ${sideLabel}` : ''}`}
             value={set.reps}
             placeholder={prev?.reps ?? null}
+            invalid={missing === 'reps'}
             onCommit={(reps) => {
               typed.current.reps = reps
+              setMissing(null)
               void updateSet(set.id, { reps })
             }}
           />

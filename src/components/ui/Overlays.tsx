@@ -53,7 +53,6 @@ function ConfirmDialog() {
               </button>
               <button
                 type="button"
-                autoFocus
                 onClick={() => req.resolve(true)}
                 className={cn(
                   'min-h-touch text-body font-semibold',

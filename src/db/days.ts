@@ -211,3 +211,14 @@ export function useWeekTotals(from: LocalDate): WeekTotals | undefined {
 export function useHasData(): boolean | undefined {
   return useLiveQuery(async () => (await db.workouts.count()) + (await db.runs.count()) > 0)
 }
+
+/** Todos los pesos corporales apuntados en el registro diario. */
+export function useBodyWeights(): Array<{ date: LocalDate; value: number }> | undefined {
+  return useLiveQuery(async () => {
+    const out: Array<{ date: LocalDate; value: number }> = []
+    await db.dayLogs.each((l) => {
+      if (l.bodyWeight !== undefined) out.push({ date: l.date, value: l.bodyWeight })
+    })
+    return out
+  })
+}

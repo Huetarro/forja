@@ -37,7 +37,7 @@ test('rellenar un día del calendario y verlo en Inicio', async ({ page }) => {
     .setInputFiles({ name: 'foto.png', mimeType: 'image/png', buffer: await makePng() })
   await expect(sheet.getByRole('img', { name: /Foto del/ })).toBeVisible()
   await sheet.getByLabel('Notas del día').blur()
-  await sheet.getByRole('button', { name: 'Cerrar' }).click()
+  await sheet.getByRole('button', { name: 'Hecho' }).click()
 
   // La celda refleja suplementos completos y alimentación bien
   await expect(
@@ -56,10 +56,11 @@ test('rellenar un día del calendario y verlo en Inicio', async ({ page }) => {
     'aria-checked',
     'true',
   )
-  await sheet.getByRole('button', { name: 'Cerrar' }).click()
+  await sheet.getByRole('button', { name: 'Hecho' }).click()
 
   // Inicio: checks de hoy marcados
   await page.getByRole('link', { name: 'Inicio' }).click()
+  await expect(page.getByRole('button', { name: /Peso de hoy: 78,2 kg/ })).toBeVisible()
   const hoy = page.getByRole('region', { name: 'Hoy' })
   await expect(hoy.getByRole('button', { name: 'Creatina' })).toHaveAttribute(
     'aria-pressed',
@@ -75,6 +76,6 @@ test('día de descanso y mapa de calor', async ({ page }) => {
   await expect(page.getByText('0 días activos')).toBeVisible()
   await page.getByRole('gridcell').nth(10).click()
   await page.getByRole('dialog').getByRole('radio', { name: 'Descanso' }).click()
-  await page.getByRole('dialog').getByRole('button', { name: 'Cerrar' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Hecho' }).click()
   await expect(page.getByRole('gridcell', { name: /descanso/ })).toHaveCount(1)
 })

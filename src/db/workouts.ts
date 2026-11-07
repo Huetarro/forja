@@ -372,41 +372,23 @@ export interface ClosingData {
   rating?: number
   energy?: number
   notes: string
-  bodyWeight?: number
 }
 
 /** Cierra el entreno: guarda la duración activa y los datos de cierre. */
 export async function finishWorkout(workoutId: string, data: ClosingData): Promise<void> {
-  await db.transaction('rw', db.workouts, db.dayLogs, async () => {
+  await db.transaction('rw', db.workouts, async () => {
     const w = await db.workouts.get(workoutId)
     if (!w) return
     const now = Date.now()
     const pauses = w.pauses.map((p) => (p.end === undefined ? { ...p, end: now } : p))
-    const { bodyWeight, ...rest } = data
     await db.workouts.update(workoutId, {
-      ...rest,
+      ...data,
       status: 'terminado',
       endedAt: now,
       pauses,
       activeSeconds: activeSeconds(w.startedAt, pauses, now),
     })
-    if (bodyWeight !== undefined) await saveBodyWeight(w.date, bodyWeight)
   })
-}
-
-export async function saveBodyWeight(date: string, bodyWeight: number): Promise<void> {
-  const log = await db.dayLogs.get(date)
-  if (log) await db.dayLogs.update(date, { bodyWeight })
-  else
-    await db.dayLogs.add({
-      date,
-      rest: false,
-      supplements: {},
-      nutrition: null,
-      stretching: false,
-      bodyWeight,
-      notes: '',
-    })
 }
 
 export async function updateWorkout(

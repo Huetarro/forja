@@ -7,19 +7,17 @@ import { cn } from '@/lib/cn'
 interface Props {
   id: string
   initial?: Partial<ClosingData>
-  showBodyWeight?: boolean
   onSubmit: (data: ClosingData) => void
 }
 
 const str = (n: number | undefined) => (n === undefined ? '' : String(n).replace('.', ','))
 
 /** Datos de cierre, todos opcionales. */
-export function ClosingForm({ id, initial, showBodyWeight = true, onSubmit }: Props) {
+export function ClosingForm({ id, initial, onSubmit }: Props) {
   const [hr, setHr] = useState(str(initial?.avgHeartRate))
   const [kcal, setKcal] = useState(str(initial?.calories))
   const [rating, setRating] = useState<number | undefined>(initial?.rating)
   const [energy, setEnergy] = useState<number | undefined>(initial?.energy)
-  const [bw, setBw] = useState(str(initial?.bodyWeight))
   const [notes, setNotes] = useState(initial?.notes ?? '')
 
   const int = (s: string) => {
@@ -38,7 +36,6 @@ export function ClosingForm({ id, initial, showBodyWeight = true, onSubmit }: Pr
           calories: int(kcal),
           rating,
           energy,
-          bodyWeight: parseDecimal(bw) ?? undefined,
           notes: notes.trim(),
         })
       }}
@@ -73,21 +70,6 @@ export function ClosingForm({ id, initial, showBodyWeight = true, onSubmit }: Pr
             kcal
           </Unit>
         </Row>
-        {showBodyWeight && (
-          <Row label="Peso corporal" htmlFor={`${id}-bw`}>
-            <Unit>
-              <input
-                id={`${id}-bw`}
-                inputMode="decimal"
-                value={bw}
-                onChange={(e) => setBw(e.target.value.replace(/[^0-9.,]/g, ''))}
-                placeholder="—"
-                className={numCls}
-              />
-              kg
-            </Unit>
-          </Row>
-        )}
       </Group>
 
       <Scale label="Valoración del entreno" value={rating} onChange={setRating} />

@@ -121,7 +121,6 @@ function ExerciseForm({ onClose, exercise, onCreated, initialName }: Omit<Props,
           placeholder="Nombre (p. ej. Press banca)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          autoFocus={!exercise}
           enterKeyHint="done"
           maxLength={60}
         />

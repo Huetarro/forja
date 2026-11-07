@@ -20,6 +20,7 @@ import { NextRoutineCard } from './NextRoutineCard'
 import { ActiveWorkoutCard } from './ActiveWorkoutCard'
 import { BackupWarning } from './BackupWarning'
 import { TodayChecks } from './TodayChecks'
+import { BodyWeightCard } from './BodyWeightCard'
 import { WeekCard } from './WeekCard'
 import { useActiveWorkout } from '@/db/workouts'
 import { RoutineList } from './RoutineList'
@@ -60,6 +61,7 @@ export default function HomePage() {
             <NextRoutineCard routine={suggested} exerciseCount={counts.get(suggested.id) ?? 0} />
           )}
 
+          <BodyWeightCard />
           <WeekCard />
           <TodayChecks />
 

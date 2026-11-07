@@ -79,7 +79,7 @@ test('entreno completo con dropset, negativa, unilateral y superserie; cierre y 
   await page.getByLabel('Calorías').fill('420')
   await page.getByRole('radio', { name: 'Valoración del entreno: 4' }).click()
   await page.getByRole('radio', { name: 'Energía: 5' }).click()
-  await page.getByLabel('Peso corporal').fill('78,4')
+  await expect(page.getByLabel('Peso corporal')).toHaveCount(0)
   await page.getByLabel('Notas del entreno').fill('Buenas sensaciones')
   await page.getByRole('button', { name: 'Guardar' }).click()
 
