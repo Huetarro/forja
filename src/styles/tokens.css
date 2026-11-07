@@ -34,6 +34,8 @@
   --c-warm-soft: rgba(255, 204, 0, 0.22);
   --c-neg: #7c3fb5;
   --c-neg-soft: rgba(142, 78, 198, 0.16);
+  --c-rp: #0a6680;
+  --c-rp-soft: rgba(10, 132, 160, 0.16);
   --c-chart-run: #0a7cff;
   --c-chart-gym: #c2410c;
   --c-segment: #ffffff;
@@ -65,6 +67,8 @@
     --c-warm-soft: rgba(255, 214, 10, 0.2);
     --c-neg: #c58af9;
     --c-neg-soft: rgba(191, 90, 242, 0.22);
+    --c-rp: #64d2ff;
+    --c-rp-soft: rgba(100, 210, 255, 0.2);
     --c-chart-run: #2f8cf5;
     --c-chart-gym: #e2581a;
     --c-segment: #636366;
@@ -96,6 +100,8 @@
   --c-warm-soft: rgba(255, 214, 10, 0.2);
   --c-neg: #c58af9;
   --c-neg-soft: rgba(191, 90, 242, 0.22);
+  --c-rp: #64d2ff;
+  --c-rp-soft: rgba(100, 210, 255, 0.2);
   --c-chart-run: #2f8cf5;
   --c-chart-gym: #e2581a;
   --c-segment: #636366;
@@ -133,6 +139,8 @@
   --color-warm-soft: var(--c-warm-soft);
   --color-neg: var(--c-neg);
   --color-neg-soft: var(--c-neg-soft);
+  --color-rp: var(--c-rp);
+  --color-rp-soft: var(--c-rp-soft);
   --color-chart-run: var(--c-chart-run);
   --color-chart-gym: var(--c-chart-gym);
   --color-segment: var(--c-segment);

@@ -62,3 +62,34 @@ describe('CSV', () => {
     expect(toCsv(['a', 'b'], [[1, 'x']])).toBe('﻿a;b\r\n1;x\r\n')
   })
 })
+
+describe('versiones de copia', () => {
+  it('acepta copias de la v1 y de la v2', () => {
+    expect(validateBackup({ ...valid, version: 1 }).ok).toBe(true)
+    expect(validateBackup({ ...valid, version: 2 }).ok).toBe(true)
+  })
+  it('acepta campos nuevos de la v2 en rutinas y series', () => {
+    const r = validateBackup({
+      ...valid,
+      version: 2,
+      data: {
+        ...valid.data,
+        routineExercises: [
+          {
+            id: 're',
+            routineId: 'r',
+            exerciseId: 'e',
+            sets: ['normal', 'restpause'],
+            extras: [0, 2],
+            target: { min: 6, max: 10 },
+            restSec: 150,
+          },
+        ],
+        workoutSets: [
+          { id: 's', workoutId: 'w', workoutExerciseId: 'we', type: 'restpause', drops: [] },
+        ],
+      },
+    })
+    expect(r.ok).toBe(true)
+  })
+})

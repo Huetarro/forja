@@ -35,7 +35,7 @@ export const EQUIPMENT = [
 ] as const
 export type Equipment = (typeof EQUIPMENT)[number]
 
-export type SetType = 'normal' | 'calentamiento' | 'dropset' | 'negativa'
+export type SetType = 'normal' | 'calentamiento' | 'dropset' | 'negativa' | 'restpause'
 export type Side = 'izq' | 'der'
 
 /** Campo común: marca los registros creados con "Cargar datos de ejemplo". */
@@ -62,6 +62,8 @@ export interface Routine extends Sample {
   order: number
   archived: boolean
   createdAt: number
+  /** v2: la rutina termina con la lista de estiramientos */
+  stretches?: boolean
 }
 
 export interface Exercise extends Sample {
@@ -75,11 +77,34 @@ export interface Exercise extends Sample {
   fixedNotes: string
   /** descanso propio en segundos (si no, el de Ajustes) */
   restSeconds?: number
+  /** v2: se mide en reps (por defecto) o en segundos (los segundos se guardan en `reps`) */
+  metric?: ExerciseMetric
+  /** v2: el kg es opcional (peso corporal como carga); sin kg se guarda 0 y no suma volumen */
+  optionalLoad?: boolean
   archived: boolean
   createdAt: number
 }
 
-export interface RoutineExercise extends Sample {
+export type ExerciseMetric = 'reps' | 'segundos'
+
+/** v2: objetivo de la rutina (rango de reps o de segundos según el ejercicio). */
+export interface TargetRange {
+  min: number
+  max: number
+}
+
+/** v2: objetivo, descanso y técnicas de un ejercicio dentro de una rutina. */
+export interface ExercisePlan {
+  target?: TargetRange
+  /** descanso en segundos; en superseries, el del último de la pareja se hace tras la pareja */
+  restSec?: number
+  /** NEG: todas las series en negativa */
+  negative?: boolean
+  /** PAUSA: detalle (p. ej. "abajo 2 s, estirado"); cadena vacía = pausa sin detalle */
+  pause?: string
+}
+
+export interface RoutineExercise extends Sample, ExercisePlan {
   id: Id
   routineId: Id
   exerciseId: Id
@@ -88,6 +113,8 @@ export interface RoutineExercise extends Sample {
   supersetId?: string
   /** tipo de cada serie planificada */
   sets: SetType[]
+  /** v2: alineado con `sets`; bajadas (dropset) o mini-series (rest-pause) predefinidas */
+  extras?: number[]
 }
 
 export type WorkoutStatus = 'en_curso' | 'terminado'
@@ -107,9 +134,13 @@ export interface Workout extends Sample {
   rating?: number
   energy?: number
   notes: string
+  /** v2: sesión de la semana de descarga */
+  deload?: boolean
+  /** v2: estiramientos marcados en este entreno */
+  stretchesDone?: string[]
 }
 
-export interface WorkoutExercise extends Sample {
+export interface WorkoutExercise extends Sample, ExercisePlan {
   id: Id
   workoutId: Id
   exerciseId: Id
@@ -185,6 +216,16 @@ export interface ProgressPhoto extends Sample {
 
 export type ThemePref = 'auto' | 'light' | 'dark'
 
+/** v2: qué toca cada día de la semana. */
+export type DayPlan =
+  | { kind: 'rutina'; routineId: Id }
+  | { kind: 'carrera'; runType: RunType; label: string }
+  | { kind: 'descanso' }
+
+/** 1 = lunes … 7 = domingo */
+export type Weekday = 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type WeekPlan = Partial<Record<Weekday, DayPlan>>
+
 export interface Settings {
   /** siempre 'app' */
   id: 'app'
@@ -194,6 +235,26 @@ export interface Settings {
   restTimer: { visible: boolean; seconds: number }
   lastBackupAt?: number
   onboarded: boolean
+  /** v2: plan por días de la semana (sustituye a la rotación) */
+  weekPlan?: WeekPlan
+  /** v2: lista de estiramientos de la rutina de core */
+  stretchList?: string[]
+  /** v2: semana de descarga activa (y desde cuándo) */
+  deload?: { active: boolean; since?: LocalDate }
+  /** v2: la base venía de la v1 y falta cargar el plan semanal */
+  planV2Pending?: boolean
+  planV2LoadedAt?: number
+  /** v2: fecha de inicio del plan (para contar semanas sin descarga) */
+  planStartDate?: LocalDate
+  /** v2: cuándo se guardó la copia interna previa a la v2 */
+  preV2SnapshotAt?: number
+}
+
+/** v2: copia interna de todos los datos (tabla `snapshots`). */
+export interface Snapshot {
+  id: string
+  createdAt: number
+  data: Record<string, unknown[]>
 }
 
 export const DEFAULT_SETTINGS: Settings = {

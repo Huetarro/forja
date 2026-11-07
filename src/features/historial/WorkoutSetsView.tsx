@@ -1,6 +1,6 @@
 import type { Exercise, WorkoutSet } from '@/db/schema'
 import type { WorkoutBundle } from '@/db/workouts'
-import { SET_TYPE_SHORT } from '@/domain/setTypes'
+import { SET_TYPE_CHIP, SET_TYPE_SHORT } from '@/domain/setTypes'
 import { supersetPosition } from '@/domain/supersets'
 import { formatNumber } from '@/domain/units'
 import { cn } from '@/lib/cn'
@@ -48,14 +48,7 @@ function SetLine({ set, unit }: { set: WorkoutSet; unit: string }) {
   return (
     <li className="tnum flex flex-wrap items-baseline gap-x-2 text-subhead">
       {tag && (
-        <span
-          className={cn(
-            'rounded px-1.5 text-caption font-bold',
-            set.type === 'calentamiento' && 'bg-warm-soft text-warm',
-            set.type === 'dropset' && 'bg-accent-soft text-accent-ink',
-            set.type === 'negativa' && 'bg-neg-soft text-neg',
-          )}
-        >
+        <span className={cn('rounded px-1.5 text-caption font-bold', SET_TYPE_CHIP[set.type])}>
           {tag}
         </span>
       )}

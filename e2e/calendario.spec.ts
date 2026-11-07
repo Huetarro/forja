@@ -16,7 +16,7 @@ test('rellenar un día del calendario y verlo en Inicio', async ({ page }) => {
   // Abrir el día de hoy (el número resaltado)
   const today = new Date()
   const todayCell = page.getByRole('gridcell', {
-    name: new RegExp(`^\\w+ ${today.getDate()}(,|$)`),
+    name: new RegExp(`^\\p{L}+ ${today.getDate()}(,|$)`, 'u'),
   })
   await todayCell
     .filter({ hasNot: page.locator('.opacity-35') })

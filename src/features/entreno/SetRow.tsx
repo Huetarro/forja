@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Plus, Trash2, Trophy, X } from 'lucide-react'
 import type { Drop, WorkoutSet } from '@/db/schema'
 import { setDrops, setSetType, updateSet } from '@/db/workouts'
-import { SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
+import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
 import { formatNumber } from '@/domain/units'
 import { cn } from '@/lib/cn'
 import { NumberField } from './NumberField'
@@ -97,11 +97,9 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
             onClick={() => void setSetType(set, nextSetType(set.type))}
             aria-label={`Tipo: ${SET_TYPE_LABEL[set.type]}. Toca para cambiar`}
             className={cn(
-              'tnum grid size-9 place-items-center rounded-full text-subhead font-bold',
-              set.type === 'normal' && 'bg-fill text-ink',
-              set.type === 'calentamiento' && 'bg-warm-soft text-warm',
-              set.type === 'dropset' && 'bg-accent-soft text-accent-ink',
-              set.type === 'negativa' && 'bg-neg-soft text-neg',
+              'tnum grid size-9 place-items-center rounded-full font-bold',
+              set.type === 'restpause' ? 'text-footnote' : 'text-subhead',
+              SET_TYPE_CHIP[set.type],
             )}
           >
             {set.type === 'normal' ? number : SET_TYPE_SHORT[set.type]}

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Link2, Minus, Plus, Trash2, Unlink } from 'lucide-react'
 import type { Exercise, RoutineExercise, SetType } from '@/db/schema'
 import type { SupersetPosition } from '@/domain/supersets'
-import { SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
+import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
 import { cn } from '@/lib/cn'
 
 interface Props {
@@ -75,11 +75,9 @@ export function RoutineExerciseCard({
                   onClick={() => onSetsChange(sets.map((s, k) => (k === i ? nextSetType(s) : s)))}
                   aria-label={`Serie ${i + 1}: ${SET_TYPE_LABEL[t]}. Toca para cambiar`}
                   className={cn(
-                    'tnum grid size-10 place-items-center rounded-full text-subhead font-bold transition-colors',
-                    t === 'normal' && 'bg-fill text-ink',
-                    t === 'calentamiento' && 'bg-warm-soft text-warm',
-                    t === 'dropset' && 'bg-accent-soft text-accent-ink',
-                    t === 'negativa' && 'bg-neg-soft text-neg',
+                    'tnum grid size-10 place-items-center rounded-full font-bold transition-colors',
+                    t === 'restpause' ? 'text-footnote' : 'text-subhead',
+                    SET_TYPE_CHIP[t],
                   )}
                 >
                   {label}

@@ -10,6 +10,7 @@ import type { ThemePref } from '@/db/schema'
 import { updateSettings, useSettings } from '@/db/settings'
 import { confirm, toast } from '@/stores/ui'
 import { BackupGroup } from './BackupGroup'
+import { PreV2Group } from './PreV2Group'
 import { SampleDataGroup } from './SampleDataGroup'
 import { SupplementsEditor } from './SupplementsEditor'
 
@@ -160,6 +161,7 @@ export default function SettingsPage() {
         </Group>
 
         <BackupGroup />
+        <PreV2Group />
 
         <SampleDataGroup />
 

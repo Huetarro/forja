@@ -1,7 +1,8 @@
 /** Formato y validación de las copias de seguridad (funciones puras). */
 
 export const BACKUP_APP = 'forja'
-export const BACKUP_VERSION = 1
+/** 2: v2 de la app (campos nuevos opcionales; las copias v1 se siguen aceptando). */
+export const BACKUP_VERSION = 2
 
 export const BACKUP_TABLES = [
   'programs',

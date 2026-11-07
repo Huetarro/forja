@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { requestPersistentStorage } from '@/db/db'
+import { purgeOldSnapshot } from '@/db/snapshot'
 import { useSettings } from '@/db/settings'
 import { InstallScreen } from '@/features/instalar/InstallScreen'
 import { Welcome } from '@/features/bienvenida/Welcome'
@@ -33,6 +34,7 @@ export function App() {
 
   useEffect(() => {
     void requestPersistentStorage()
+    void purgeOldSnapshot()
   }, [])
 
   let content: React.ReactNode

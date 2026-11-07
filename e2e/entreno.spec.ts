@@ -38,8 +38,9 @@ test('entreno completo con dropset, negativa, unilateral y superserie; cierre y 
   await press.getByLabel('Peso serie 2', { exact: true }).fill('80')
   await expect(press.getByLabel('Peso bajada 1')).toHaveValue('60')
 
-  // Negativa en la tercera fila
+  // Negativa en la tercera fila (Normal → C → D → RP → N)
   const typeButtons = press.getByRole('button', { name: /^Tipo:/ })
+  await typeButtons.nth(2).click()
   await typeButtons.nth(2).click()
   await typeButtons.nth(2).click()
   await typeButtons.nth(2).click()

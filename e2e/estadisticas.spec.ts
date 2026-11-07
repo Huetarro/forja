@@ -41,7 +41,7 @@ test('estadísticas con datos de ejemplo, figura muscular y calculadora de 1RM',
   await page.getByLabel('Peso levantado').fill('100')
   await page.getByLabel('Repeticiones').fill('10')
   await expect(page.getByText('133,3').first()).toBeVisible()
-  await expect(page.getByRole('cell', { name: '50 %' })).toBeVisible()
+  await expect(page.getByRole('dialog').getByRole('cell', { name: '50 %' })).toBeVisible()
   await page.getByRole('button', { name: 'Cerrar' }).click()
 
   // Borrar los datos de ejemplo
