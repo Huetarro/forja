@@ -17,6 +17,16 @@ test('actualizar desde una base con datos de la v1 conserva todo', async ({ page
   await page.goto('./#/running')
   await expect(page.getByText('6,42').first()).toBeVisible()
 
+  // El plan semanal se ha cargado solo
+  await page.goto('./#/ajustes/plan')
+  await expect(page.getByLabel('Plan del lunes')).toHaveValue(/^r:/)
+  await expect(page.getByLabel('Plan del lunes').locator('option:checked')).toHaveText('Empuje')
+  await expect(page.getByLabel('Plan del miércoles')).toHaveValue('c:rodaje')
+  await expect(page.getByRole('button', { name: 'Cargar plan semanal' })).toHaveCount(0)
+  // Las rutinas de la v1 están en Archivados
+  await page.goto('./#/archivados')
+  await expect(page.getByText('Torso A')).toBeVisible()
+
   // Copia interna previa a la v2 disponible en Ajustes
   await page.goto('./#/ajustes')
   await expect(page.getByRole('button', { name: 'Restaurar copia anterior a la v2' })).toBeVisible()
@@ -40,6 +50,8 @@ test('actualizar desde una base con datos de la v1 conserva todo', async ({ page
       photos: await count('photos'),
       dayLogs: await count('dayLogs'),
       runs: await count('runs'),
+      routines: await count('routines'),
+      programs: await count('programs'),
       snapshots: await count('snapshots'),
     }
     idb.close()
@@ -52,6 +64,8 @@ test('actualizar desde una base con datos de la v1 conserva todo', async ({ page
     photos: 1,
     dayLogs: 3,
     runs: 1,
+    routines: 7,
+    programs: 2,
     snapshots: 1,
   })
 })

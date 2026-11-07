@@ -10,6 +10,7 @@ import type { DayPlan, Routine, RunType, Weekday } from '@/db/schema'
 import { updateSettings, useSettings } from '@/db/settings'
 import { WEEKDAY_LABEL, WEEKDAYS } from '@/domain/weekPlan'
 import { RUN_TYPES } from '@/lib/runTypes'
+import { LoadPlanGroup } from './LoadPlanGroup'
 
 const RUN_DEFAULT_LABEL: Partial<Record<RunType, string>> = {
   rodaje: 'Carrera zona 2 · 30-40 min',
@@ -50,6 +51,7 @@ export default function WeekPlanPage() {
       <NavBar backLabel="Ajustes" />
       <PageHeader title="Plan semanal" />
       <div className="space-y-6">
+        <LoadPlanGroup />
         <Group footer="“Te toca hoy” en Inicio usa el día de la semana.">
           {WEEKDAYS.map((d) => (
             <DayRow key={d} day={d} plan={plan[d]} routines={routines} />
