@@ -176,10 +176,7 @@ export default function RoutineDetailPage() {
                       {setsSummary(it.sets)}
                     </span>
                   </div>
-                  <PlanInfo
-                    line={planLine(it, metricOf(ex), pos === 'end')}
-                    chips={techniqueChips(it)}
-                  />
+                  <PlanInfo line={planLine(it, metricOf(ex), pos)} chips={techniqueChips(it)} />
                   {it.notes && <p className="mt-0.5 text-footnote text-ink-2">{it.notes}</p>}
                 </div>
               </li>

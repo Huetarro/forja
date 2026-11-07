@@ -34,7 +34,11 @@ export function DeloadCard() {
           {active ? 'Semana de descarga activa' : 'Semana de descarga'}
         </span>
         <span className={cn('block text-footnote', highlight ? 'text-ink' : 'text-ink-2')}>
-          {active ? 'Mitad de series y sin técnicas.' : weeks !== null ? deloadText(weeks) : ''}
+          {active
+            ? 'Mitad de series y sin técnicas.'
+            : weeks !== null
+              ? deloadText(weeks, last !== null)
+              : ''}
         </span>
       </span>
       <Switch label="Semana de descarga" checked={active} onChange={(v) => void setDeload(v)} />

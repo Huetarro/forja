@@ -66,7 +66,7 @@ export function ExerciseBlock({
     negative: we.negative,
     pause: we.pause,
   })
-  const line = planLine(we, metric, position === 'end')
+  const line = planLine(we, metric, position)
 
   // Serie "anterior" equivalente: misma posición entre las del mismo lado
   const prevFor = (s: WorkoutSet): PrevSet | undefined => {

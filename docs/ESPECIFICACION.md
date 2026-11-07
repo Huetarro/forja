@@ -1,5 +1,7 @@
 # PROYECTO FORJA — App personal de gimnasio y running para iPhone (PWA)
 
+> **v2:** este documento incluye los cambios de [CAMBIOS-V2.md](CAMBIOS-V2.md) (resumen en la sección 14). Donde hay conflicto, manda la v2.
+
 Vas a construir desde cero una app llamada **Forja**. El usuario principal es Dani, que no sabe programar. Se usará en un iPhone 12 Pro (iOS 27) instalada desde Safari como web app en la pantalla de inicio. Toda la interfaz en español de España. Debe ser bonita, profesional, minimalista, atractiva, muy fácil de usar y con todo muy organizado.
 
 ## 0. Cómo quiero que trabajes
@@ -57,7 +59,8 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 - **RoutineExercise**: id, routineId, exerciseId, orden, notas, superserieId opcional, series[] con el tipo de cada serie.
 - **Workout**: id, routineId, nombre de la rutina copiado, fecha local (YYYY-MM-DD), inicio, fin, pausas[], duraciónActivaSeg, estado ('en_curso' | 'terminado'), pulsacionesMedias, calorías, valoración 1-5, energía 1-5, notas.
 - **WorkoutExercise**: id, workoutId, exerciseId, orden, notas, superserieId opcional.
-- **WorkoutSet**: id, workoutExerciseId, orden, tipo ('calentamiento' | 'normal' | 'dropset' | 'negativa'), peso, reps, rir opcional, completada, lado opcional ('izq' | 'der'), bajadas[] con { peso, reps } para dropsets.
+- **WorkoutSet**: id, workoutExerciseId, orden, tipo ('calentamiento' | 'normal' | 'dropset' | 'negativa' | 'restpause'), peso, reps (o segundos en ejercicios por tiempo), rir opcional, completada, lado opcional ('izq' | 'der'), bajadas[] con { peso, reps } para dropsets y mini-series de rest-pause.
+- **v2**: Exercise + métrica ('reps' | 'segundos') y peso opcional; RoutineExercise/WorkoutExercise + objetivo {min, max}, descanso, bajadas/mini-series predefinidas por serie, NEG y PAUSA (detalle); Routine + estiramientos; Workout + descarga y estiramientos hechos; Settings + plan semanal, lista de estiramientos, semana de descarga y marcas de la carga del plan; tabla `snapshots` con la copia interna previa a la v2.
 - **Run**: id, fecha, distanciaKm, duraciónSeg, pulsacionesMedias, calorías, desnivelM, tipo ('rodaje' | 'series' | 'tirada_larga' | 'competicion' | 'otro'), superficie ('exterior' | 'cinta'), sensaciones 1-5, notas. El ritmo se calcula, no se guarda.
 - **DayLog** (uno por fecha): descanso, suplementos { suplementoId: boolean }, alimentación ('bien' | 'mal' | null), horasSueño, estiramientos, pesoCorporal, notas.
 - **Supplement**: id, nombre, orden, activo. Precargados: Creatina, Omega 3, Vitamina D, Multivitamínico, Magnesio.
@@ -73,7 +76,8 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 ### 5.2 Inicio
 - Saludo "Hola, Dani" y fecha de hoy.
 - Si hay un entreno en curso: tarjeta destacada con el cronómetro y botón "Continuar".
-- Tarjeta "Te toca hoy": rutina sugerida según la rotación (no hay días fijos). Por defecto, la siguiente en el orden de su programa tras la última realizada. Botón "Empezar".
+- Tarjeta "Te toca hoy" según el **plan semanal por días** (v2, sustituye a la rotación): rutina con "Empezar", carrera con su objetivo y "Registrar carrera" con el tipo ya puesto, o descanso.
+- Tarjeta fija "Peso de hoy" (v2) y tarjeta "Semana de descarga" con "X semanas desde la última descarga" (destacada desde la semana 6).
 - Resumen de la semana (lunes a domingo): puntos por día (gym, running, descanso), tiempo total, volumen y km.
 - Racha actual.
 - Checks de hoy: suplementos (chips que se tocan), alimentación bien/mal y estiramientos.
@@ -87,7 +91,7 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 - Reordenar rutinas y ejercicios arrastrando (táctil).
 - Añadir ejercicios desde la biblioteca con buscador, o crear uno nuevo sin salir de la rutina.
 - Por ejercicio: número de series, tipo de cada serie (normal, calentamiento, dropset, negativa), notas y opción de agruparlo en superserie con el siguiente.
-- En la rutina no se definen objetivos de kg ni reps: se apuntan al entrenar.
+- v2: por ejercicio se define el objetivo (rango de reps o de segundos) y el descanso, las bajadas de cada dropset (DS, DS x2…) y las mini-series de cada rest-pause, NEG (todas las series en negativa) y PAUSA con detalle. Los kg se apuntan al entrenar.
 - Las rutinas archivadas conservan todo su historial.
 
 ### 5.4 Biblioteca de ejercicios
@@ -107,7 +111,8 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
   - Kg y reps prerrellenados en gris con los valores anteriores. Si se marca el check sin tocarlos, se aceptan esos valores.
   - Unidad del ejercicio visible (kg o lb).
   - Ejercicios unilaterales: cada serie se desdobla en Izq y Der.
-  - Tipo de serie con un chip que se toca: Normal, Calentamiento (C), Dropset (D), Negativa (N).
+  - Tipo de serie con un chip que se toca: Normal, Calentamiento (C), Dropset (D), Rest-pause (RP), Negativa (N).
+  - v2: los dropsets y rest-pause de la rutina aparecen ya desplegados; el rest-pause muestra mini-series ("descansa 15 s") con el peso de la serie por defecto. Chips DS, DS x2, RP, NEG y PAUSA que abren la leyenda; nota "1-2 reps en reserva, salvo la última con técnica (al fallo)".
   - Dropset: al marcarlo, la fila se despliega con animación y muestra las bajadas (peso y reps de cada una), con botón "+ bajada" sin límite y opción de eliminar bajadas.
   - RIR opcional con selector rápido (0, 1, 2, 3, 4, 5+).
   - Check grande para marcar la serie hecha; la fila cambia de estilo.
@@ -120,7 +125,7 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 - Botón "Terminar":
   1. Si hay series sin marcar, preguntar si descartarlas.
   2. Si la estructura cambió respecto a la rutina (ejercicios, orden, número o tipo de series), preguntar: "¿Actualizar la rutina con estos cambios?" con las opciones "Actualizar rutina" y "Solo este entreno".
-  3. Formulario de cierre rápido, todo opcional: pulsaciones medias (ppm), calorías (kcal), valoración 1-5, energía 1-5, peso corporal (kg, se guarda en el registro de ese día) y notas.
+  3. Formulario de cierre rápido, todo opcional: pulsaciones medias (ppm), calorías (kcal), valoración 1-5, energía 1-5 y notas. (v2: el peso corporal sale del cierre; se apunta en Inicio o en el día del calendario.)
   4. Resumen: duración, ejercicios, series efectivas, volumen, récords batidos (con celebración) y comparación con la vez anterior de esa rutina (duración y volumen en %). Botón "Compartir" que genera una imagen bonita en formato historia (9:16) y abre el menú de compartir de iOS.
 - Cancelar entreno, con confirmación.
 - No existe entreno libre: siempre se parte de una rutina.
@@ -175,7 +180,8 @@ Pestañas internas: Resumen, Ejercicios, Músculos, Cuerpo, Hábitos. Selector d
 ## 6. Reglas de entrenamiento
 
 - Series efectivas: normal, dropset y negativa. El calentamiento no cuenta en estadísticas ni récords.
-- Dropset: cuenta como 1 serie. El volumen y los récords usan solo la primera serie; las bajadas se guardan y se muestran, pero no suman volumen.
+- Dropset y rest-pause: cuentan como 1 serie. El volumen y los récords usan solo la primera parte; las bajadas y mini-series se guardan y se muestran, pero no suman volumen.
+- v2: ejercicios con peso opcional o por tiempo: sin kg no suman volumen y el progreso y los récords se miden en reps o segundos.
 - Negativa: cuenta como serie normal y se marca visualmente.
 - Unidades: cada ejercicio va en kg o en lb, y sus gráficas y récords se muestran en su unidad. Los totales que mezclan ejercicios (volumen total y por músculo) se calculan en kg (1 lb = 0,45359237 kg). Si se cambia la unidad de un ejercicio con historial, preguntar si convertir los registros o solo cambiar la etiqueta.
 - Los músculos secundarios cuentan como serie completa en series y volumen por grupo muscular.
@@ -187,15 +193,15 @@ Pestañas internas: Resumen, Ejercicios, Músculos, Cuerpo, Hábitos. Selector d
 - Volumen = suma de peso × reps de las series efectivas (en dropsets, solo la primera).
 - 1RM estimado (Epley) = peso × (1 + reps / 30), usando series de 1 a 12 reps.
 - Racha: semanas seguidas con al menos un entreno o carrera. La semana en curso no rompe la racha hasta que termina.
-- Sugerencia "Sube peso": aparece si en las 2 últimas sesiones del ejercicio se usó el mismo peso y en la última se igualaron o superaron las reps de la anterior en todas las series efectivas, o si en la última sesión todas las series efectivas tienen RIR 2 o más. Reglas en un único archivo fácil de ajustar.
-- Estancamiento: aviso si el mejor 1RM estimado no mejora en las últimas 4 sesiones y al menos 3 semanas.
+- Sugerencia "Sube peso" (v2): aparece cuando en la última sesión (que no sea de descarga) todas las series efectivas llegaron al tope del rango objetivo; en ejercicios sin kg dice "Tope alcanzado". Regla en un único archivo fácil de ajustar.
+- Estancamiento: aviso si el mejor 1RM estimado no mejora en las últimas 4 sesiones y al menos 3 semanas (sin contar sesiones de descarga).
 - Récords: nuevo máximo de peso, de 1RM estimado, de reps con un peso dado y de volumen en una sesión. Se detectan al marcar la serie.
 - Ritmo = tiempo / km, en formato m:ss /km.
 - Duración del entreno = tiempo activo, sin pausas.
 
 ## 8. Fuera de alcance
 
-No incluir: calculadora de discos, objetivos semanales, recordatorios o notificaciones, bloqueo con Face ID, semanas de descarga, plantillas de programas, imágenes de ejercicios, entreno libre sin rutina, mantener la pantalla encendida, ni medidas corporales distintas del peso.
+No incluir: calculadora de discos, objetivos semanales, recordatorios o notificaciones, bloqueo con Face ID, plantillas de programas (salvo el plan semanal de Dani de la v2), imágenes de ejercicios, entreno libre sin rutina, mantener la pantalla encendida, ni medidas corporales distintas del peso.
 
 ## 9. Datos
 
@@ -231,3 +237,16 @@ Cualquier persona podrá instalarla desde el mismo enlace; sus datos quedan en s
 7. Ajustes, copias de seguridad, CSV, datos de ejemplo, pulido visual final, pruebas completas y publicación final.
 
 Empieza ahora por la fase 1.
+## 14. Actualización v2 (resumen)
+
+Detalle completo en [CAMBIOS-V2.md](CAMBIOS-V2.md).
+
+- **Datos**: Dexie `version(2)`; antes de migrar se guarda una copia interna completa (tabla `snapshots`), restaurable desde Ajustes durante 30 días y borrada después. Copias JSON versión 2 (se aceptan las de la v1). Tests de migración y de carga del plan.
+- **Plan semanal de Dani**: se carga una sola vez al abrir la v2 en un móvil con datos de la v1 (idempotente, marcado en Settings); reutiliza ejercicios por nombre normalizado y sinónimos; archiva las rutinas anteriores. En instalaciones nuevas: Ajustes → Plan semanal → "Cargar plan semanal".
+- **Plan por días**: Ajustes → Plan semanal (rutina, carrera o descanso por día). Miércoles "Carrera zona 2 · 30-40 min" y sábado "Tirada larga zona 2 · 45-60 min".
+- **Técnicas**: objetivo y descanso por ejercicio (en superseries, tras la pareja), DS con bajadas predefinidas, rest-pause, NEG, PAUSA, leyenda al tocar los chips.
+- **Ejercicios por tiempo y peso opcional**: "Por lado" = unilateral.
+- **Estiramientos** al final de la rutina de core, con check y temporizador opcional de 45 s; al completarlos se marca "estiramientos" en el día. Lista editable.
+- **Semana de descarga**: mitad de series (redondeando hacia arriba), todas normales y sin técnicas; sesiones marcadas, fuera del estancamiento y de "Sube peso".
+- **Running**: km de esta semana, de la anterior y máximo recomendado (+10 %).
+- **Teclado**: ningún campo recibe el foco solo; las hojas se cierran tocando fuera, deslizando o con "Hecho" y ocultan el teclado; tocar fuera de un campo lo cierra.

@@ -60,8 +60,11 @@ describe('objetivo y descanso', () => {
   })
   it('línea discreta del ejercicio', () => {
     expect(planLine({ target: { min: 6, max: 10 }, restSec: 150 })).toBe('6-10 reps · desc. 2:30')
-    expect(planLine({ target: { min: 10, max: 12 }, restSec: 90 }, 'reps', true)).toBe(
+    expect(planLine({ target: { min: 10, max: 12 }, restSec: 90 }, 'reps', 'end')).toBe(
       '10-12 reps · desc. 1:30 tras la pareja',
+    )
+    expect(planLine({ target: { min: 10, max: 12 }, restSec: 90 }, 'reps', 'start')).toBe(
+      '10-12 reps',
     )
     expect(planLine({ target: { min: 30, max: 45 } }, 'segundos')).toBe('30-45 s')
     expect(planLine({})).toBe('')

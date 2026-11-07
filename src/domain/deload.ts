@@ -18,7 +18,11 @@ export function weeksSinceDeload(
   return Math.floor(daysBetween(weekStart(ref), weekStart(today)) / 7)
 }
 
-export function deloadText(weeks: number): string {
-  if (weeks === 0) return 'Esta semana: descarga reciente'
-  return `${weeks} ${weeks === 1 ? 'semana' : 'semanas'} desde la última descarga`
+/** @param sinceDeload true si se cuenta desde una descarga; false si desde el inicio del plan */
+export function deloadText(weeks: number, sinceDeload = true): string {
+  if (weeks === 0) return sinceDeload ? 'Descarga hecha esta semana' : 'Plan empezado esta semana'
+  const w = `${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`
+  return sinceDeload
+    ? `${w} desde la última descarga`
+    : `${w} desde el inicio del plan, sin descarga`
 }

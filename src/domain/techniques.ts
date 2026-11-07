@@ -1,6 +1,7 @@
 /** Técnicas, leyenda y formatos de objetivo/descanso (funciones puras). */
 import type { ExerciseMetric, SetType, TargetRange } from '@/db/schema'
 import { DEFAULT_EXTRAS, hasExtras } from './setTypes'
+import type { SupersetPosition } from './supersets'
 
 export type TechniqueKey = 'DS' | 'RP' | 'NEG' | 'PAUSA'
 
@@ -107,15 +108,18 @@ export function parseTarget(text: string): TargetRange | undefined {
   return { min: Math.min(a, b), max: Math.max(a, b) }
 }
 
-/** Línea discreta: "6-10 reps · desc. 2:30" (en superseries: "desc. 1:30 tras la pareja"). */
+/**
+ * Línea discreta: "6-10 reps · desc. 2:30". En superseries el descanso va después de la
+ * pareja: los primeros no lo muestran y el último dice "desc. 1:30 tras la pareja".
+ */
 export function planLine(
   plan: { target?: TargetRange; restSec?: number },
   metric: ExerciseMetric = 'reps',
-  restAfterPair = false,
+  position: SupersetPosition = 'none',
 ): string {
   const parts: string[] = []
   if (plan.target) parts.push(formatTarget(plan.target, metric))
-  if (plan.restSec)
-    parts.push(`desc. ${formatRest(plan.restSec)}${restAfterPair ? ' tras la pareja' : ''}`)
+  if (plan.restSec && position !== 'start' && position !== 'middle')
+    parts.push(`desc. ${formatRest(plan.restSec)}${position === 'end' ? ' tras la pareja' : ''}`)
   return parts.join(' · ')
 }

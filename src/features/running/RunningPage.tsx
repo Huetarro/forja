@@ -214,7 +214,7 @@ function WeekKmCard({ runs }: { runs: Run[] }) {
   const pct = c.maxRecommended ? Math.min(1, c.thisWeek / c.maxRecommended) : 0
   return (
     <section className="rounded-card bg-card p-4" aria-label="Kilómetros de esta semana">
-      <h2 className="text-body font-semibold">Esta semana</h2>
+      <h2 className="text-body font-semibold">Kilómetros semanales</h2>
       <dl className="mt-2 grid grid-cols-3 gap-2">
         <Stat label="Esta semana" value={`${formatNumber(c.thisWeek, 1)} km`} />
         <Stat label="Anterior" value={`${formatNumber(c.lastWeek, 1)} km`} />

@@ -14,5 +14,7 @@ describe('semanas desde la última descarga', () => {
   it('texto', () => {
     expect(deloadText(1)).toBe('1 semana desde la última descarga')
     expect(deloadText(7)).toBe('7 semanas desde la última descarga')
+    expect(deloadText(0, false)).toBe('Plan empezado esta semana')
+    expect(deloadText(2, false)).toBe('2 semanas desde el inicio del plan, sin descarga')
   })
 })
