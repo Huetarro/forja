@@ -1,7 +1,13 @@
 import { useSearchParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, TrendingDown, TrendingUp } from 'lucide-react'
 import type { TrainingData } from '@/db/stats'
-import { exerciseSessions, inRange, trendPct, type RangeBounds } from '@/domain/stats'
+import {
+  exerciseSessions,
+  inRange,
+  measuredByReps,
+  trendPct,
+  type RangeBounds,
+} from '@/domain/stats'
 import { formatNumber } from '@/domain/units'
 import { cn } from '@/lib/cn'
 import { Sparkline } from './charts'
@@ -44,8 +50,11 @@ export default function ExercisesTab({
   const rows = [...data.exercises.values()]
     .map((e) => {
       const m = exerciseSessions(cur, e.id, e.unilateral ? 'izq' : undefined)
-      const rms = m.map((x) => x.best1rm).filter((v): v is number => v !== null)
-      return { e, rms, sessions: m.length }
+      const byReps = measuredByReps(e)
+      const rms = m
+        .map((x) => (byReps ? x.maxReps : x.best1rm))
+        .filter((v): v is number => v !== null)
+      return { e, rms, byReps, sessions: m.length }
     })
     .filter((r) => r.sessions > 0)
     .sort((a, b) => b.sessions - a.sessions || a.e.name.localeCompare(b.e.name, 'es'))
@@ -59,7 +68,7 @@ export default function ExercisesTab({
 
   return (
     <ul className="divide-y divide-sep overflow-hidden rounded-card bg-card">
-      {rows.map(({ e, rms, sessions }) => {
+      {rows.map(({ e, rms, byReps, sessions }) => {
         const t = trendPct(rms)
         const last = rms[rms.length - 1]
         return (
@@ -73,7 +82,11 @@ export default function ExercisesTab({
                 <span className="block truncate text-body font-semibold">{e.name}</span>
                 <span className="tnum block text-footnote text-ink-2">
                   {sessions} {sessions === 1 ? 'sesión' : 'sesiones'}
-                  {last !== undefined ? ` · 1RM ${formatNumber(last, 1)} ${e.unit}` : ''}
+                  {last !== undefined
+                    ? byReps
+                      ? ` · máx. ${formatNumber(last, 0)} ${e.metric === 'segundos' ? 's' : 'reps'}`
+                      : ` · 1RM ${formatNumber(last, 1)} ${e.unit}`
+                    : ''}
                   {e.unilateral ? ' · Izq' : ''}
                 </span>
               </span>

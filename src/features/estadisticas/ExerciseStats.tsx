@@ -5,6 +5,7 @@ import { capitalize, longDate } from '@/domain/dates'
 import {
   exerciseSessions,
   isStagnant,
+  measuredByReps,
   recordsTable,
   type ExerciseInfo,
   type SessionData,
@@ -31,6 +32,14 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
   const u = exercise.unit
   const fmtW = (v: number) => `${formatNumber(v, 1)} ${u}`
   const sides = exercise.unilateral ? SIDES : null
+  const byReps = measuredByReps(exercise)
+  const secs = exercise.metric === 'segundos'
+  const repUnit = secs ? 's' : 'reps'
+  const fmtR = (v: number) => `${formatNumber(v, 0)} ${repUnit}`
+  const fmtSet = (w: number, r: number) =>
+    w > 0 ? `${formatNumber(w, 2)} ${u} × ${r}${secs ? ' s' : ''}` : fmtR(r)
+  // La descarga no cuenta para el estancamiento
+  const regular = allSessions.filter((x) => !x.deload)
 
   // Combina métricas por fecha (una o dos series)
   const merge = (pick: (m: SessionMetrics) => number | null) => {
@@ -52,10 +61,13 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
 
   const rmData = merge((m) => (m.best1rm === null ? null : Math.round(m.best1rm * 10) / 10))
   const maxData = merge((m) => m.maxWeight)
+  const repsData = merge((m) => m.maxReps)
   const volMetrics = exerciseSessions(sessions, exercise.id)
-  const stagnant = sides
-    ? sides.some((s) => isStagnant(exerciseSessions(allSessions, exercise.id, s.side)))
-    : isStagnant(exerciseSessions(allSessions, exercise.id))
+  const stagnant =
+    !byReps &&
+    (sides
+      ? sides.some((s) => isStagnant(exerciseSessions(regular, exercise.id, s.side)))
+      : isStagnant(exerciseSessions(regular, exercise.id)))
   const tables = sides
     ? sides.map((s) => ({
         title: `Récords · ${s.name}`,
@@ -63,7 +75,7 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
       }))
     : [{ title: 'Récords', t: recordsTable(allSessions, exercise.id) }]
 
-  if (rmData.length === 0 && tables.every((x) => !x.t.maxWeight))
+  if (repsData.length === 0 && tables.every((x) => !x.t.maxReps))
     return (
       <p className="rounded-card bg-card px-4 py-4 text-subhead text-ink-2">
         Sin series en este periodo.
@@ -82,7 +94,17 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
         </div>
       )}
 
-      {rmData.length > 0 && (
+      {byReps && repsData.length > 0 && (
+        <LinesCard
+          title={secs ? 'Máximo de segundos' : 'Máximo de reps'}
+          note={`Mejor serie de cada sesión, en ${secs ? 'segundos' : 'repeticiones'}`}
+          data={repsData}
+          series={named(secs ? 'Segundos' : 'Reps')}
+          format={fmtR}
+        />
+      )}
+
+      {!byReps && rmData.length > 0 && (
         <>
           <LinesCard
             title="1RM estimado"
@@ -116,9 +138,7 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
                   <li key={m.workoutId} className="tnum flex justify-between text-subhead">
                     <span className="text-ink-2">{capitalize(longDate(m.date))}</span>
                     <span className="font-semibold">
-                      {m.bestSet
-                        ? `${formatNumber(m.bestSet.weight, 2)} ${u} × ${m.bestSet.reps}`
-                        : '—'}
+                      {m.bestSet ? fmtSet(m.bestSet.weight, m.bestSet.reps) : '—'}
                     </span>
                   </li>
                 ))}
@@ -133,8 +153,14 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
             <Trophy size={17} className="text-accent-ink" aria-hidden /> {title}
           </h2>
           <dl className="grid grid-cols-3 gap-2 border-b border-sep pb-3">
+            {byReps && (
+              <Rec
+                label={secs ? 'Más segundos' : 'Más reps'}
+                value={t.maxReps ? fmtR(t.maxReps.value) : '—'}
+              />
+            )}
             <Rec label="Peso máximo" value={t.maxWeight ? fmtW(t.maxWeight.value) : '—'} />
-            <Rec label="Mejor 1RM" value={t.best1rm ? fmtW(t.best1rm.value) : '—'} />
+            {!byReps && <Rec label="Mejor 1RM" value={t.best1rm ? fmtW(t.best1rm.value) : '—'} />}
             <Rec
               label="Volumen sesión"
               value={t.maxVolume ? `${formatNumber(t.maxVolume.value, 0)} ${u}` : '—'}
@@ -143,7 +169,7 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
           {t.repsByWeight.length > 0 && (
             <table className="mt-2 w-full text-subhead">
               <caption className="mb-1 text-left text-footnote text-ink-2">
-                Más reps con cada peso
+                {secs ? 'Más segundos con cada peso' : 'Más reps con cada peso'}
               </caption>
               <tbody className="tnum">
                 {t.repsByWeight.slice(0, 8).map((r) => (
@@ -151,7 +177,7 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
                     <td className="py-0.5">
                       {formatNumber(r.weight, 2)} {u}
                     </td>
-                    <td className="py-0.5 text-right font-semibold">{r.reps} reps</td>
+                    <td className="py-0.5 text-right font-semibold">{fmtR(r.reps)}</td>
                   </tr>
                 ))}
               </tbody>

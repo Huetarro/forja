@@ -26,6 +26,9 @@ import {
 } from '@/db/routines'
 import { relativeDays, todayLocal } from '@/domain/dates'
 import { setsSummary } from '@/domain/setTypes'
+import { planLine, techniqueChips } from '@/domain/techniques'
+import { metricOf } from '@/lib/exerciseMeta'
+import { TechniqueChips } from './TechniqueChips'
 import { supersetPosition } from '@/domain/supersets'
 import { cn } from '@/lib/cn'
 import { confirm, toast } from '@/stores/ui'
@@ -173,6 +176,10 @@ export default function RoutineDetailPage() {
                       {setsSummary(it.sets)}
                     </span>
                   </div>
+                  <PlanInfo
+                    line={planLine(it, metricOf(ex), pos === 'end')}
+                    chips={techniqueChips(it)}
+                  />
                   {it.notes && <p className="mt-0.5 text-footnote text-ink-2">{it.notes}</p>}
                 </div>
               </li>
@@ -234,5 +241,16 @@ function MenuRow({
       {icon}
       {children}
     </button>
+  )
+}
+
+/** "6-10 reps · desc. 2:30" y chips de técnica. */
+function PlanInfo({ line, chips }: { line: string; chips: ReturnType<typeof techniqueChips> }) {
+  if (!line && chips.length === 0) return null
+  return (
+    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+      {line && <span className="tnum mr-1 text-footnote text-ink-2">{line}</span>}
+      <TechniqueChips chips={chips} />
+    </div>
   )
 }

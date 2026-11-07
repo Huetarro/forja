@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link2, Minus, Plus, Trash2, Unlink } from 'lucide-react'
-import type { Exercise, RoutineExercise, SetType } from '@/db/schema'
+import type { Exercise, RoutineExercise } from '@/db/schema'
 import type { SupersetPosition } from '@/domain/supersets'
 import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
 import { cn } from '@/lib/cn'
+import { metricOf } from '@/lib/exerciseMeta'
+import { RoutinePlanFields, type PlanPatch } from './RoutinePlanFields'
 
 interface Props {
   item: RoutineExercise
@@ -12,7 +14,7 @@ interface Props {
   position: SupersetPosition
   linkedWithNext: boolean
   isLast: boolean
-  onSetsChange: (sets: SetType[]) => void
+  onChange: (patch: PlanPatch) => void
   onNotesChange: (notes: string) => void
   onToggleSuperset: () => void
   onRemove: () => void
@@ -26,13 +28,14 @@ export function RoutineExerciseCard({
   position,
   linkedWithNext,
   isLast,
-  onSetsChange,
+  onChange,
   onNotesChange,
   onToggleSuperset,
   onRemove,
 }: Props) {
   const sets = item.sets
   let normalCount = 0
+  const setExtrasLen = (n: number) => (item.extras ? { extras: item.extras.slice(0, n) } : {})
 
   return (
     <div className={cn('relative', position !== 'none' && position !== 'end' && 'pb-0')}>
@@ -72,7 +75,9 @@ export function RoutineExerciseCard({
                 <button
                   type="button"
                   key={i}
-                  onClick={() => onSetsChange(sets.map((s, k) => (k === i ? nextSetType(s) : s)))}
+                  onClick={() =>
+                    onChange({ sets: sets.map((s, k) => (k === i ? nextSetType(s) : s)) })
+                  }
                   aria-label={`Serie ${i + 1}: ${SET_TYPE_LABEL[t]}. Toca para cambiar`}
                   className={cn(
                     'tnum grid size-10 place-items-center rounded-full font-bold transition-colors',
@@ -88,15 +93,27 @@ export function RoutineExerciseCard({
               <StepButton
                 label="Quitar serie"
                 disabled={sets.length <= 1}
-                onClick={() => onSetsChange(sets.slice(0, -1))}
+                onClick={() =>
+                  onChange({ sets: sets.slice(0, -1), ...setExtrasLen(sets.length - 1) })
+                }
               >
                 <Minus size={18} />
               </StepButton>
-              <StepButton label="Añadir serie" onClick={() => onSetsChange([...sets, 'normal'])}>
+              <StepButton
+                label="Añadir serie"
+                onClick={() => onChange({ sets: [...sets, 'normal'] })}
+              >
                 <Plus size={18} />
               </StepButton>
             </div>
           </div>
+
+          <RoutinePlanFields
+            item={item}
+            metric={metricOf(exercise)}
+            position={position}
+            onChange={onChange}
+          />
 
           <input
             key={item.id}

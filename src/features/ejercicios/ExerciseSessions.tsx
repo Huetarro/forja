@@ -7,6 +7,7 @@ import { useExerciseSessions } from '@/db/workouts'
 import { capitalize, longDate } from '@/domain/dates'
 import { bestOneRm } from '@/domain/oneRm'
 import { formatNumber } from '@/domain/units'
+import { formatSetValue, metricOf } from '@/lib/exerciseMeta'
 import { isEffectiveSet } from '@/domain/volume'
 
 /** Historial de sesiones de un ejercicio (más reciente primero). */
@@ -49,7 +50,7 @@ export function ExerciseSessions({ exercise }: { exercise: Exercise }) {
                     : eff
                         .map(
                           (s) =>
-                            `${s.side ? (s.side === 'izq' ? 'I ' : 'D ') : ''}${formatNumber(s.weight ?? 0, 2)}×${s.reps ?? 0}`,
+                            `${s.side ? (s.side === 'izq' ? 'I ' : 'D ') : ''}${formatSetValue(s.weight, s.reps, metricOf(exercise))}`,
                         )
                         .join('  ·  ')}
                 </div>

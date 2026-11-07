@@ -164,7 +164,12 @@ export async function addExercisesToRoutine(
 
 export async function updateRoutineExercise(
   id: string,
-  patch: Partial<Pick<RoutineExercise, 'notes' | 'sets' | 'supersetId'>>,
+  patch: Partial<
+    Pick<
+      RoutineExercise,
+      'notes' | 'sets' | 'supersetId' | 'extras' | 'target' | 'restSec' | 'negative' | 'pause'
+    >
+  >,
 ): Promise<void> {
   await db.routineExercises.update(id, patch)
 }

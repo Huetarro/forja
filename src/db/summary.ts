@@ -35,6 +35,7 @@ export async function computeSummary(workoutId: string): Promise<SummaryData | n
         exerciseId: we.exerciseId,
         name: ex?.name ?? 'Ejercicio',
         unit: ex?.unit ?? ('kg' as const),
+        seconds: ex?.metric === 'segundos',
         sets: b.sets.filter((s) => s.workoutExerciseId === we.id),
         history: prev.map((p) => p.sets),
       }

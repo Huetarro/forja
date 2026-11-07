@@ -4,6 +4,9 @@ import { parseLocalDate, todayLocal } from '@/domain/dates'
 import { byOrder, nextOrder } from '@/domain/ordering'
 import { normalize } from '@/domain/supersets'
 import type { StructureItem } from '@/domain/routineDiff'
+import type { HistorySession } from '@/domain/progressionRules'
+import { DEFAULT_EXTRAS, hasExtras } from '@/domain/setTypes'
+import { plannedSets, plannedTypes, type PlannedSet } from '@/domain/workoutPlan'
 import { activeSeconds, isPaused } from '@/domain/timer'
 import { db, newId } from './db'
 import type { Drop, Exercise, SetType, Side, Workout, WorkoutExercise, WorkoutSet } from './schema'
@@ -73,20 +76,20 @@ export async function previousSessions(
   )
 }
 
-/** Historial (sesiones anteriores) de cada ejercicio de un entreno. */
+/** Historial (sesiones anteriores, la más reciente primero) de cada ejercicio de un entreno. */
 export function useHistoryFor(
   workout: Workout | undefined,
   exerciseIds: string[],
-): Map<string, WorkoutSet[][]> | undefined {
+): Map<string, Array<HistorySession<WorkoutSet>>> | undefined {
   const key = exerciseIds.join(',')
   return useLiveQuery(async () => {
-    const m = new Map<string, WorkoutSet[][]>()
+    const m = new Map<string, Array<HistorySession<WorkoutSet>>>()
     if (!workout) return m
     for (const exId of new Set(exerciseIds)) {
       const prev = await previousSessions(exId, workout.id, workout.startedAt)
       m.set(
         exId,
-        prev.map((p) => p.sets),
+        prev.map((p) => ({ sets: p.sets, deload: p.workout.deload === true })),
       )
     }
     return m
@@ -95,14 +98,17 @@ export function useHistoryFor(
 
 /* ---------- Empezar ---------- */
 
+const emptyDrops = (n: number): Drop[] =>
+  Array.from({ length: n }, () => ({ weight: null, reps: null }))
+
 function setsFor(
   workoutId: string,
   weId: string,
-  types: readonly SetType[],
+  planned: readonly PlannedSet[],
   unilateral: boolean,
 ): WorkoutSet[] {
   const out: WorkoutSet[] = []
-  types.forEach((type, order) => {
+  planned.forEach(({ type, extras }, order) => {
     const sides: Array<Side | undefined> = unilateral ? ['izq', 'der'] : [undefined]
     for (const side of sides) {
       out.push({
@@ -115,7 +121,7 @@ function setsFor(
         reps: null,
         completed: false,
         side,
-        drops: [],
+        drops: hasExtras(type) ? emptyDrops(extras) : [],
       })
     }
   })
@@ -125,7 +131,7 @@ function setsFor(
 /** Crea un entreno a partir de una rutina. Devuelve su id. */
 export async function startWorkout(
   routineId: string,
-  opts: { status?: Workout['status']; date?: string; durationSec?: number } = {},
+  opts: { status?: Workout['status']; date?: string; durationSec?: number; deload?: boolean } = {},
 ): Promise<string> {
   return db.transaction(
     'rw',
@@ -136,6 +142,7 @@ export async function startWorkout(
       db.workouts,
       db.workoutExercises,
       db.workoutSets,
+      db.settings,
     ],
     async () => {
       const routine = await db.routines.get(routineId)
@@ -143,6 +150,7 @@ export async function startWorkout(
       const items = byOrder(
         await db.routineExercises.where('routineId').equals(routineId).toArray(),
       )
+      const deload = opts.deload ?? (await db.settings.get('app'))?.deload?.active === true
       const id = newId()
       const finished = opts.status === 'terminado'
       // Un entreno pasado se fecha a mediodía de su día para ordenarlo bien en el historial
@@ -159,6 +167,7 @@ export async function startWorkout(
         activeSeconds: opts.durationSec ?? 0,
         status: opts.status ?? 'en_curso',
         notes: '',
+        ...(deload ? { deload: true } : {}),
       })
       const supersetMap = new Map<string, string>()
       for (const [order, it] of items.entries()) {
@@ -176,8 +185,16 @@ export async function startWorkout(
           order,
           notes: it.notes,
           supersetId,
+          // Copia del plan: el historial no cambia si luego se edita la rutina
+          target: it.target,
+          restSec: it.restSec,
+          // En la descarga no hay técnicas
+          negative: deload ? undefined : it.negative,
+          pause: deload ? undefined : it.pause,
         })
-        await db.workoutSets.bulkAdd(setsFor(id, weId, it.sets, ex?.unilateral ?? false))
+        await db.workoutSets.bulkAdd(
+          setsFor(id, weId, plannedSets(it, deload), ex?.unilateral ?? false),
+        )
       }
       return id
     },
@@ -217,7 +234,14 @@ export async function setSetType(set: WorkoutSet, type: SetType): Promise<void> 
     const targets = siblings.filter((s) => s.order === set.order)
     await Promise.all(
       targets.map((s) =>
-        db.workoutSets.update(s.id, { type, drops: type === 'dropset' ? s.drops : [] }),
+        db.workoutSets.update(s.id, {
+          type,
+          drops: hasExtras(type)
+            ? s.drops.length
+              ? s.drops
+              : emptyDrops(DEFAULT_EXTRAS[type] ?? 1)
+            : [],
+        }),
       ),
     )
   })
@@ -243,7 +267,12 @@ export async function addSet(weId: string, unilateral: boolean, copyLast: boolea
         reps: copyLast ? (src?.reps ?? null) : null,
         completed: false,
         side,
-        drops: copyLast && src?.type === 'dropset' ? src.drops.map((d) => ({ ...d })) : [],
+        drops:
+          src && hasExtras(src.type)
+            ? copyLast
+              ? src.drops.map((d) => ({ ...d }))
+              : emptyDrops(src.drops.length || (DEFAULT_EXTRAS[src.type] ?? 1))
+            : [],
       })
     }
   })
@@ -275,7 +304,12 @@ export async function addExercisesToWorkout(
       const weId = newId()
       await db.workoutExercises.add({ id: weId, workoutId, exerciseId, order: order++, notes: '' })
       await db.workoutSets.bulkAdd(
-        setsFor(workoutId, weId, ['normal', 'normal', 'normal'], ex?.unilateral ?? false),
+        setsFor(
+          workoutId,
+          weId,
+          plannedSets({ sets: ['normal', 'normal', 'normal'] }),
+          ex?.unilateral ?? false,
+        ),
       )
     }
   })
@@ -328,10 +362,13 @@ export function workoutStructure(b: WorkoutBundle): StructureItem[] {
   return b.exercises.map((we) => {
     const sets = b.sets.filter((s) => s.workoutExerciseId === we.id)
     const firstSide = sets.find((s) => s.side)?.side
-    const types = sortSets(sets)
-      .filter((s) => !firstSide || s.side === firstSide)
-      .map((s) => s.type)
-    return { exerciseId: we.exerciseId, sets: types, supersetId: we.supersetId }
+    const mine = sortSets(sets).filter((s) => !firstSide || s.side === firstSide)
+    return {
+      exerciseId: we.exerciseId,
+      sets: mine.map((s) => s.type),
+      extras: mine.map((s) => (hasExtras(s.type) ? s.drops.length : 0)),
+      supersetId: we.supersetId,
+    }
   })
 }
 
@@ -339,7 +376,7 @@ export async function routineStructure(routineId: string): Promise<StructureItem
   const items = byOrder(await db.routineExercises.where('routineId').equals(routineId).toArray())
   return items.map((it) => ({
     exerciseId: it.exerciseId,
-    sets: it.sets,
+    sets: plannedTypes(it),
     supersetId: it.supersetId,
   }))
 }
@@ -349,19 +386,32 @@ export async function updateRoutineFromWorkout(b: WorkoutBundle): Promise<void> 
   const routineId = b.workout.routineId
   await db.transaction('rw', db.routineExercises, async () => {
     const old = await db.routineExercises.where('routineId').equals(routineId).toArray()
-    const notesByExercise = new Map(old.map((o) => [o.exerciseId, o.notes]))
+    const oldByExercise = new Map(old.map((o) => [o.exerciseId, o]))
     await db.routineExercises.bulkDelete(old.map((o) => o.id))
     const struct = workoutStructure(b)
     await db.routineExercises.bulkAdd(
-      struct.map((it, order) => ({
-        id: newId(),
-        routineId,
-        exerciseId: it.exerciseId,
-        order,
-        notes: notesByExercise.get(it.exerciseId) ?? '',
-        supersetId: it.supersetId,
-        sets: it.sets.length ? [...it.sets] : ['normal'],
-      })),
+      struct.map((it, order) => {
+        const prev = oldByExercise.get(it.exerciseId)
+        // Con NEG en el ejercicio, las negativas vuelven a ser series normales del plan
+        const sets: SetType[] = it.sets.length
+          ? it.sets.map((t) => (prev?.negative && t === 'negativa' ? 'normal' : t))
+          : ['normal']
+        const extras = [...(it.extras ?? [])]
+        return {
+          id: newId(),
+          routineId,
+          exerciseId: it.exerciseId,
+          order,
+          notes: prev?.notes ?? '',
+          supersetId: it.supersetId,
+          sets,
+          ...(extras.some((n) => n > 0) ? { extras } : {}),
+          target: prev?.target,
+          restSec: prev?.restSec,
+          negative: prev?.negative,
+          pause: prev?.pause,
+        }
+      }),
     )
   })
 }

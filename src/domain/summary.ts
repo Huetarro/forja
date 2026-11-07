@@ -7,6 +7,8 @@ export interface SummaryExerciseInput {
   exerciseId: string
   name: string
   unit: WeightUnit
+  /** v2: segundos en lugar de reps */
+  seconds?: boolean
   sets: readonly SetLike[]
   /** sesiones anteriores del ejercicio */
   history: ReadonlyArray<readonly SetLike[]>
@@ -17,7 +19,7 @@ export interface WorkoutSummary {
   exerciseCount: number
   effectiveSets: number
   volumeKg: number
-  records: Array<SessionRecord & { exerciseName: string; unit: WeightUnit }>
+  records: Array<SessionRecord & { exerciseName: string; unit: WeightUnit; seconds?: boolean }>
   durationPct: number | null
   volumePct: number | null
 }
@@ -46,6 +48,7 @@ export function summarizeWorkout(
         ...r,
         exerciseName: it.name,
         unit: it.unit,
+        seconds: it.seconds,
       })),
     ),
     durationPct: previous ? percentChange(durationSec, previous.durationSec) : null,

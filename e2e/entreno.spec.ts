@@ -32,7 +32,7 @@ test('entreno completo con dropset, negativa, unilateral y superserie; cierre y 
     .click() // → Calentamiento
   await press.getByRole('button', { name: /Tipo: Calentamiento/ }).click() // → Dropset
   await expect(press.getByRole('button', { name: /Tipo: Dropset/ })).toBeVisible()
-  await press.getByRole('button', { name: 'bajada' }).click()
+  // La primera bajada aparece ya desplegada
   await press.getByLabel('Peso bajada 1').fill('60')
   await press.getByLabel('Reps bajada 1').fill('6')
   await press.getByLabel('Peso serie 2', { exact: true }).fill('80')
@@ -123,6 +123,13 @@ test('cerrar y recuperar un entreno en curso', async ({ page }) => {
 test('anterior, prerrelleno, "Sube peso" y récord en la segunda sesión', async ({ page }) => {
   await onboard(page)
   await createSampleRoutine(page)
+  // Objetivo 6-8 reps en Press banca: "Sube peso" si todas las series llegan a 8
+  await page.getByRole('button', { name: 'Editar' }).click()
+  await page.getByLabel('Objetivo mínimo').first().fill('6')
+  await page.getByLabel('Objetivo máximo').first().fill('8')
+  await page.getByLabel('Objetivo máximo').first().blur()
+  await page.getByRole('button', { name: 'OK' }).click()
+  await expect(page.getByText('6-8 reps').first()).toBeVisible()
 
   // Sesión 1: Press banca 3×(80×8) con RIR 2
   await page.getByRole('button', { name: 'Empezar entreno' }).click()

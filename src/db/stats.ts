@@ -4,6 +4,7 @@ import { db } from './db'
 import { allSupplementsTaken } from './days'
 import type { DayLog, Exercise, Run, Supplement } from './schema'
 import { sortSets } from './workouts'
+import { isNoLoad } from '@/lib/exerciseMeta'
 
 export interface TrainingData {
   sessions: SessionData[]
@@ -38,6 +39,7 @@ export function useTrainingData(): TrainingData | undefined {
       activeSeconds: w.activeSeconds,
       avgHeartRate: w.avgHeartRate,
       calories: w.calories,
+      deload: w.deload === true,
       exercises: (wesByWorkout.get(w.id) ?? [])
         .sort((a, b) => a.order - b.order)
         .map((we) => ({ exerciseId: we.exerciseId, sets: sortSets(setsByWe.get(we.id) ?? []) })),
@@ -56,6 +58,8 @@ export function useTrainingData(): TrainingData | undefined {
           primaryMuscle: e.primaryMuscle,
           secondaryMuscles: e.secondaryMuscles,
           unilateral: e.unilateral,
+          metric: e.metric,
+          noLoad: isNoLoad(e),
         },
       ]),
     )

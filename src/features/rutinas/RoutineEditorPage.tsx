@@ -122,7 +122,7 @@ export default function RoutineEditorPage() {
                 position={supersetPosition(items, i)}
                 linkedWithNext={isLinkedWithNext(items, i)}
                 isLast={i === items.length - 1}
-                onSetsChange={(sets) => void updateRoutineExercise(it.id, { sets })}
+                onChange={(patch) => void updateRoutineExercise(it.id, patch)}
                 onNotesChange={(notes) => void updateRoutineExercise(it.id, { notes })}
                 onToggleSuperset={() => toggleSuperset(i)}
                 onRemove={() => void remove(i)}

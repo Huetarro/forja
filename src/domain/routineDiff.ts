@@ -3,6 +3,8 @@ import type { SetType } from '@/db/schema'
 export interface StructureItem {
   exerciseId: string
   sets: readonly SetType[]
+  /** bajadas o mini-series de cada serie (solo informativo, no cuenta como cambio) */
+  extras?: readonly number[]
   supersetId?: string
 }
 

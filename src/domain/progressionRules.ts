@@ -1,55 +1,57 @@
 /**
- * REGLAS DE "SUBE PESO" — único archivo para ajustarlas.
+ * REGLA DE "SUBE PESO" — único archivo para ajustarla (v2, sustituye a la anterior).
  *
- * El distintivo aparece (sin decir cuántos kg) si se cumple alguna:
- *  A) En las 2 últimas sesiones del ejercicio se usó el mismo peso (serie a serie) y en la
- *     última se igualaron o superaron las reps de la anterior en todas las series efectivas.
- *  B) En la última sesión, todas las series efectivas tienen RIR 2 o más.
- * En unilaterales, cada lado debe cumplirlo.
+ * El aviso aparece (sin decir cuántos kg) cuando en la última sesión del ejercicio que no
+ * fue de descarga, TODAS las series efectivas llegaron al tope del rango objetivo
+ * (reps ≥ máximo; en ejercicios por tiempo, segundos ≥ máximo). En unilaterales, cada lado.
+ * Sin rango objetivo no hay aviso. En ejercicios sin kg, el aviso dice "Tope alcanzado".
  */
-import type { Side } from '@/db/schema'
+import type { Side, TargetRange } from '@/db/schema'
 import { isEffectiveSet, type SetLike } from './volume'
 
-export const PROGRESSION_RULES = {
-  /** Regla A activada */
-  sameWeightRepsRule: true,
-  /** Regla B: RIR mínimo en todas las series efectivas */
-  minRirAllSets: 2,
-} as const
-
-type Eff = SetLike & { weight: number; reps: number }
-
-function effective(sets: readonly SetLike[], side?: Side): Eff[] {
-  return sets.filter((s): s is Eff => isEffectiveSet(s) && (side ? s.side === side : true))
+/** Una sesión anterior del ejercicio. */
+export interface HistorySession<S extends SetLike = SetLike> {
+  sets: readonly S[]
+  /** sesión de la semana de descarga: no cuenta para "Sube peso" ni para el estancamiento */
+  deload?: boolean
 }
 
-function ruleA(last: Eff[], prev: Eff[]): boolean {
-  if (!PROGRESSION_RULES.sameWeightRepsRule) return false
-  if (last.length === 0 || last.length !== prev.length) return false
-  return last.every((s, i) => {
-    const p = prev[i]
-    return p !== undefined && s.weight === p.weight && s.reps >= p.reps
-  })
+export type ProgressionBadge = 'sube_peso' | 'tope' | null
+
+export const PROGRESSION_LABEL: Record<Exclude<ProgressionBadge, null>, string> = {
+  sube_peso: 'Sube peso',
+  tope: 'Tope alcanzado',
 }
 
-function ruleB(last: Eff[]): boolean {
-  return (
-    last.length > 0 &&
-    last.every((s) => s.rir !== undefined && s.rir >= PROGRESSION_RULES.minRirAllSets)
-  )
+/** Última sesión que no fue de descarga (la lista va de la más reciente a la más antigua). */
+export function lastRegularSession<S extends SetLike>(
+  sessions: ReadonlyArray<HistorySession<S>>,
+): HistorySession<S> | undefined {
+  return sessions.find((s) => !s.deload)
+}
+
+function topReached(sets: readonly SetLike[], target: TargetRange, side?: Side): boolean {
+  const eff = sets.filter((s) => isEffectiveSet(s) && (side ? s.side === side : true))
+  return eff.length > 0 && eff.every((s) => (s.reps ?? 0) >= target.max)
 }
 
 /**
- * @param sessions sesiones anteriores del ejercicio, la más reciente primero.
+ * @param sessions sesiones anteriores, la más reciente primero.
+ * @param target rango objetivo del ejercicio en la rutina.
+ * @param noLoad el ejercicio se hace sin kg (peso corporal o por tiempo).
  */
-export function shouldSuggestIncrease(sessions: ReadonlyArray<readonly SetLike[]>): boolean {
-  const last = sessions[0]
-  if (!last) return false
-  const prev = sessions[1] ?? []
-  const sides: Array<Side | undefined> = last.some((s) => s.side) ? ['izq', 'der'] : [undefined]
-  return sides.every((side) => {
-    const l = effective(last, side)
-    const p = effective(prev, side)
-    return ruleA(l, p) || ruleB(l)
-  })
+export function progressionBadge(
+  sessions: ReadonlyArray<HistorySession>,
+  target: TargetRange | undefined,
+  noLoad = false,
+): ProgressionBadge {
+  if (!target) return null
+  const last = lastRegularSession(sessions)
+  if (!last) return null
+  const sides: Array<Side | undefined> = last.sets.some((s) => s.side)
+    ? ['izq', 'der']
+    : [undefined]
+  if (!sides.every((side) => topReached(last.sets, target, side))) return null
+  const usedLoad = last.sets.some((s) => isEffectiveSet(s) && s.weight > 0)
+  return noLoad && !usedLoad ? 'tope' : 'sube_peso'
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { bestOneRm, epley, percentTable } from './oneRm'
-import { shouldSuggestIncrease } from './progressionRules'
+import { progressionBadge } from './progressionRules'
 import { bestsFromSessions, liveSetRecords, sessionRecords, setRecords } from './records'
 import { percentChange, structureChanged } from './routineDiff'
 import { effectiveSetCount, volume, volumeKg, type SetLike } from './volume'
@@ -106,42 +106,41 @@ describe('récords', () => {
   })
 })
 
-describe('sugerencia "Sube peso"', () => {
-  it('mismo peso dos sesiones e igualadas o superadas las reps', () => {
+describe('"Sube peso" (v2: tope del rango)', () => {
+  const t = { min: 6, max: 10 }
+  const sess = (sets: SetLike[], deload = false) => ({ sets, deload })
+  it('todas las series efectivas llegan al tope', () => {
+    expect(progressionBadge([sess([s(80, 10), s(80, 11)])], t)).toBe('sube_peso')
+  })
+  it('no si alguna se queda corta', () => {
+    expect(progressionBadge([sess([s(80, 10), s(80, 9)])], t)).toBeNull()
+  })
+  it('ignora calentamientos y series sin marcar', () => {
     expect(
-      shouldSuggestIncrease([
-        [s(80, 8), s(80, 8)],
-        [s(80, 8), s(80, 7)],
-      ]),
-    ).toBe(true)
+      progressionBadge(
+        [sess([s(40, 5, { type: 'calentamiento' }), s(80, 10), s(80, 4, { completed: false })])],
+        t,
+      ),
+    ).toBe('sube_peso')
   })
-  it('no si bajan las reps', () => {
-    expect(
-      shouldSuggestIncrease([
-        [s(80, 8), s(80, 6)],
-        [s(80, 8), s(80, 7)],
-      ]),
-    ).toBe(false)
+  it('usa la última sesión que no es de descarga', () => {
+    expect(progressionBadge([sess([s(40, 6)], true), sess([s(80, 10)])], t)).toBe('sube_peso')
+    expect(progressionBadge([sess([s(40, 12)], true), sess([s(80, 8)])], t)).toBeNull()
   })
-  it('no si cambia el peso', () => {
-    expect(shouldSuggestIncrease([[s(82.5, 8)], [s(80, 8)]])).toBe(false)
+  it('sin rango objetivo o sin historial no hay aviso', () => {
+    expect(progressionBadge([sess([s(80, 10)])], undefined)).toBeNull()
+    expect(progressionBadge([], t)).toBeNull()
   })
-  it('RIR 2 o más en todas las series de la última sesión', () => {
-    expect(shouldSuggestIncrease([[s(80, 8, { rir: 2 }), s(80, 8, { rir: 3 })]])).toBe(true)
-    expect(shouldSuggestIncrease([[s(80, 8, { rir: 2 }), s(80, 8, { rir: 1 })]])).toBe(false)
-    expect(shouldSuggestIncrease([[s(80, 8, { rir: 2 }), s(80, 8)]])).toBe(false)
+  it('unilateral: los dos lados deben llegar', () => {
+    const l = [s(20, 10, { side: 'izq' }), s(20, 9, { side: 'der' })]
+    expect(progressionBadge([sess(l)], t)).toBeNull()
+    const ok = [s(20, 10, { side: 'izq' }), s(20, 10, { side: 'der' })]
+    expect(progressionBadge([sess(ok)], t)).toBe('sube_peso')
   })
-  it('ignora el calentamiento', () => {
-    expect(
-      shouldSuggestIncrease([[s(40, 10, { type: 'calentamiento' }), s(80, 8)], [s(80, 8)]]),
-    ).toBe(true)
-  })
-  it('sin historial no sugiere', () => {
-    expect(shouldSuggestIncrease([])).toBe(false)
-  })
-  it('unilateral: los dos lados deben cumplirlo', () => {
-    const last = [s(20, 10, { side: 'izq', rir: 2 }), s(20, 10, { side: 'der', rir: 1 })]
-    expect(shouldSuggestIncrease([last])).toBe(false)
+  it('ejercicios sin kg o por tiempo: "Tope alcanzado"', () => {
+    expect(progressionBadge([sess([s(0, 45), s(0, 46)])], { min: 30, max: 45 }, true)).toBe('tope')
+    // Si se usó lastre, sí es "Sube peso"
+    expect(progressionBadge([sess([s(5, 45)])], { min: 30, max: 45 }, true)).toBe('sube_peso')
   })
 })
 

@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { ArrowUpDown, Plus } from 'lucide-react'
+import { ArrowUpDown, Info, Plus } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Button } from '@/components/ui/Button'
 import { Celebration } from '@/components/ui/Celebration'
 import { SortableList } from '@/components/ui/SortableList'
 import { newId } from '@/db/db'
-import type { Exercise, WorkoutSet } from '@/db/schema'
+import type { Exercise, WorkoutExercise, WorkoutSet } from '@/db/schema'
 import { useSettings } from '@/db/settings'
 import {
   addExercisesToWorkout,
@@ -17,6 +17,7 @@ import {
 } from '@/db/workouts'
 import { moveItem } from '@/domain/ordering'
 import { RECORD_LABEL, type RecordKind } from '@/domain/records'
+import { RIR_NOTE } from '@/domain/techniques'
 import {
   isLinkedWithNext,
   linkWithNext,
@@ -50,14 +51,23 @@ export function WorkoutExercises({ bundle, exercises, mode }: Props) {
 
   if (!history) return null
 
-  const onSetCompleted = (set: WorkoutSet, records: RecordKind[], exercise?: Exercise) => {
+  const onSetCompleted = (
+    set: WorkoutSet,
+    records: RecordKind[],
+    i: number,
+    we: WorkoutExercise,
+    exercise?: Exercise,
+  ) => {
     if (mode !== 'live') return
     if (records.length) {
       setCelebrate((c) => c + 1)
       toast(`¡Récord! ${records.map((r) => RECORD_LABEL[r]).join(' · ')}`)
     }
     if (settings?.restTimer.visible && set.type !== 'calentamiento') {
-      startRest(exercise?.restSeconds ?? settings.restTimer.seconds)
+      // En superseries se pasa al siguiente ejercicio sin descanso; se descansa tras la pareja
+      const pos = supersetPosition(items, i)
+      if (pos === 'start' || pos === 'middle') return
+      startRest(we.restSec ?? exercise?.restSeconds ?? settings.restTimer.seconds)
     }
   }
 
@@ -83,6 +93,12 @@ export function WorkoutExercises({ bundle, exercises, mode }: Props) {
 
   return (
     <>
+      {mode === 'live' && !bundle.workout.deload && (
+        <p className="mb-3 flex items-start gap-1.5 px-1 text-footnote text-ink-2">
+          <Info size={15} className="mt-0.5 shrink-0" aria-hidden />
+          {RIR_NOTE}
+        </p>
+      )}
       <div className="space-y-4">
         {items.map((we, i) => {
           const ex = exercises.get(we.exerciseId)
@@ -94,9 +110,10 @@ export function WorkoutExercises({ bundle, exercises, mode }: Props) {
               sets={bundle.sets.filter((s) => s.workoutExerciseId === we.id)}
               history={history.get(we.exerciseId) ?? []}
               position={supersetPosition(items, i)}
+              deload={bundle.workout.deload === true}
               linkedWithNext={isLinkedWithNext(items, i)}
               isLast={i === items.length - 1}
-              onSetCompleted={(s, r) => onSetCompleted(s, r, ex)}
+              onSetCompleted={(s, r) => onSetCompleted(s, r, i, we, ex)}
               onDeleteSet={(s) => void onDeleteSet(s)}
               onToggleSuperset={() => toggleSuperset(i)}
               onRemove={() => void remove(i)}

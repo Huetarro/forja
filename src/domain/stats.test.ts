@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  measuredByReps,
   exerciseSessions,
   habitStats,
   isStagnant,
@@ -161,6 +162,7 @@ describe('estancamiento', () => {
     workoutId: date,
     best1rm: rm,
     maxWeight: 0,
+    maxReps: 8,
     volume: 0,
     bestSet: null,
   })
@@ -256,5 +258,50 @@ describe('récords recientes', () => {
     const r = recentRecords(l, { from: '2026-10-15', to: '2026-11-30' })
     expect(r.every((x) => x.date === '2026-11-01')).toBe(true)
     expect(r.map((x) => x.kind)).toContain('peso')
+  })
+})
+
+describe('ejercicios sin kg o por tiempo (v2)', () => {
+  it('máximo de reps/segundos por sesión y en récords', () => {
+    const sessions = [
+      {
+        workoutId: 'a',
+        date: '2026-11-01',
+        routineId: 'r',
+        activeSeconds: 0,
+        exercises: [
+          {
+            exerciseId: 'plancha',
+            sets: [
+              {
+                type: 'normal' as const,
+                weight: 0,
+                reps: 35,
+                completed: true,
+                side: 'izq' as const,
+              },
+              {
+                type: 'normal' as const,
+                weight: 0,
+                reps: 40,
+                completed: true,
+                side: 'izq' as const,
+              },
+            ],
+          },
+        ],
+      },
+    ]
+    const m = exerciseSessions(sessions, 'plancha', 'izq')
+    expect(m[0]?.maxReps).toBe(40)
+    expect(m[0]?.volume).toBe(0)
+    expect(m[0]?.best1rm).toBeNull()
+    expect(recordsTable(sessions, 'plancha', 'izq').maxReps).toEqual({
+      value: 40,
+      date: '2026-11-01',
+    })
+    expect(measuredByReps({ noLoad: true })).toBe(true)
+    expect(measuredByReps({ metric: 'segundos' })).toBe(true)
+    expect(measuredByReps({})).toBe(false)
   })
 })

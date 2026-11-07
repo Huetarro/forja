@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Plus, Trash2, Trophy, X } from 'lucide-react'
-import type { Drop, WorkoutSet } from '@/db/schema'
+import type { Drop, ExerciseMetric, WorkoutSet } from '@/db/schema'
 import { setDrops, setSetType, updateSet } from '@/db/workouts'
 import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
-import { formatNumber } from '@/domain/units'
+import { RP_REST_NOTE } from '@/domain/techniques'
+import { formatSetValue } from '@/lib/exerciseMeta'
 import { cn } from '@/lib/cn'
 import { toast } from '@/stores/ui'
 import { NumberField } from './NumberField'
@@ -20,7 +21,9 @@ interface Props {
   number: number
   prev?: PrevSet
   isRecord: boolean
-  bodyweight: boolean
+  /** kg opcional (sin kg se guarda 0) */
+  noLoad: boolean
+  metric: ExerciseMetric
   onCompleted: (set: WorkoutSet) => void
   onDelete: (set: WorkoutSet) => void
 }
@@ -28,7 +31,16 @@ interface Props {
 const RIR_OPTIONS = [0, 1, 2, 3, 4, 5] as const
 
 /** Una fila de serie: tipo · anterior · kg · reps · RIR · check. Desliza a la izquierda para borrar. */
-export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, onDelete }: Props) {
+export function SetRow({
+  set,
+  number,
+  prev,
+  isRecord,
+  noLoad,
+  metric,
+  onCompleted,
+  onDelete,
+}: Props) {
   const reduce = useReducedMotion()
   const [rirOpen, setRirOpen] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -45,24 +57,36 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
     }
     const w = typed.current.weight !== undefined ? typed.current.weight : set.weight
     const r = typed.current.reps !== undefined ? typed.current.reps : set.reps
-    const weight = w ?? prev?.weight ?? (bodyweight ? 0 : null)
+    const weight = w ?? (noLoad ? 0 : (prev?.weight ?? null))
     const reps = r ?? prev?.reps ?? null
     if (weight === null || reps === null) {
       setMissing(weight === null ? 'weight' : 'reps')
-      toast(weight === null ? 'Apunta el peso de la serie' : 'Apunta las reps de la serie')
+      toast(
+        weight === null
+          ? 'Apunta el peso de la serie'
+          : metric === 'segundos'
+            ? 'Apunta los segundos de la serie'
+            : 'Apunta las reps de la serie',
+      )
       return
     }
     setMissing(null)
-    const next = { ...set, weight, reps, completed: true }
-    await updateSet(set.id, { weight, reps, completed: true })
+    // Rest-pause: las mini-series sin peso usan el de la serie
+    const drops =
+      set.type === 'restpause'
+        ? set.drops.map((d) => ({ ...d, weight: d.weight ?? weight }))
+        : set.drops
+    const next = { ...set, weight, reps, drops, completed: true }
+    await updateSet(set.id, { weight, reps, drops, completed: true })
     onCompleted(next)
   }
 
   const sideLabel = set.side === 'izq' ? 'Izq' : set.side === 'der' ? 'Der' : null
   const prevText =
     prev && prev.weight !== null && prev.reps !== null
-      ? `${formatNumber(prev.weight, 2)} × ${prev.reps}`
+      ? formatSetValue(prev.weight, prev.reps, metric)
       : '—'
+  const repsName = metric === 'segundos' ? 'Segundos' : 'Reps'
 
   return (
     <div className="relative overflow-hidden">
@@ -122,9 +146,9 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
 
           <NumberField
             decimal
-            label={`Peso serie ${number}${sideLabel ? ` ${sideLabel}` : ''}`}
-            value={set.weight}
-            placeholder={prev?.weight ?? null}
+            label={`Peso serie ${number}${sideLabel ? ` ${sideLabel}` : ''}${noLoad ? ' (opcional)' : ''}`}
+            value={noLoad && set.weight === 0 ? null : set.weight}
+            placeholder={noLoad ? null : (prev?.weight ?? null)}
             invalid={missing === 'weight'}
             onCommit={(weight) => {
               typed.current.weight = weight
@@ -133,7 +157,7 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
             }}
           />
           <NumberField
-            label={`Reps serie ${number}${sideLabel ? ` ${sideLabel}` : ''}`}
+            label={`${repsName} serie ${number}${sideLabel ? ` ${sideLabel}` : ''}`}
             value={set.reps}
             placeholder={prev?.reps ?? null}
             invalid={missing === 'reps'}
@@ -220,9 +244,9 @@ export function SetRow({ set, number, prev, isRecord, bodyweight, onCompleted, o
               </div>
             </Expand>
           )}
-          {set.type === 'dropset' && (
+          {(set.type === 'dropset' || set.type === 'restpause') && (
             <Expand key="drops">
-              <DropsEditor set={set} />
+              <DropsEditor set={set} metric={metric} />
             </Expand>
           )}
         </AnimatePresence>
@@ -246,30 +270,45 @@ function Expand({ children }: { children: React.ReactNode }) {
   )
 }
 
-/** Bajadas de un dropset: peso y reps de cada una, sin límite. */
-function DropsEditor({ set }: { set: WorkoutSet }) {
+/**
+ * Bajadas de un dropset o mini-series de un rest-pause: peso y reps de cada una, sin límite.
+ * Cuentan como 1 serie: no suman volumen ni récords.
+ */
+function DropsEditor({ set, metric }: { set: WorkoutSet; metric: ExerciseMetric }) {
   const drops = set.drops
+  const rp = set.type === 'restpause'
+  const name = rp ? 'Mini-serie' : 'Bajada'
+  const repsName = metric === 'segundos' ? 'Segundos' : 'Reps'
   const save = (next: Drop[]) => void setDrops(set.id, next)
   return (
-    <div className="ml-[50px] space-y-1.5 border-l-2 border-accent/50 pr-3 pb-2.5 pl-3">
+    <div
+      className={cn(
+        'ml-[50px] space-y-1.5 border-l-2 pr-3 pb-2.5 pl-3',
+        rp ? 'border-rp/50' : 'border-accent/50',
+      )}
+    >
+      {rp && <p className="text-footnote text-ink-2">Entre mini-series: {RP_REST_NOTE}</p>}
       {drops.map((d, i) => (
         <div key={i} className="grid grid-cols-[minmax(0,1fr)_68px_54px_36px] items-center gap-1.5">
-          <span className="text-footnote text-ink-2">Bajada {i + 1}</span>
+          <span className="text-footnote text-ink-2">
+            {name} {i + 1}
+          </span>
           <NumberField
             decimal
-            label={`Peso bajada ${i + 1}`}
+            label={`Peso ${name.toLowerCase()} ${i + 1}`}
             value={d.weight}
+            placeholder={rp ? set.weight : null}
             onCommit={(weight) => save(drops.map((x, k) => (k === i ? { ...x, weight } : x)))}
           />
           <NumberField
-            label={`Reps bajada ${i + 1}`}
+            label={`${repsName} ${name.toLowerCase()} ${i + 1}`}
             value={d.reps}
             onCommit={(reps) => save(drops.map((x, k) => (k === i ? { ...x, reps } : x)))}
           />
           <button
             type="button"
             onClick={() => save(drops.filter((_, k) => k !== i))}
-            aria-label={`Eliminar bajada ${i + 1}`}
+            aria-label={`Eliminar ${name.toLowerCase()} ${i + 1}`}
             className="grid size-9 place-items-center text-ink-3 active:text-danger"
           >
             <X size={17} />
@@ -279,9 +318,12 @@ function DropsEditor({ set }: { set: WorkoutSet }) {
       <button
         type="button"
         onClick={() => save([...drops, { weight: null, reps: null }])}
-        className="flex min-h-9 items-center gap-1 text-subhead font-semibold text-accent-ink"
+        className={cn(
+          'flex min-h-9 items-center gap-1 text-subhead font-semibold',
+          rp ? 'text-rp' : 'text-accent-ink',
+        )}
       >
-        <Plus size={16} /> bajada
+        <Plus size={16} /> {rp ? 'mini-serie' : 'bajada'}
       </button>
     </div>
   )

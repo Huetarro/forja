@@ -1,5 +1,5 @@
 /** Estadísticas (funciones puras). */
-import type { Muscle, Side } from '@/db/schema'
+import type { ExerciseMetric, Muscle, Side } from '@/db/schema'
 import { addDaysLocal, daysBetween, weekStart, type LocalDate } from './dates'
 import { epley } from './oneRm'
 import { toKg, type WeightUnit } from './units'
@@ -60,6 +60,15 @@ export interface ExerciseInfo {
   primaryMuscle: Muscle
   secondaryMuscles: Muscle[]
   unilateral: boolean
+  /** v2: reps (por defecto) o segundos */
+  metric?: ExerciseMetric
+  /** v2: kg opcional (peso corporal) */
+  noLoad?: boolean
+}
+
+/** El progreso se mide por reps o segundos (sin kg o por tiempo), no por 1RM. */
+export function measuredByReps(e: Pick<ExerciseInfo, 'metric' | 'noLoad'>): boolean {
+  return e.noLoad === true || e.metric === 'segundos'
 }
 
 export interface SessionData {
@@ -69,6 +78,8 @@ export interface SessionData {
   activeSeconds: number
   avgHeartRate?: number
   calories?: number
+  /** v2: sesión de descarga (no cuenta para el estancamiento) */
+  deload?: boolean
   exercises: Array<{ exerciseId: string; sets: SetLike[] }>
 }
 
@@ -142,6 +153,8 @@ export interface SessionMetrics {
   side?: Side
   best1rm: number | null
   maxWeight: number
+  /** v2: máximo de reps (o segundos) en una serie efectiva */
+  maxReps: number
   volume: number
   bestSet: { weight: number; reps: number } | null
 }
@@ -175,6 +188,7 @@ export function exerciseSessions(
       side,
       best1rm,
       maxWeight: Math.max(...eff.map((x) => x.weight)),
+      maxReps: Math.max(...eff.map((x) => x.reps)),
       volume: volume(sets),
       bestSet: bestSet ?? { weight: eff[0]?.weight ?? 0, reps: eff[0]?.reps ?? 0 },
     })
@@ -186,6 +200,8 @@ export interface RecordsTable {
   maxWeight: { value: number; date: LocalDate } | null
   best1rm: { value: number; date: LocalDate } | null
   maxVolume: { value: number; date: LocalDate } | null
+  /** v2: más reps (o segundos) en una serie */
+  maxReps: { value: number; date: LocalDate } | null
   /** peso → más reps, ordenado por peso descendente */
   repsByWeight: Array<{ weight: number; reps: number; date: LocalDate }>
 }
@@ -195,7 +211,13 @@ export function recordsTable(
   exerciseId: string,
   side?: Side,
 ): RecordsTable {
-  const t: RecordsTable = { maxWeight: null, best1rm: null, maxVolume: null, repsByWeight: [] }
+  const t: RecordsTable = {
+    maxWeight: null,
+    best1rm: null,
+    maxVolume: null,
+    maxReps: null,
+    repsByWeight: [],
+  }
   const reps = new Map<number, { reps: number; date: LocalDate }>()
   for (const s of sessions) {
     const sets = s.exercises
@@ -206,6 +228,7 @@ export function recordsTable(
       if (!isEffectiveSet(x)) continue
       if (!t.maxWeight || x.weight > t.maxWeight.value)
         t.maxWeight = { value: x.weight, date: s.date }
+      if (!t.maxReps || x.reps > t.maxReps.value) t.maxReps = { value: x.reps, date: s.date }
       const rm = epley(x.weight, x.reps)
       if (rm !== null && (!t.best1rm || rm > t.best1rm.value))
         t.best1rm = { value: rm, date: s.date }

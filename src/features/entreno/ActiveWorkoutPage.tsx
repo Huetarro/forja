@@ -66,6 +66,7 @@ export default function ActiveWorkoutPage() {
     const routineExists = await db.routines.get(workout.routineId)
     if (
       routineExists &&
+      !workout.deload &&
       structureChanged(await routineStructure(workout.routineId), workoutStructure(bundle))
     ) {
       updateRoutine = await confirm({
@@ -113,7 +114,7 @@ export default function ActiveWorkoutPage() {
   return (
     <div className="pt-safe min-h-dvh">
       <WorkoutHeader
-        name={workout.routineName}
+        name={workout.deload ? `${workout.routineName} · Descarga` : workout.routineName}
         startedAt={workout.startedAt}
         pauses={workout.pauses}
         onTogglePause={() => void togglePause(workout.id)}

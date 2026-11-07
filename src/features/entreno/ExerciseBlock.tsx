@@ -3,10 +3,18 @@ import { Copy, Ellipsis, Link2, Plus, StickyNote, Trash2, TrendingUp, Unlink } f
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import type { Exercise, WorkoutExercise, WorkoutSet } from '@/db/schema'
 import { addSet, updateWorkoutExercise } from '@/db/workouts'
-import { shouldSuggestIncrease } from '@/domain/progressionRules'
+import {
+  lastRegularSession,
+  PROGRESSION_LABEL,
+  progressionBadge,
+  type HistorySession,
+} from '@/domain/progressionRules'
 import { liveSetRecords } from '@/domain/records'
 import type { SupersetPosition } from '@/domain/supersets'
+import { planLine, techniqueChips } from '@/domain/techniques'
 import { cn } from '@/lib/cn'
+import { isNoLoad, metricOf, metricShort } from '@/lib/exerciseMeta'
+import { TechniqueChips } from '@/features/rutinas/TechniqueChips'
 import { SupersetBar } from '@/features/rutinas/RoutineExerciseCard'
 import { SetRow, type PrevSet } from './SetRow'
 
@@ -15,8 +23,10 @@ interface Props {
   exercise: Exercise | undefined
   sets: WorkoutSet[]
   /** sesiones anteriores del ejercicio, la más reciente primero */
-  history: WorkoutSet[][]
+  history: Array<HistorySession<WorkoutSet>>
   position: SupersetPosition
+  /** el entreno es de la semana de descarga */
+  deload: boolean
   linkedWithNext: boolean
   isLast: boolean
   onSetCompleted: (set: WorkoutSet, records: ReturnType<typeof liveSetRecords>) => void
@@ -32,6 +42,7 @@ export function ExerciseBlock({
   sets,
   history,
   position,
+  deload,
   linkedWithNext,
   isLast,
   onSetCompleted,
@@ -43,8 +54,19 @@ export function ExerciseBlock({
   const [showNotes, setShowNotes] = useState(we.notes.length > 0)
   const unilateral = exercise?.unilateral ?? sets.some((s) => s.side)
   const unit = exercise?.unit ?? 'kg'
-  const suggest = shouldSuggestIncrease(history)
-  const last = history[0] ?? []
+  const metric = metricOf(exercise)
+  const noLoad = isNoLoad(exercise)
+  const historySets = history.map((h) => h.sets)
+  const badge = deload ? null : progressionBadge(history, we.target, noLoad)
+  // "Anterior": la última sesión normal (en la descarga, la última de cualquier tipo)
+  const last = (deload ? history[0] : lastRegularSession(history))?.sets ?? []
+  const chips = techniqueChips({
+    sets: sets.filter((x) => x.side !== 'der').map((x) => x.type),
+    extras: sets.filter((x) => x.side !== 'der').map((x) => x.drops.length),
+    negative: we.negative,
+    pause: we.pause,
+  })
+  const line = planLine(we, metric, position === 'end')
 
   // Serie "anterior" equivalente: misma posición entre las del mismo lado
   const prevFor = (s: WorkoutSet): PrevSet | undefined => {
@@ -69,19 +91,21 @@ export function ExerciseBlock({
             </h2>
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
               <span className="rounded-full bg-fill px-2 py-0.5 text-caption font-semibold text-ink-2">
-                {unit}
+                {noLoad ? `${unit} opcional` : unit}
               </span>
               {unilateral && (
                 <span className="rounded-full bg-fill px-2 py-0.5 text-caption font-semibold text-ink-2">
                   Unilateral
                 </span>
               )}
-              {suggest && (
+              <TechniqueChips chips={chips} />
+              {badge && (
                 <span className="flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-caption font-bold text-success">
-                  <TrendingUp size={13} aria-hidden /> Sube peso
+                  <TrendingUp size={13} aria-hidden /> {PROGRESSION_LABEL[badge]}
                 </span>
               )}
             </div>
+            {line && <p className="tnum mt-1 text-footnote text-ink-2">{line}</p>}
           </div>
           <button
             type="button"
@@ -135,7 +159,7 @@ export function ExerciseBlock({
           <span className="text-center">Serie</span>
           <span>Anterior</span>
           <span className="text-center">{unit}</span>
-          <span className="text-center">Reps</span>
+          <span className="text-center">{metricShort(metric)}</span>
           <span className="text-center">RIR</span>
           <span />
         </div>
@@ -147,11 +171,12 @@ export function ExerciseBlock({
               set={s}
               number={numberFor(s)}
               prev={prevFor(s)}
-              isRecord={s.completed && liveSetRecords(history, sets, i).length > 0}
-              bodyweight={exercise?.equipment === 'Peso corporal'}
+              isRecord={s.completed && liveSetRecords(historySets, sets, i).length > 0}
+              noLoad={noLoad}
+              metric={metric}
               onCompleted={(done) => {
                 const updated = sets.map((x) => (x.id === done.id ? done : x))
-                onSetCompleted(done, liveSetRecords(history, updated, i))
+                onSetCompleted(done, liveSetRecords(historySets, updated, i))
               }}
               onDelete={onDeleteSet}
             />

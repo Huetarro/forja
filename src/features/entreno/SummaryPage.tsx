@@ -108,7 +108,7 @@ export default function SummaryPage() {
                   <span className="block text-footnote text-ink-2">{RECORD_LABEL[r.kind]}</span>
                 </span>
                 <span className="tnum shrink-0 text-body font-bold text-accent-ink">
-                  {recordValue(r, r.unit)}
+                  {recordValue(r, r.unit, r.seconds)}
                 </span>
               </li>
             ))}
@@ -161,7 +161,11 @@ function Delta({ pct, good }: { pct: number; good: boolean }) {
   )
 }
 
-function recordValue(r: SessionRecord, unit: WeightUnit): string {
-  if (r.kind === 'reps') return `${r.value} × ${formatNumber(r.weight ?? 0, 2)} ${unit}`
+function recordValue(r: SessionRecord, unit: WeightUnit, seconds?: boolean): string {
+  const what = seconds ? 's' : 'reps'
+  if (r.kind === 'reps')
+    return r.weight
+      ? `${r.value} ${what} × ${formatNumber(r.weight, 2)} ${unit}`
+      : `${r.value} ${what}`
   return `${formatNumber(r.value, r.kind === 'volumen' ? 0 : 1)} ${unit}`
 }

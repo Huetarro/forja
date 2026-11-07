@@ -10,7 +10,14 @@ import {
   updateExercise,
   type ExerciseInput,
 } from '@/db/library'
-import { EQUIPMENT, MUSCLES, type Equipment, type Exercise, type Muscle } from '@/db/schema'
+import {
+  EQUIPMENT,
+  MUSCLES,
+  type Equipment,
+  type Exercise,
+  type ExerciseMetric,
+  type Muscle,
+} from '@/db/schema'
 import { useSettings } from '@/db/settings'
 import type { WeightUnit } from '@/domain/units'
 import { confirm, toast } from '@/stores/ui'
@@ -61,6 +68,8 @@ function ExerciseForm({ onClose, exercise, onCreated, initialName }: Omit<Props,
   const [secondary, setSecondary] = useState<Muscle[]>(exercise?.secondaryMuscles ?? [])
   const [equipment, setEquipment] = useState<Equipment>(exercise?.equipment ?? 'Barra')
   const [unilateral, setUnilateral] = useState(exercise?.unilateral ?? false)
+  const [metric, setMetric] = useState<ExerciseMetric>(exercise?.metric ?? 'reps')
+  const [optionalLoad, setOptionalLoad] = useState(exercise?.optionalLoad ?? false)
   // null = sin elegir: se usa la del ejercicio o la unidad por defecto de Ajustes (que puede cargar después)
   const [chosenUnit, setUnit] = useState<WeightUnit | null>(null)
   const unit: WeightUnit = chosenUnit ?? exercise?.unit ?? settings?.defaultUnit ?? 'kg'
@@ -81,6 +90,8 @@ function ExerciseForm({ onClose, exercise, onCreated, initialName }: Omit<Props,
       unilateral,
       fixedNotes: fixedNotes.trim(),
       restSeconds,
+      metric: metric === 'segundos' ? 'segundos' : undefined,
+      optionalLoad: optionalLoad || undefined,
     }
     if (exercise) {
       await updateExercise(exercise.id, data)
@@ -152,6 +163,20 @@ function ExerciseForm({ onClose, exercise, onCreated, initialName }: Omit<Props,
         <Row label="Unilateral">
           <Switch label="Unilateral" checked={unilateral} onChange={setUnilateral} />
         </Row>
+        <Row label="Peso opcional">
+          <Switch label="Peso opcional" checked={optionalLoad} onChange={setOptionalLoad} />
+        </Row>
+        <div className="px-4 py-2.5">
+          <SegmentedControl
+            label="Se mide en"
+            value={metric}
+            onChange={setMetric}
+            options={[
+              { value: 'reps', label: 'Repeticiones' },
+              { value: 'segundos', label: 'Segundos' },
+            ]}
+          />
+        </div>
         <div className="px-4 py-2.5">
           <SegmentedControl
             label="Unidad"

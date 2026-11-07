@@ -1,9 +1,10 @@
-import type { Exercise, WorkoutSet } from '@/db/schema'
+import type { Exercise, ExerciseMetric, WorkoutSet } from '@/db/schema'
 import type { WorkoutBundle } from '@/db/workouts'
 import { SET_TYPE_CHIP, SET_TYPE_SHORT } from '@/domain/setTypes'
 import { supersetPosition } from '@/domain/supersets'
 import { formatNumber } from '@/domain/units'
 import { cn } from '@/lib/cn'
+import { formatSetValue, metricOf } from '@/lib/exerciseMeta'
 import { SupersetBar } from '@/features/rutinas/RoutineExerciseCard'
 
 /** Vista de solo lectura de los ejercicios y series de un entreno. */
@@ -31,7 +32,7 @@ export function WorkoutSetsView({
               ) : (
                 <ul className="mt-1.5 space-y-1">
                   {sets.map((s) => (
-                    <SetLine key={s.id} set={s} unit={ex?.unit ?? 'kg'} />
+                    <SetLine key={s.id} set={s} unit={ex?.unit ?? 'kg'} metric={metricOf(ex)} />
                   ))}
                 </ul>
               )}
@@ -43,7 +44,7 @@ export function WorkoutSetsView({
   )
 }
 
-function SetLine({ set, unit }: { set: WorkoutSet; unit: string }) {
+function SetLine({ set, unit, metric }: { set: WorkoutSet; unit: string; metric: ExerciseMetric }) {
   const tag = SET_TYPE_SHORT[set.type]
   return (
     <li className="tnum flex flex-wrap items-baseline gap-x-2 text-subhead">
@@ -56,14 +57,17 @@ function SetLine({ set, unit }: { set: WorkoutSet; unit: string }) {
         <span className="text-footnote text-ink-2">{set.side === 'izq' ? 'Izq' : 'Der'}</span>
       )}
       <span className="font-semibold">
-        {formatNumber(set.weight ?? 0, 2)} {unit} × {set.reps ?? 0}
+        {set.weight
+          ? `${formatNumber(set.weight, 2)} ${unit} × ${set.reps ?? 0}${metric === 'segundos' ? ' s' : ''}`
+          : formatSetValue(0, set.reps, metric)}
       </span>
       {set.rir !== undefined && (
         <span className="text-footnote text-ink-2">RIR {set.rir >= 5 ? '5+' : set.rir}</span>
       )}
       {set.drops.length > 0 && (
         <span className="text-footnote text-ink-2">
-          → {set.drops.map((d) => `${formatNumber(d.weight ?? 0, 2)}×${d.reps ?? 0}`).join(' → ')}
+          {set.type === 'restpause' ? 'RP' : '→'}{' '}
+          {set.drops.map((d) => `${formatNumber(d.weight ?? 0, 2)}×${d.reps ?? 0}`).join(' → ')}
         </span>
       )}
     </li>
