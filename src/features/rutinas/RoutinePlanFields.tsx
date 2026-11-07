@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { Switch } from '@/components/ui/Form'
 import { Select } from '@/components/ui/Select'
@@ -24,13 +24,24 @@ const REST_OPTIONS = Array.from({ length: 20 }, (_, i) => (i + 1) * 15)
 export function RoutinePlanFields({ item, metric, position, onChange }: Props) {
   const unit = metric === 'segundos' ? 's' : 'reps'
   const inPairNotLast = position === 'start' || position === 'middle'
-  const t = item.target
+  // Rango pendiente: combina bien mínimo y máximo aunque la base tarde en devolverlos
+  const [t, setT] = useState(item.target)
+  const [propT, setPropT] = useState(item.target)
+  if (item.target?.min !== propT?.min || item.target?.max !== propT?.max) {
+    setPropT(item.target)
+    setT(item.target)
+  }
 
   const setTarget = (min: number | null, max: number | null) => {
-    if (min === null && max === null) return onChange({ target: undefined })
+    if (min === null && max === null) {
+      setT(undefined)
+      return onChange({ target: undefined })
+    }
     const a = min ?? max ?? 1
     const b = max ?? min ?? a
-    onChange({ target: { min: Math.min(a, b), max: Math.max(a, b) } })
+    const target = { min: Math.min(a, b), max: Math.max(a, b) }
+    setT(target)
+    onChange({ target })
   }
 
   const setExtras = (i: number, n: number) => {
@@ -143,9 +154,9 @@ function RangeInput({
 }) {
   const [text, setText] = useState(value === null ? '' : String(value))
   const [last, setLast] = useState(value)
-  const focused = useRef(false)
+  const [focused, setFocused] = useState(false)
   // Si el valor cambia desde fuera (y no se está escribiendo aquí), se sincroniza
-  if (value !== last && !focused.current) {
+  if (value !== last && !focused) {
     setLast(value)
     setText(value === null ? '' : String(value))
   }
@@ -157,10 +168,10 @@ function RangeInput({
       autoComplete="off"
       value={text}
       placeholder="—"
-      onFocus={() => (focused.current = true)}
+      onFocus={() => setFocused(true)}
       onChange={(e) => setText(e.target.value.replace(/D/g, '').slice(0, 3))}
       onBlur={() => {
-        focused.current = false
+        setFocused(false)
         const v = text ? Number(text) : null
         const next = v && v > 0 ? v : null
         setLast(next)
