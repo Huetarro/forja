@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Archive, ChevronRight, Dumbbell, Trash2 } from 'lucide-react'
+import { Archive, CalendarDays, ChevronRight, Dumbbell, Trash2 } from 'lucide-react'
 import { Group, Row, Switch } from '@/components/ui/Form'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/Select'
 import { deleteAllData } from '@/db/backup'
 import type { ThemePref } from '@/db/schema'
 import { updateSettings, useSettings } from '@/db/settings'
+import { setDeload } from '@/db/plan'
 import { confirm, toast } from '@/stores/ui'
 import { BackupGroup } from './BackupGroup'
 import { PreV2Group } from './PreV2Group'
@@ -148,6 +149,22 @@ export default function SettingsPage() {
             descanso.
           </p>
         )}
+
+        <Group
+          title="Plan"
+          footer="En la semana de descarga los entrenos usan la mitad de series, todas normales y sin técnicas. No cuentan para el estancamiento ni para “Sube peso”."
+        >
+          <SettingsLink to="/ajustes/plan" icon={<CalendarDays size={20} />}>
+            Plan semanal y estiramientos
+          </SettingsLink>
+          <Row label="Semana de descarga">
+            <Switch
+              label="Semana de descarga"
+              checked={settings.deload?.active === true}
+              onChange={(v) => void setDeload(v)}
+            />
+          </Row>
+        </Group>
 
         <SupplementsEditor />
 

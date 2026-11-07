@@ -18,6 +18,7 @@ const CalendarPage = lazy(() => import('@/features/calendario/CalendarPage'))
 const StatsPage = lazy(() => import('@/features/estadisticas/StatsPage'))
 const RunningPage = lazy(() => import('@/features/running/RunningPage'))
 const SettingsPage = lazy(() => import('@/features/ajustes/SettingsPage'))
+const WeekPlanPage = lazy(() => import('@/features/ajustes/WeekPlanPage'))
 const ExercisesPage = lazy(() => import('@/features/ejercicios/ExercisesPage'))
 const ExerciseDetailPage = lazy(() => import('@/features/ejercicios/ExerciseDetailPage'))
 const RoutineDetailPage = lazy(() => import('@/features/rutinas/RoutineDetailPage'))
@@ -73,6 +74,7 @@ export function App() {
             <Route path="running" element={<RunningPage />} />
             <Route path="running/:id" element={<RunningPage />} />
             <Route path="ajustes" element={<SettingsPage />} />
+            <Route path="ajustes/plan" element={<WeekPlanPage />} />
             <Route path="ejercicios" element={<ExercisesPage />} />
             <Route path="ejercicios/:id" element={<ExerciseDetailPage />} />
             <Route path="rutinas/:id" element={<RoutineDetailPage />} />

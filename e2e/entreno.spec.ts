@@ -150,7 +150,11 @@ test('anterior, prerrelleno, "Sube peso" y récord en la segunda sesión', async
 
   // Sesión 2: aparece "Anterior", prerrelleno y "Sube peso"
   await page.goto('./#/')
-  await page.getByRole('button', { name: 'Empezar', exact: true }).click()
+  await page
+    .getByRole('listitem')
+    .getByRole('link', { name: /Torso A/ })
+    .click()
+  await page.getByRole('button', { name: 'Empezar entreno' }).click()
   const press2 = section(page, 'Press banca')
   await expect(press2.getByText('Sube peso')).toBeVisible()
   await expect(press2.getByText('80 × 8').first()).toBeVisible()

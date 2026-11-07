@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
-import { Group, Row, TextArea, TextInput } from '@/components/ui/Form'
+import { Group, Row, Switch, TextArea, TextInput } from '@/components/ui/Form'
 import { Select } from '@/components/ui/Select'
 import { createRoutine, updateRoutine, usePrograms } from '@/db/routines'
 import type { Routine } from '@/db/schema'
@@ -59,6 +59,7 @@ function RoutineMetaForm({ routine, onClose, onCreated, defaultProgramId }: Omit
   const [color, setColor] = useState(routine?.color ?? 1)
   const [icon, setIcon] = useState(routine?.icon ?? 'dumbbell')
   const [notes, setNotes] = useState(routine?.notes ?? '')
+  const [stretches, setStretches] = useState(routine?.stretches ?? false)
 
   const save = async () => {
     if (!name.trim()) return
@@ -68,6 +69,7 @@ function RoutineMetaForm({ routine, onClose, onCreated, defaultProgramId }: Omit
       color,
       icon,
       notes: notes.trim(),
+      stretches: stretches || undefined,
     }
     if (routine) {
       await updateRoutine(routine.id, data)
@@ -167,6 +169,12 @@ function RoutineMetaForm({ routine, onClose, onCreated, defaultProgramId }: Omit
           ))}
         </div>
       </section>
+
+      <Group footer="Muestra la lista de estiramientos (Ajustes → Plan semanal) al final del entreno.">
+        <Row label="Terminar con estiramientos">
+          <Switch label="Terminar con estiramientos" checked={stretches} onChange={setStretches} />
+        </Row>
+      </Group>
 
       <Group title="Notas">
         <TextArea

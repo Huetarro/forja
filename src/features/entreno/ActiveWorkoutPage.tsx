@@ -25,6 +25,8 @@ import { confirm, toast } from '@/stores/ui'
 import { ClosingForm } from './ClosingForm'
 import { RestTimerBar } from './RestTimerBar'
 import { WorkoutExercises } from './WorkoutExercises'
+import { StretchList } from './StretchList'
+import { useRoutine } from '@/db/routines'
 
 interface FinishPlan {
   discard: boolean
@@ -35,6 +37,7 @@ export default function ActiveWorkoutPage() {
   const active = useActiveWorkout()
   const bundle = useWorkout(active?.id)
   const exercises = useExerciseMap()
+  const routine = useRoutine(active?.routineId)
   const navigate = useNavigate()
   const stopRest = useRestTimer((s) => s.stop)
   const [plan, setPlan] = useState<FinishPlan | null>(null)
@@ -123,6 +126,7 @@ export default function ActiveWorkoutPage() {
 
       <main className="px-safe mx-auto max-w-xl pt-2 pb-[calc(96px+env(safe-area-inset-bottom))]">
         <WorkoutExercises bundle={bundle} exercises={exercises} mode="live" />
+        {routine?.stretches && <StretchList workout={workout} />}
         <button
           type="button"
           onClick={() => void cancel()}

@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PageHeader } from '@/components/ui/PageHeader'
 import {
-  useLastRoutineId,
   useLastWorkoutDates,
   usePrograms,
   useRoutineExerciseCounts,
@@ -13,10 +12,11 @@ import {
 } from '@/db/routines'
 import { useSettings } from '@/db/settings'
 import { capitalize, longDate, todayLocal } from '@/domain/dates'
-import { suggestNextRoutine } from '@/domain/rotation'
+import { planForDate } from '@/domain/weekPlan'
 import { ProgramsSheet } from '@/features/rutinas/ProgramsSheet'
 import { RoutineMetaSheet } from '@/features/rutinas/RoutineMetaSheet'
-import { NextRoutineCard } from './NextRoutineCard'
+import { TodayCard } from './NextRoutineCard'
+import { DeloadCard } from './DeloadCard'
 import { ActiveWorkoutCard } from './ActiveWorkoutCard'
 import { BackupWarning } from './BackupWarning'
 import { TodayChecks } from './TodayChecks'
@@ -28,23 +28,27 @@ import { RoutineList } from './RoutineList'
 export default function HomePage() {
   const navigate = useNavigate()
   const settings = useSettings()
-  const routines = useRoutines()
+  const routines = useRoutines(true)
   const programs = usePrograms(true)
   const counts = useRoutineExerciseCounts()
   const lastDates = useLastWorkoutDates()
-  const lastRoutineId = useLastRoutineId()
   const active = useActiveWorkout()
   const [creating, setCreating] = useState(false)
   const [managingPrograms, setManagingPrograms] = useState(false)
 
-  const loaded = routines && programs && counts && lastDates && lastRoutineId !== undefined
+  const loaded = routines && programs && counts && lastDates && settings
   const activePrograms = programs?.filter((p) => !p.archived) ?? []
   const visibleRoutines =
-    routines?.filter((r) => !r.programId || activePrograms.some((p) => p.id === r.programId)) ?? []
-  const suggestedId = loaded
-    ? suggestNextRoutine(visibleRoutines, programs, lastRoutineId ?? undefined)
-    : undefined
-  const suggested = visibleRoutines.find((r) => r.id === suggestedId)
+    routines?.filter(
+      (r) => !r.archived && (!r.programId || activePrograms.some((p) => p.id === r.programId)),
+    ) ?? []
+  // "Te toca hoy" según el día de la semana (plan semanal)
+  const today = planForDate(settings?.weekPlan, todayLocal())
+  const todayRoutine =
+    today?.kind === 'rutina'
+      ? routines?.find((r) => r.id === today.routineId && !r.archived)
+      : undefined
+  const showToday = today !== null || visibleRoutines.length > 0
 
   return (
     <>
@@ -57,9 +61,15 @@ export default function HomePage() {
         <div className="space-y-7">
           {active && <ActiveWorkoutCard workout={active} />}
 
-          {suggested && !active && (
-            <NextRoutineCard routine={suggested} exerciseCount={counts.get(suggested.id) ?? 0} />
+          {!active && showToday && (
+            <TodayCard
+              plan={today}
+              routine={todayRoutine}
+              exerciseCount={todayRoutine ? (counts.get(todayRoutine.id) ?? 0) : 0}
+            />
           )}
+
+          <DeloadCard />
 
           <BodyWeightCard />
           <WeekCard />

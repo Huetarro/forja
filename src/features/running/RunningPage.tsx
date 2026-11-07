@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { useRuns } from '@/db/runs'
-import type { Run } from '@/db/schema'
+import type { Run, RunType } from '@/db/schema'
 import { capitalize, parseLocalDate, todayLocal } from '@/domain/dates'
 import { formatPace, paceSecPerKm, runRecords, yearTotals } from '@/domain/pace'
 import { formatClock, formatDuration } from '@/domain/timer'
 import { formatNumber } from '@/domain/units'
 import { RunFormSheet } from './RunFormSheet'
 import { RUN_TYPES } from '@/lib/runTypes'
+import { runWeekComparison } from '@/domain/runWeek'
+import { cn } from '@/lib/cn'
 
 const RunCharts = lazy(() => import('./RunCharts'))
 
@@ -23,6 +25,8 @@ export default function RunningPage() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const creating = params.get('nueva') === '1'
+  const tipo = params.get('tipo')
+  const initialType = RUN_TYPES.some((t) => t.value === tipo) ? (tipo as RunType) : undefined
   const editing = id ? runs?.find((r) => r.id === id) : undefined
 
   const close = () => {
@@ -60,6 +64,8 @@ export default function RunningPage() {
         />
       ) : (
         <div className="space-y-6">
+          <WeekKmCard runs={runs} />
+
           <section className="rounded-card bg-card p-4" aria-label={`Totales de ${year}`}>
             <h2 className="text-body font-semibold">{year}</h2>
             <dl className="mt-2 grid grid-cols-3 gap-2">
@@ -169,7 +175,8 @@ export default function RunningPage() {
         open={creating || editing !== undefined}
         onClose={close}
         run={editing}
-        key={editing?.id ?? 'new'}
+        initialType={initialType}
+        key={editing?.id ?? `new-${initialType ?? ''}`}
       />
     </>
   )
@@ -197,5 +204,40 @@ function RecordRow({ label, run, value }: { label: string; run?: Run; value: (r:
       </span>
       <span className="tnum font-bold">{run ? value(run) : '—'}</span>
     </li>
+  )
+}
+
+/** Km de esta semana frente a la anterior y el máximo recomendado (+10 %). */
+function WeekKmCard({ runs }: { runs: Run[] }) {
+  const c = runWeekComparison(runs, todayLocal())
+  const over = c.maxRecommended !== null && c.thisWeek > c.maxRecommended
+  const pct = c.maxRecommended ? Math.min(1, c.thisWeek / c.maxRecommended) : 0
+  return (
+    <section className="rounded-card bg-card p-4" aria-label="Kilómetros de esta semana">
+      <h2 className="text-body font-semibold">Esta semana</h2>
+      <dl className="mt-2 grid grid-cols-3 gap-2">
+        <Stat label="Esta semana" value={`${formatNumber(c.thisWeek, 1)} km`} />
+        <Stat label="Anterior" value={`${formatNumber(c.lastWeek, 1)} km`} />
+        <Stat
+          label="Máx. recomendado"
+          value={c.maxRecommended === null ? '—' : `${formatNumber(c.maxRecommended, 1)} km`}
+        />
+      </dl>
+      {c.maxRecommended !== null && (
+        <div className="mt-3">
+          <div className="h-2 overflow-hidden rounded-full bg-fill" aria-hidden>
+            <div
+              className={cn('h-full rounded-full', over ? 'bg-warm' : 'bg-chart-run')}
+              style={{ width: `${pct * 100}%` }}
+            />
+          </div>
+          <p className={cn('mt-1.5 text-footnote', over ? 'text-warm' : 'text-ink-2')}>
+            {over
+              ? 'Has pasado el +10 % sobre la semana anterior.'
+              : `Te quedan ${formatNumber(Math.max(0, c.maxRecommended - c.thisWeek), 1)} km hasta el +10 %.`}
+          </p>
+        </div>
+      )}
+    </section>
   )
 }

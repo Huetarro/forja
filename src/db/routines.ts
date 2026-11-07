@@ -38,7 +38,10 @@ export async function reorderPrograms(ids: string[]): Promise<void> {
 
 /* ---------- Rutinas ---------- */
 
-export type RoutineInput = Pick<Routine, 'name' | 'color' | 'icon' | 'notes' | 'programId'>
+export type RoutineInput = Pick<
+  Routine,
+  'name' | 'color' | 'icon' | 'notes' | 'programId' | 'stretches'
+>
 
 export function useRoutines(includeArchived = false): Routine[] | undefined {
   return useLiveQuery(async () => {
@@ -207,14 +210,5 @@ export function useLastWorkoutDates(): Map<string, string> | undefined {
         if (!prev || w.date > prev) m.set(w.routineId, w.date)
       })
     return m
-  })
-}
-
-/** Id de la rutina del último entreno terminado (para la rotación). */
-export function useLastRoutineId(): string | undefined | null {
-  return useLiveQuery(async () => {
-    const all = await db.workouts.where('status').equals('terminado').toArray()
-    all.sort((a, b) => b.date.localeCompare(a.date) || b.startedAt - a.startedAt)
-    return all[0]?.routineId ?? null
   })
 }

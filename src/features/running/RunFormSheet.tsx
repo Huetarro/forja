@@ -18,10 +18,12 @@ interface Props {
   open: boolean
   onClose: () => void
   run?: Run
+  /** tipo ya puesto al registrar (p. ej. desde "Te toca hoy") */
+  initialType?: RunType
 }
 
 /** Registrar o editar una carrera. */
-export function RunFormSheet({ open, onClose, run }: Props) {
+export function RunFormSheet({ open, onClose, run, initialType }: Props) {
   return (
     <BottomSheet
       open={open}
@@ -38,14 +40,22 @@ export function RunFormSheet({ open, onClose, run }: Props) {
         </button>
       }
     >
-      <RunForm run={run} onClose={onClose} />
+      <RunForm run={run} initialType={initialType} onClose={onClose} />
     </BottomSheet>
   )
 }
 
 const str = (n: number | undefined) => (n === undefined ? '' : String(n).replace('.', ','))
 
-function RunForm({ run, onClose }: { run?: Run; onClose: () => void }) {
+function RunForm({
+  run,
+  initialType,
+  onClose,
+}: {
+  run?: Run
+  initialType?: RunType
+  onClose: () => void
+}) {
   const init = secondsToHms(run?.durationSec ?? 0)
   const [date, setDate] = useState(run?.date ?? todayLocal())
   const [km, setKm] = useState(str(run?.distanceKm))
@@ -55,7 +65,7 @@ function RunForm({ run, onClose }: { run?: Run; onClose: () => void }) {
   const [hr, setHr] = useState(str(run?.avgHeartRate))
   const [kcal, setKcal] = useState(str(run?.calories))
   const [elev, setElev] = useState(str(run?.elevationM))
-  const [type, setType] = useState<RunType>(run?.type ?? 'rodaje')
+  const [type, setType] = useState<RunType>(run?.type ?? initialType ?? 'rodaje')
   const [surface, setSurface] = useState<RunSurface>(run?.surface ?? 'exterior')
   const [feeling, setFeeling] = useState<number | undefined>(run?.feeling)
   const [notes, setNotes] = useState(run?.notes ?? '')
