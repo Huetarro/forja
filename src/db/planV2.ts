@@ -239,7 +239,7 @@ export const PLAN_V2: PlanRoutine[] = [
     day: 1,
     name: 'Empuje',
     color: 1,
-    icon: 'flame',
+    icon: 'pecho',
     notes: NOTE,
     items: [
       { ex: 'pressMaquina', sets: 4, min: 6, max: 10, rest: 150 },
@@ -254,7 +254,7 @@ export const PLAN_V2: PlanRoutine[] = [
     day: 2,
     name: 'Tirón',
     color: 3,
-    icon: 'anvil',
+    icon: 'espalda',
     notes: NOTE,
     items: [
       { ex: 'jalon', sets: 4, min: 8, max: 10, rest: 120, negative: true },
@@ -269,7 +269,7 @@ export const PLAN_V2: PlanRoutine[] = [
     day: 4,
     name: 'Pierna',
     color: 5,
-    icon: 'mountain',
+    icon: 'pierna',
     notes: NOTE,
     items: [
       { ex: 'prensa', sets: 4, min: 8, max: 12, rest: 150, negative: true },
@@ -284,7 +284,7 @@ export const PLAN_V2: PlanRoutine[] = [
     day: 5,
     name: 'Torso completo',
     color: 7,
-    icon: 'dumbbell',
+    icon: 'torso',
     notes: NOTE,
     items: [
       { ex: 'pressInclinadoSmith', sets: 3, min: 8, max: 10, rest: 120 },
@@ -300,7 +300,7 @@ export const PLAN_V2: PlanRoutine[] = [
     day: 7,
     name: 'Core + estiramientos',
     color: 9,
-    icon: 'target',
+    icon: 'abdomen',
     notes: `${NOTE} Estiramientos: 45 s cada uno.`,
     stretches: true,
     items: [
@@ -457,4 +457,38 @@ export async function loadPlanV2(): Promise<LoadPlanResult> {
       return { loaded: true, reused, created, archivedRoutines: oldRoutines.length }
     },
   )
+}
+
+/** Iconos que tenían las rutinas del plan en la v2.0 → iconos anatómicos (v2.1). */
+export const PLAN_V2_ICON_UPDATE: Record<string, { from: string; to: string }> = {
+  Empuje: { from: 'flame', to: 'pecho' },
+  Tirón: { from: 'anvil', to: 'espalda' },
+  Pierna: { from: 'mountain', to: 'pierna' },
+  'Torso completo': { from: 'dumbbell', to: 'torso' },
+  'Core + estiramientos': { from: 'target', to: 'abdomen' },
+}
+
+/**
+ * Cambio de un solo uso a los iconos anatómicos en las rutinas del programa "Plan semanal".
+ * Solo toca el icono, y solo si sigue siendo el original (si se cambió a mano, se respeta).
+ * Idempotente: se marca en Settings (`routineIconsV2At`). Devuelve cuántas rutinas cambió.
+ */
+export async function applyAnatomyIcons(): Promise<number> {
+  return db.transaction('rw', db.settings, db.programs, db.routines, async () => {
+    const settings: Settings = (await db.settings.get('app')) ?? DEFAULT_SETTINGS
+    if (settings.routineIconsV2At) return 0
+    const plans = (await db.programs.toArray()).filter((p) => p.name === PLAN_V2_PROGRAM)
+    let changed = 0
+    for (const p of plans) {
+      for (const r of await db.routines.where('programId').equals(p.id).toArray()) {
+        const u = PLAN_V2_ICON_UPDATE[r.name]
+        if (u && r.icon === u.from) {
+          await db.routines.update(r.id, { icon: u.to })
+          changed++
+        }
+      }
+    }
+    await db.settings.put({ ...settings, id: 'app', routineIconsV2At: Date.now() })
+    return changed
+  })
 }

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { loadPlanV2 } from '@/db/planV2'
+import { applyAnatomyIcons, loadPlanV2 } from '@/db/planV2'
 import type { Settings } from '@/db/schema'
 import { toast } from '@/stores/ui'
 
@@ -22,5 +22,13 @@ export function useAutoLoadPlanV2(settings: Settings | undefined): void {
       .finally(() => {
         started = false
       })
+  }, [pending])
+}
+
+/** Aplica una vez los iconos anatómicos a las rutinas del plan ya cargado. */
+export function useAnatomyIconsUpdate(settings: Settings | undefined): void {
+  const pending = !!settings?.planV2LoadedAt && !settings.routineIconsV2At
+  useEffect(() => {
+    if (pending) void applyAnatomyIcons().catch(() => undefined)
   }, [pending])
 }

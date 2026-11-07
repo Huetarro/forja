@@ -16,8 +16,16 @@ import {
   Trophy,
   Weight,
   Zap,
-  type LucideIcon,
 } from 'lucide-react'
+import type { ComponentType } from 'react'
+import { AbsIcon, BackIcon, ChestIcon, LegIcon, TorsoIcon } from '@/components/icons/AnatomyIcons'
+
+/** Icono de rutina: de lucide o anatómico propio (mismas props básicas). */
+export type RoutineIconComponent = ComponentType<{
+  size?: number | string
+  strokeWidth?: number | string
+  className?: string
+}>
 
 /** 10 colores de rutina (definidos en tokens.css como --routine-N). */
 export const ROUTINE_COLOR_COUNT = 10
@@ -27,7 +35,13 @@ export function routineColor(index: number): string {
   return `var(--routine-${i})`
 }
 
-export const ROUTINE_ICONS: Record<string, LucideIcon> = {
+export const ROUTINE_ICONS: Record<string, RoutineIconComponent> = {
+  // Anatómicos propios (v2)
+  pecho: ChestIcon,
+  espalda: BackIcon,
+  pierna: LegIcon,
+  torso: TorsoIcon,
+  abdomen: AbsIcon,
   dumbbell: Dumbbell,
   biceps: BicepsFlexed,
   weight: Weight,
@@ -47,11 +61,16 @@ export const ROUTINE_ICONS: Record<string, LucideIcon> = {
   rocket: Rocket,
 }
 
-export function routineIcon(name: string): LucideIcon {
+export function routineIcon(name: string): RoutineIconComponent {
   return ROUTINE_ICONS[name] ?? Dumbbell
 }
 
 export const ROUTINE_ICON_LABEL: Record<string, string> = {
+  pecho: 'Pecho',
+  espalda: 'Espalda',
+  pierna: 'Pierna',
+  torso: 'Torso',
+  abdomen: 'Abdomen',
   dumbbell: 'Mancuerna',
   biceps: 'Bíceps',
   weight: 'Pesa',

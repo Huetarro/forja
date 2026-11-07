@@ -26,8 +26,8 @@ async function markRow(scope: Locator, index: number): Promise<void> {
 
 async function finish(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Terminar' }).click()
-  const discard = page.getByRole('button', { name: 'Descartar y terminar' })
-  if (await discard.isVisible().catch(() => false)) await discard.click()
+  // En estos flujos siempre quedan series sin marcar
+  await page.getByRole('button', { name: 'Descartar y terminar' }).click()
   await page.getByRole('button', { name: 'Guardar' }).click()
   await expect(page.getByRole('heading', { name: '¡Entreno terminado!' })).toBeVisible()
 }

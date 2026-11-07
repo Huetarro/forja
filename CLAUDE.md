@@ -24,6 +24,7 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `days.ts`, `runs.ts`, `stats.ts`, `sample.ts`, `settings.ts`, `plan.ts`, `planV2.ts`, `snapshot.ts`).
 - Migraciones: `db.ts` tiene `V1_STORES` (no tocar) y `version(2)` con copia interna previa (`snapshots`). Tests: `src/db/migration.test.ts` y `src/db/planV2.test.ts` (fake-indexeddb, datos de `v1Fixture.ts`); e2e `e2e/migracion.spec.ts` crea una base v1 real (`e2e/v1db.ts`). Cualquier `version(3)` necesita su propio test de migración.
 - Plan v2: `planV2.ts` (datos + `loadPlanV2()` idempotente, `settings.planV2LoadedAt`); se lanza al arrancar con `src/app/useAutoLoadPlanV2.ts` si `planV2Pending`.
+- Iconos de rutina: `src/lib/routineStyle.ts` (lucide + anatómicos propios de `src/components/icons/AnatomyIcons.tsx`: pecho, espalda, pierna, torso, abdomen; trazo `currentColor`). Las rutinas del plan pasaron a ellos con `applyAnatomyIcons()` (`planV2.ts`, una vez, marcado en `settings.routineIconsV2At`, solo si conservaban el icono original).
 - Técnicas: rutina → `RoutineExercise` (`target`, `restSec`, `extras`, `negative`, `pause`); al empezar se copian al `WorkoutExercise` y `domain/workoutPlan.ts` crea las series (bajadas/mini-series en `drops`, descarga = mitad de series normales). Leyenda en `domain/techniques.ts`.
 - Estadísticas: `useTrainingData()` carga todo normalizado (`SessionData`) y las pestañas calculan con `src/domain/stats.ts`.
 - Entreno: `src/features/entreno/` (ActiveWorkoutPage, WorkoutExercises → ExerciseBlock → SetRow). El mismo editor sirve para entrenos pasados (`mode="edit"`). Unilaterales: cada serie planificada = dos filas (`side` izq/der) con el mismo `order`.
@@ -60,6 +61,6 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 6 (Estadísticas, figura muscular, récords, calculadora 1RM): terminada.
 - Fase 7 (Ajustes, copias JSON/CSV, datos de ejemplo, borrar todo, pulido y pruebas finales): terminada.
 
-- v2 (CAMBIOS-V2): terminada. Versión 2.0.0.
+- v2 (CAMBIOS-V2): terminada. Versión 2.1.0: iconos anatómicos de rutina.
 
 Formato de copia: `src/domain/backup.ts` (`BACKUP_VERSION` = 2, acepta 1); si cambia el esquema de Dexie, subir la versión de copia y aceptar las anteriores al importar.

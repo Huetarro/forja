@@ -248,6 +248,8 @@ export interface Settings {
   planStartDate?: LocalDate
   /** v2: cuándo se guardó la copia interna previa a la v2 */
   preV2SnapshotAt?: number
+  /** v2.1: iconos anatómicos aplicados a las rutinas del plan */
+  routineIconsV2At?: number
 }
 
 /** v2: copia interna de todos los datos (tabla `snapshots`). */
