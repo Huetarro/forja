@@ -8,6 +8,8 @@ import { deleteWorkout, updateWorkout, useExerciseMap, useWorkout } from '@/db/w
 import { capitalize, longDate, todayLocal } from '@/domain/dates'
 import { formatDuration } from '@/domain/timer'
 import { confirm, toast } from '@/stores/ui'
+import { formatCardio } from '@/domain/cardio'
+import { CardioBlock } from '@/features/entreno/CardioBlock'
 import { ClosingForm } from '@/features/entreno/ClosingForm'
 import { WorkoutExercises } from '@/features/entreno/WorkoutExercises'
 import { WorkoutSetsView } from './WorkoutSetsView'
@@ -71,6 +73,7 @@ export default function WorkoutDetailPage() {
             </p>
             <WorkoutExercises bundle={bundle} exercises={exercises} mode="edit" />
           </section>
+          <CardioBlock workout={workout} mode="edit" />
           <section>
             <h2 className="mb-2 px-1 text-title3 font-bold">Datos de cierre</h2>
             <ClosingForm
@@ -120,6 +123,7 @@ function ClosingInfo({
     workout.calories !== undefined && ['Calorías', `${workout.calories} kcal`],
     workout.rating !== undefined && ['Valoración', `${workout.rating}/5`],
     workout.energy !== undefined && ['Energía', `${workout.energy}/5`],
+    workout.cardio !== undefined && ['Cardio', formatCardio(workout.cardio)],
   ].filter((x): x is [string, string] => Array.isArray(x))
   if (items.length === 0 && !workout.notes) return null
   return (

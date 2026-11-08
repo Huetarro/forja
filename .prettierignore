@@ -3,3 +3,4 @@ node_modules
 docs
 prompt.md
 package-lock.json
+DESIGN.md

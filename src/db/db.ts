@@ -81,6 +81,9 @@ export class ForjaDB extends Dexie {
       .stores({ snapshots: 'id' })
       .upgrade((tx) => upgradeToV2(tx))
 
+    // v3: `Workout.cardio`, campo opcional sin índice. No transforma ni borra nada.
+    this.version(3).stores({})
+
     this.on('populate', (tx) => {
       void tx.table('settings').add(DEFAULT_SETTINGS)
       void tx

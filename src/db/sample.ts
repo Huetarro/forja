@@ -244,7 +244,6 @@ export async function loadSampleData(): Promise<void> {
               type,
               weight,
               reps,
-              rir: type === 'calentamiento' ? undefined : Math.round(rand() * 3),
               completed: true,
               side,
               drops: type === 'dropset' ? [{ weight: Math.round(top * 0.7), reps: 8 }] : [],

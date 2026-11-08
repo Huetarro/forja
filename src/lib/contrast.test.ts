@@ -5,6 +5,18 @@ import { contrastRatio } from './contrast'
 const css = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf-8')
 const AA = 4.5
 
+describe('punto de cardio en el calendario', () => {
+  const GRAPHIC = 3
+  it('los valores de tokens.css son los comprobados', () => {
+    expect(css).toContain('--c-cardio: #dc514d')
+    expect(css).toContain('--c-cardio: #f67972')
+  })
+  it('se ve sobre la tarjeta en claro y en oscuro', () => {
+    expect(contrastRatio('#DC514D', '#FFFFFF')).toBeGreaterThanOrEqual(GRAPHIC)
+    expect(contrastRatio('#F67972', '#1C1C1E')).toBeGreaterThanOrEqual(GRAPHIC)
+  })
+})
+
 describe('contraste AA del acento', () => {
   it('los valores de tokens.css son los comprobados', () => {
     expect(css).toContain('--c-accent: #ff6a1a')

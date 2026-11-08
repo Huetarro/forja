@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Plus, Trash2, Trophy, X } from 'lucide-react'
 import type { Drop, ExerciseMetric, WorkoutSet } from '@/db/schema'
-import { setDrops, setSetType, updateSet } from '@/db/workouts'
+import { setDrops, setSetType, updateDrop, updateSet } from '@/db/workouts'
 import { SET_TYPE_CHIP, SET_TYPE_LABEL, SET_TYPE_SHORT, nextSetType } from '@/domain/setTypes'
 import { RP_REST_NOTE } from '@/domain/techniques'
 import { formatSetValue } from '@/lib/exerciseMeta'
@@ -28,9 +28,7 @@ interface Props {
   onDelete: (set: WorkoutSet) => void
 }
 
-const RIR_OPTIONS = [0, 1, 2, 3, 4, 5] as const
-
-/** Una fila de serie: tipo · anterior · kg · reps · RIR · check. Desliza a la izquierda para borrar. */
+/** Una fila de serie: tipo · anterior · kg · reps · check. Desliza a la izquierda para borrar. */
 export function SetRow({
   set,
   number,
@@ -42,7 +40,6 @@ export function SetRow({
   onDelete,
 }: Props) {
   const reduce = useReducedMotion()
-  const [rirOpen, setRirOpen] = useState(false)
   const [dragging, setDragging] = useState(false)
   // Casilla que falta al intentar marcar (se resalta; el teclado no se abre solo)
   const [missing, setMissing] = useState<'weight' | 'reps' | null>(null)
@@ -120,7 +117,7 @@ export function SetRow({
             done ? 'opacity-100' : 'opacity-0',
           )}
         />
-        <div className="relative grid grid-cols-[38px_minmax(0,1fr)_68px_54px_40px_44px] items-center gap-1.5 px-3 py-1.5">
+        <div className="relative grid grid-cols-[38px_minmax(0,1fr)_68px_54px_44px] items-center gap-1.5 px-3 py-1.5">
           <button
             type="button"
             onClick={() => void setSetType(set, nextSetType(set.type))}
@@ -168,19 +165,6 @@ export function SetRow({
             }}
           />
 
-          <button
-            type="button"
-            onClick={() => setRirOpen((o) => !o)}
-            aria-label={`RIR${set.rir !== undefined ? ` ${set.rir}` : ''}. Toca para elegir`}
-            aria-expanded={rirOpen}
-            className={cn(
-              'tnum h-10 rounded-sm text-subhead font-semibold',
-              set.rir !== undefined ? 'bg-fill text-ink' : 'text-ink-3',
-            )}
-          >
-            {set.rir === undefined ? 'RIR' : set.rir >= 5 ? '5+' : set.rir}
-          </button>
-
           <motion.button
             type="button"
             onClick={() => void toggleDone()}
@@ -204,46 +188,6 @@ export function SetRow({
         </div>
 
         <AnimatePresence initial={false}>
-          {rirOpen && (
-            <Expand key="rir">
-              <div
-                className="flex items-center gap-1.5 px-3 pb-2"
-                role="radiogroup"
-                aria-label="RIR"
-              >
-                <span className="mr-1 text-footnote text-ink-2">RIR</span>
-                {RIR_OPTIONS.map((r) => (
-                  <button
-                    type="button"
-                    key={r}
-                    role="radio"
-                    aria-checked={set.rir === r}
-                    onClick={() => {
-                      void updateSet(set.id, { rir: r })
-                      setRirOpen(false)
-                    }}
-                    className={cn(
-                      'tnum h-9 min-w-9 flex-1 rounded-full text-subhead font-semibold',
-                      set.rir === r ? 'bg-accent text-on-accent' : 'bg-fill',
-                    )}
-                  >
-                    {r === 5 ? '5+' : r}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    void updateSet(set.id, { rir: undefined })
-                    setRirOpen(false)
-                  }}
-                  aria-label="Quitar RIR"
-                  className="grid size-9 place-items-center rounded-full text-ink-3"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            </Expand>
-          )}
           {(set.type === 'dropset' || set.type === 'restpause') && (
             <Expand key="drops">
               <DropsEditor set={set} metric={metric} />
@@ -298,12 +242,12 @@ function DropsEditor({ set, metric }: { set: WorkoutSet; metric: ExerciseMetric 
             label={`Peso ${name.toLowerCase()} ${i + 1}`}
             value={d.weight}
             placeholder={rp ? set.weight : null}
-            onCommit={(weight) => save(drops.map((x, k) => (k === i ? { ...x, weight } : x)))}
+            onCommit={(weight) => void updateDrop(set.id, i, { weight })}
           />
           <NumberField
             label={`${repsName} ${name.toLowerCase()} ${i + 1}`}
             value={d.reps}
-            onCommit={(reps) => save(drops.map((x, k) => (k === i ? { ...x, reps } : x)))}
+            onCommit={(reps) => void updateDrop(set.id, i, { reps })}
           />
           <button
             type="button"

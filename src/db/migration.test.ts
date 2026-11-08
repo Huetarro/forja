@@ -42,8 +42,8 @@ describe('migración v1 → v2', () => {
 
   afterAll(() => db.close())
 
-  it('abre la base en la versión 2', () => {
-    expect(db.verno).toBe(2)
+  it('abre la base en la versión actual', () => {
+    expect(db.verno).toBe(3)
   })
 
   it('conserva todos los registros de todas las tablas, campo a campo', async () => {

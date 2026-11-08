@@ -61,9 +61,6 @@ function SetLine({ set, unit, metric }: { set: WorkoutSet; unit: string; metric:
           ? `${formatNumber(set.weight, 2)} ${unit} × ${set.reps ?? 0}${metric === 'segundos' ? ' s' : ''}`
           : formatSetValue(0, set.reps, metric)}
       </span>
-      {set.rir !== undefined && (
-        <span className="text-footnote text-ink-2">RIR {set.rir >= 5 ? '5+' : set.rir}</span>
-      )}
       {set.drops.length > 0 && (
         <span className="text-footnote text-ink-2">
           {set.type === 'restpause' ? 'RP' : '→'}{' '}

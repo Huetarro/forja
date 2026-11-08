@@ -58,7 +58,7 @@ test('actualizar desde una base con datos de la v1 conserva todo', async ({ page
     return out
   })
   expect(counts).toEqual({
-    version: 20,
+    version: 30,
     workouts: 3,
     workoutSets: 10,
     photos: 1,

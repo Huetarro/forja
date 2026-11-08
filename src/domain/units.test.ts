@@ -16,6 +16,8 @@ describe('unidades', () => {
   it('acepta coma y punto', () => {
     expect(parseDecimal('82,5')).toBe(82.5)
     expect(parseDecimal('7.5')).toBe(7.5)
+    expect(parseDecimal('52,5')).toBe(52.5)
+    expect(parseDecimal('52,')).toBe(52)
     expect(parseDecimal('')).toBeNull()
     expect(parseDecimal('abc')).toBeNull()
   })

@@ -57,9 +57,8 @@ test('entreno completo con dropset, negativa, unilateral y superserie; cierre y 
   await check(page, 'Curl concentrado', 0)
   await check(page, 'Curl concentrado', 0) // la siguiente sin marcar pasa a ser la primera
 
-  // RIR
-  await curl.getByRole('button', { name: /^RIR/ }).first().click()
-  await curl.getByRole('radio', { name: '2' }).click()
+  // El RIR ya no aparece
+  await expect(curl.getByRole('button', { name: /^RIR/ })).toHaveCount(0)
 
   // Pausar y reanudar
   await page.getByRole('button', { name: 'Pausar' }).click()
@@ -104,7 +103,9 @@ test('cerrar y recuperar un entreno en curso', async ({ page }) => {
   await page.getByRole('button', { name: 'Empezar entreno' }).click()
   await logSet(section(page, 'Press banca'), 'serie 1', '82,5', '6')
   await check(page, 'Press banca', 0)
-  await section(page, 'Press banca').getByLabel('Peso serie 2', { exact: true }).fill('85')
+  const pending = section(page, 'Press banca').getByLabel('Peso serie 2', { exact: true })
+  await pending.fill('85')
+  await pending.blur()
 
   // Simula cerrar la app y volver a abrirla
   await page.reload()
@@ -131,17 +132,10 @@ test('anterior, prerrelleno, "Sube peso" y récord en la segunda sesión', async
   await page.getByRole('button', { name: 'OK' }).click()
   await expect(page.getByText('6-8 reps').first()).toBeVisible()
 
-  // Sesión 1: Press banca 3×(80×8) con RIR 2
+  // Sesión 1: Press banca 3×(80×8)
   await page.getByRole('button', { name: 'Empezar entreno' }).click()
   const press = section(page, 'Press banca')
-  for (let i = 1; i <= 3; i++) {
-    await logSet(press, `serie ${i}`, '80', '8')
-    await press
-      .getByRole('button', { name: /^RIR/ })
-      .nth(i - 1)
-      .click()
-    await press.getByRole('radio', { name: '2' }).click()
-  }
+  for (let i = 1; i <= 3; i++) await logSet(press, `serie ${i}`, '80', '8')
   for (let i = 0; i < 3; i++) await check(page, 'Press banca', 0)
   await page.getByRole('button', { name: 'Terminar' }).click()
   await page.getByRole('button', { name: 'Descartar y terminar' }).click()

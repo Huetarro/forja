@@ -1,5 +1,6 @@
 /** Repositorio de entrenos: empezar, series, pausas, terminar, historial. */
 import { useLiveQuery } from 'dexie-react-hooks'
+import { EMPTY_CARDIO, resolveCardio, type CardioValues } from '@/domain/cardio'
 import { parseLocalDate, todayLocal } from '@/domain/dates'
 import { byOrder, nextOrder } from '@/domain/ordering'
 import { normalize } from '@/domain/supersets'
@@ -290,6 +291,17 @@ export async function setDrops(id: string, drops: Drop[]): Promise<void> {
   await db.workoutSets.update(id, { drops })
 }
 
+/** Cambia una bajada sobre el valor actual, para que un guardado no pise otra casilla. */
+export async function updateDrop(id: string, index: number, patch: Partial<Drop>): Promise<void> {
+  await db.transaction('rw', db.workoutSets, async () => {
+    const set = await db.workoutSets.get(id)
+    if (!set || index >= set.drops.length) return
+    await db.workoutSets.update(id, {
+      drops: set.drops.map((d, i) => (i === index ? { ...d, ...patch } : d)),
+    })
+  })
+}
+
 /* ---------- Ejercicios del entreno ---------- */
 
 export async function addExercisesToWorkout(
@@ -424,6 +436,28 @@ export interface ClosingData {
   notes: string
 }
 
+/** Último cardio apuntado en un entreno terminado anterior a `before`. */
+async function lastCardioBefore(before: number): Promise<CardioValues | null> {
+  const done = await db.workouts.where('status').equals('terminado').toArray()
+  const latest = done
+    .filter((w) => w.cardio && w.startedAt < before)
+    .sort((a, b) => b.startedAt - a.startedAt)[0]
+  return latest?.cardio ?? null
+}
+
+export function useLastCardio(workout: Workout): CardioValues | null | undefined {
+  return useLiveQuery(() => lastCardioBefore(workout.startedAt), [workout.startedAt])
+}
+
+/** Cambia un dato del cardio sobre el valor actual. */
+export async function patchCardio(workoutId: string, patch: Partial<CardioValues>): Promise<void> {
+  await db.transaction('rw', db.workouts, async () => {
+    const w = await db.workouts.get(workoutId)
+    if (!w) return
+    await db.workouts.update(workoutId, { cardio: { ...EMPTY_CARDIO, ...w.cardio, ...patch } })
+  })
+}
+
 /** Cierra el entreno: guarda la duración activa y los datos de cierre. */
 export async function finishWorkout(workoutId: string, data: ClosingData): Promise<void> {
   await db.transaction('rw', db.workouts, async () => {
@@ -431,8 +465,13 @@ export async function finishWorkout(workoutId: string, data: ClosingData): Promi
     if (!w) return
     const now = Date.now()
     const pauses = w.pauses.map((p) => (p.end === undefined ? { ...p, end: now } : p))
+    // Los campos de cardio sin tocar aceptan los valores de la última vez
+    const cardio = w.cardio
+      ? resolveCardio(w.cardio, await lastCardioBefore(w.startedAt))
+      : undefined
     await db.workouts.update(workoutId, {
       ...data,
+      ...(cardio ? { cardio } : {}),
       status: 'terminado',
       endedAt: now,
       pauses,
@@ -446,7 +485,14 @@ export async function updateWorkout(
   patch: Partial<
     Pick<
       Workout,
-      'date' | 'activeSeconds' | 'avgHeartRate' | 'calories' | 'rating' | 'energy' | 'notes'
+      | 'date'
+      | 'activeSeconds'
+      | 'avgHeartRate'
+      | 'calories'
+      | 'rating'
+      | 'energy'
+      | 'notes'
+      | 'cardio'
     >
   >,
 ): Promise<void> {

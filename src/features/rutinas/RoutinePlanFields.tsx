@@ -169,7 +169,7 @@ function RangeInput({
       value={text}
       placeholder="—"
       onFocus={() => setFocused(true)}
-      onChange={(e) => setText(e.target.value.replace(/D/g, '').slice(0, 3))}
+      onChange={(e) => setText(e.target.value.replace(/\D/g, '').slice(0, 3))}
       onBlur={() => {
         setFocused(false)
         const v = text ? Number(text) : null

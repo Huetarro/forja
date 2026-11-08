@@ -80,6 +80,8 @@ export interface SessionData {
   calories?: number
   /** v2: sesión de descarga (no cuenta para el estancamiento) */
   deload?: boolean
+  /** v3: minutos de cardio del entreno */
+  cardioMinutes?: number
   exercises: Array<{ exerciseId: string; sets: SetLike[] }>
 }
 

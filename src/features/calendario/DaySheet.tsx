@@ -1,6 +1,6 @@
-import { useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Camera, ChevronRight, Dumbbell, Footprints, X } from 'lucide-react'
+import { Camera, ChevronRight, Dumbbell, Footprints, HeartPulse, X } from 'lucide-react'
 import { BlobImage } from '@/components/ui/BlobImage'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Group, Row, Switch, TextArea } from '@/components/ui/Form'
@@ -13,6 +13,7 @@ import {
   useRangeData,
   useSupplements,
 } from '@/db/days'
+import { formatCardio } from '@/domain/cardio'
 import { capitalize, longDate, type LocalDate } from '@/domain/dates'
 import { formatDuration } from '@/domain/timer'
 import { formatNumber } from '@/domain/units'
@@ -57,23 +58,33 @@ function DayContent({ date }: { date: LocalDate }) {
       {(range.workouts.length > 0 || range.runs.length > 0) && (
         <Group title="Actividad">
           {range.workouts.map((w) => (
-            <Link
-              key={w.id}
-              to={`/historial/${w.id}`}
-              className="flex min-h-12 items-center gap-3 px-4 active:bg-fill"
-            >
-              <span
-                className="grid size-7 place-items-center rounded-md text-white"
-                style={{ background: routineColor(range.routineColors.get(w.routineId) ?? 10) }}
+            <Fragment key={w.id}>
+              <Link
+                to={`/historial/${w.id}`}
+                className="flex min-h-12 items-center gap-3 px-4 active:bg-fill"
               >
-                <Dumbbell size={15} aria-hidden />
-              </span>
-              <span className="flex-1 truncate text-body">{w.routineName}</span>
-              <span className="tnum text-footnote text-ink-2">
-                {formatDuration(w.activeSeconds)}
-              </span>
-              <ChevronRight size={18} className="text-ink-3" aria-hidden />
-            </Link>
+                <span
+                  className="grid size-7 place-items-center rounded-md text-white"
+                  style={{ background: routineColor(range.routineColors.get(w.routineId) ?? 10) }}
+                >
+                  <Dumbbell size={15} aria-hidden />
+                </span>
+                <span className="flex-1 truncate text-body">{w.routineName}</span>
+                <span className="tnum text-footnote text-ink-2">
+                  {formatDuration(w.activeSeconds)}
+                </span>
+                <ChevronRight size={18} className="text-ink-3" aria-hidden />
+              </Link>
+              {w.cardio && (
+                <div className="flex min-h-12 items-center gap-3 px-4">
+                  <span className="grid size-7 place-items-center rounded-md bg-fill text-cardio">
+                    <HeartPulse size={15} aria-hidden />
+                  </span>
+                  <span className="flex-1 truncate text-body">Cardio</span>
+                  <span className="tnum text-footnote text-ink-2">{formatCardio(w.cardio)}</span>
+                </div>
+              )}
+            </Fragment>
           ))}
           {range.runs.map((r) => (
             <Link

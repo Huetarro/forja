@@ -29,6 +29,7 @@
   --c-danger-soft: rgba(255, 59, 48, 0.12);
   --c-run: #0a7cff;
   --c-run-soft: rgba(10, 124, 255, 0.14);
+  --c-cardio: #dc514d;
   --c-rest: #8e8e93;
   --c-warm: #946c00;
   --c-warm-soft: rgba(255, 204, 0, 0.22);
@@ -63,6 +64,7 @@
     --c-danger-soft: rgba(255, 69, 58, 0.2);
     --c-run: #409cff;
     --c-run-soft: rgba(64, 156, 255, 0.2);
+    --c-cardio: #f67972;
     --c-warm: #ffd60a;
     --c-warm-soft: rgba(255, 214, 10, 0.2);
     --c-neg: #c58af9;
@@ -96,6 +98,7 @@
   --c-danger-soft: rgba(255, 69, 58, 0.2);
   --c-run: #409cff;
   --c-run-soft: rgba(64, 156, 255, 0.2);
+  --c-cardio: #f67972;
   --c-warm: #ffd60a;
   --c-warm-soft: rgba(255, 214, 10, 0.2);
   --c-neg: #c58af9;
@@ -134,6 +137,7 @@
   --color-danger-soft: var(--c-danger-soft);
   --color-run: var(--c-run);
   --color-run-soft: var(--c-run-soft);
+  --color-cardio: var(--c-cardio);
   --color-rest: var(--c-rest);
   --color-warm: var(--c-warm);
   --color-warm-soft: var(--c-warm-soft);

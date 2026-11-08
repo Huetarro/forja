@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Flame, Trophy } from 'lucide-react'
 import { GYM, RUN } from '@/components/charts/chartTheme'
 import type { TrainingData } from '@/db/stats'
+import { minutesPerWeek } from '@/domain/cardio'
 import { capitalize, longDate, todayLocal } from '@/domain/dates'
 import { RECORD_LABEL } from '@/domain/records'
 import { computeStreak } from '@/domain/streak'
@@ -53,6 +54,9 @@ export default function OverviewTab({ data, bounds }: { data: TrainingData; boun
     .map((s) => ({ x: s.date, kcal: s.calories ?? null }))
   const records = recentRecords(data.sessions, bounds).slice(0, 8)
   const total = o.workouts + o.runs
+  const cardioTotal = (list: SessionData[]) => list.reduce((t, s) => t + (s.cardioMinutes ?? 0), 0)
+  const cardioWeek = minutesPerWeek(cardioTotal(cur), bounds.days)
+  const cardioPrevWeek = prev ? minutesPerWeek(cardioTotal(prev), bounds.days) : null
 
   return (
     <div>
@@ -110,6 +114,16 @@ export default function OverviewTab({ data, bounds }: { data: TrainingData; boun
           <div className="tnum text-footnote text-ink-2">Mejor: {streak.best} sem</div>
         </div>
       </TileGrid>
+
+      <div className="mt-3">
+        <StatTile
+          label="Cardio por semana"
+          value={`${Math.round(cardioWeek)} min`}
+          current={cardioWeek}
+          previous={cardioPrevWeek}
+          goodUp={false}
+        />
+      </div>
 
       {total > 0 && (
         <section className="mt-3 rounded-card bg-card p-4" aria-label="Reparto gimnasio y running">

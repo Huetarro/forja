@@ -50,6 +50,7 @@ export function MonthGrid({ weeks, data, today, onDay, onSwipe }: Props) {
               const label = [
                 `${WEEKDAY_NAMES[i]} ${dayNum}`,
                 m.workouts ? `${m.workouts} entreno${m.workouts > 1 ? 's' : ''}` : null,
+                m.cardio ? 'cardio' : null,
                 m.runs ? `${m.runs} carrera${m.runs > 1 ? 's' : ''}` : null,
                 m.rest ? 'descanso' : null,
                 m.allSupplements ? 'suplementos completos' : null,
@@ -91,6 +92,7 @@ export function MonthGrid({ weeks, data, today, onDay, onSwipe }: Props) {
                     )}
                   </span>
                   <span className="flex h-1.5 gap-[3px]" aria-hidden>
+                    {m.cardio && <span className="size-1.5 rounded-full bg-cardio" />}
                     {m.allSupplements && <span className="size-1.5 rounded-full bg-success" />}
                     {m.nutritionGood && <span className="size-1.5 rounded-full bg-warm" />}
                   </span>
@@ -113,6 +115,7 @@ export function CalendarLegend() {
     },
     { el: <span className="h-1 w-4 rounded-full bg-run" />, label: 'Running' },
     { el: <span className="h-1 w-4 rounded-full bg-rest" />, label: 'Descanso' },
+    { el: <span className="size-1.5 rounded-full bg-cardio" />, label: 'Cardio' },
     { el: <span className="size-1.5 rounded-full bg-success" />, label: 'Suplementos completos' },
     { el: <span className="size-1.5 rounded-full bg-warm" />, label: 'Alimentación bien' },
   ]

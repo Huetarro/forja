@@ -1,6 +1,6 @@
 ﻿# Forja — guía del proyecto
 
-App personal de gimnasio y running para iPhone (PWA instalada desde Safari). Interfaz en español de España. Usuario principal: Dani (no programa). Especificación completa y vinculante: [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md), con los cambios de la v2 en [docs/CAMBIOS-V2.md](docs/CAMBIOS-V2.md).
+App personal de gimnasio y running para iPhone (PWA instalada desde Safari). Interfaz en español de España. Usuario principal: Dani (no programa). Especificación completa y vinculante: [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md), con los cambios de la v2 en [docs/CAMBIOS-V2.md](docs/CAMBIOS-V2.md) y de la v3 en [docs/CAMBIOS-V3.md](docs/CAMBIOS-V3.md).
 
 ## Stack
 
@@ -22,7 +22,7 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 
 - `src/domain/` — funciones puras con tests `*.test.ts` al lado (fechas, unidades, cronómetro, superseries, búsqueda, tipos de serie, técnicas, plan semanal, descarga, km semanales, emparejado de nombres…).
 - `src/db/` — esquema (`schema.ts`), Dexie (`db.ts`) y repositorios con hooks `useLiveQuery` (`library.ts`, `routines.ts`, `workouts.ts`, `summary.ts`, `days.ts`, `runs.ts`, `stats.ts`, `sample.ts`, `settings.ts`, `plan.ts`, `planV2.ts`, `snapshot.ts`).
-- Migraciones: `db.ts` tiene `V1_STORES` (no tocar) y `version(2)` con copia interna previa (`snapshots`). Tests: `src/db/migration.test.ts` y `src/db/planV2.test.ts` (fake-indexeddb, datos de `v1Fixture.ts`); e2e `e2e/migracion.spec.ts` crea una base v1 real (`e2e/v1db.ts`). Cualquier `version(3)` necesita su propio test de migración.
+- Migraciones: `db.ts` tiene `V1_STORES` (no tocar) y `version(2)` con copia interna previa (`snapshots`). Tests: `src/db/migration.test.ts` y `src/db/planV2.test.ts` (fake-indexeddb, datos de `v1Fixture.ts`); e2e `e2e/migracion.spec.ts` crea una base v1 real (`e2e/v1db.ts`). `version(3)` añade `Workout.cardio` (test en `src/db/migrationV3.test.ts`). Cualquier versión nueva necesita su propio test de migración.
 - Plan v2: `planV2.ts` (datos + `loadPlanV2()` idempotente, `settings.planV2LoadedAt`); se lanza al arrancar con `src/app/useAutoLoadPlanV2.ts` si `planV2Pending`.
 - Iconos de rutina: `src/lib/routineStyle.ts` (lucide + anatómicos propios de `src/components/icons/AnatomyIcons.tsx`: pecho, espalda, pierna, torso, abdomen; trazo `currentColor`). Las rutinas del plan pasaron a ellos con `applyAnatomyIcons()` (`planV2.ts`, una vez, marcado en `settings.routineIconsV2At`, solo si conservaban el icono original).
 - Técnicas: rutina → `RoutineExercise` (`target`, `restSec`, `extras`, `negative`, `pause`); al empezar se copian al `WorkoutExercise` y `domain/workoutPlan.ts` crea las series (bajadas/mini-series en `drops`, descarga = mitad de series normales). Leyenda en `domain/techniques.ts`.
@@ -46,6 +46,8 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fechas locales `YYYY-MM-DD` (Europe/Madrid), semana lunes-domingo (`src/domain/dates.ts`).
 - Reglas de "Sube peso" en un único archivo: `src/domain/progressionRules.ts` (v2: tope del rango; "Tope alcanzado" sin kg; ignora la descarga).
 - Nada de `autoFocus` ni `.focus()` automáticos: el teclado solo se abre al tocar un campo (`src/lib/keyboard.ts`).
+- Nada puede quitar el foco mientras se teclea: `hideKeyboard()` solo al cerrar una hoja o tocar fuera, nunca en un render. `e2e/teclado.spec.ts` lo comprueba tecla a tecla (`.fill()` no detecta este fallo).
+- `NumberField` guarda con retardo: en un e2e, haz `blur()` antes de recargar la página.
 - En scripts de comprobación, no encadenar `npm run check | tail` con `&&`: la tubería oculta el fallo. Publicar solo si `npm run check` sale con código 0.
 - Al editar archivos con tildes desde PowerShell, usar las herramientas de edición (no `Get-Content`/`Set-Content`, que rompen el UTF-8).
 - `base` de Vite = `/forja/`. La URL https://huetarro.github.io/forja/ no debe cambiar nunca.
@@ -63,4 +65,4 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 
 - v2 (CAMBIOS-V2): terminada. Versión 2.1.0: iconos anatómicos de rutina.
 
-Formato de copia: `src/domain/backup.ts` (`BACKUP_VERSION` = 2, acepta 1); si cambia el esquema de Dexie, subir la versión de copia y aceptar las anteriores al importar.
+Formato de copia: `src/domain/backup.ts` (`BACKUP_VERSION` = 3, acepta 1 y 2); si cambia el esquema de Dexie, subir la versión de copia y aceptar las anteriores al importar.

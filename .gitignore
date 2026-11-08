@@ -7,3 +7,6 @@ playwright-report
 .env*
 screens
 prompt.md
+.claude/skills/
+diseno/*.zip
+propuestas/

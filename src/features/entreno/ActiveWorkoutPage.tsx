@@ -22,6 +22,7 @@ import { unlockAudio } from '@/lib/sound'
 import { useNow } from '@/lib/useNow'
 import { useRestTimer } from '@/stores/restTimer'
 import { confirm, toast } from '@/stores/ui'
+import { CardioBlock } from './CardioBlock'
 import { ClosingForm } from './ClosingForm'
 import { RestTimerBar } from './RestTimerBar'
 import { WorkoutExercises } from './WorkoutExercises'
@@ -126,6 +127,9 @@ export default function ActiveWorkoutPage() {
 
       <main className="px-safe mx-auto max-w-xl pt-2 pb-[calc(96px+env(safe-area-inset-bottom))]">
         <WorkoutExercises bundle={bundle} exercises={exercises} mode="live" />
+        <div className="mt-6">
+          <CardioBlock workout={workout} mode="live" />
+        </div>
         {routine?.stretches && <StretchList workout={workout} />}
         <button
           type="button"

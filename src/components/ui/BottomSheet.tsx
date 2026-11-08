@@ -29,15 +29,19 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
     onClose()
   }
 
+  // En una ref: `onClose` suele ser una función nueva en cada render y no debe relanzar el efecto
+  const onCloseRef = useRef(onClose)
   useEffect(() => {
-    if (!open) {
-      hideKeyboard()
-      return
-    }
+    onCloseRef.current = onClose
+  }, [onClose])
+
+  // Solo depende de `open`: el teclado se oculta al cerrarse la hoja, nunca en un render cualquiera
+  useEffect(() => {
+    if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         hideKeyboard()
-        onClose()
+        onCloseRef.current()
       }
     }
     document.addEventListener('keydown', onKey)
@@ -46,8 +50,9 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
     return () => {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
+      hideKeyboard()
     }
-  }, [open, onClose])
+  }, [open])
 
   /** Arrastre desde el contenido: solo si está arriba del todo y no se toca un control. */
   const grabFromContent = (e: React.PointerEvent) => {

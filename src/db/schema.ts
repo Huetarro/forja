@@ -1,3 +1,4 @@
+import type { CardioValues } from '@/domain/cardio'
 import type { LocalDate } from '@/domain/dates'
 import type { Pause } from '@/domain/timer'
 import type { WeightUnit } from '@/domain/units'
@@ -138,6 +139,8 @@ export interface Workout extends Sample {
   deload?: boolean
   /** v2: estiramientos marcados en este entreno */
   stretchesDone?: string[]
+  /** v3: cardio al final del entreno (ausente si no se hizo) */
+  cardio?: CardioValues
 }
 
 export interface WorkoutExercise extends Sample, ExercisePlan {

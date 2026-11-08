@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Celebration } from '@/components/ui/Celebration'
 import { NavBar } from '@/components/ui/NavBar'
 import { useSummary } from '@/db/summary'
+import { formatCardio } from '@/domain/cardio'
 import { capitalize, longDate } from '@/domain/dates'
 import { RECORD_LABEL, type SessionRecord } from '@/domain/records'
 import { formatDuration } from '@/domain/timer'
@@ -83,6 +84,12 @@ export default function SummaryPage() {
           </div>
         ))}
       </div>
+      {workout.cardio && (
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-card bg-card p-4">
+          <span className="text-footnote text-ink-2">Cardio</span>
+          <span className="tnum text-body font-semibold">{formatCardio(workout.cardio)}</span>
+        </div>
+      )}
       {summary.durationPct !== null && (
         <p className="mt-2 px-1 text-footnote text-ink-2">
           Porcentajes frente a la vez anterior de esta rutina.

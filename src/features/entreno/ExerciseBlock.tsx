@@ -153,14 +153,13 @@ export function ExerciseBlock({
         )}
 
         <div
-          className="mt-2 grid grid-cols-[38px_minmax(0,1fr)_68px_54px_40px_44px] gap-1.5 px-3 pb-1 text-caption font-semibold text-ink-2"
+          className="mt-2 grid grid-cols-[38px_minmax(0,1fr)_68px_54px_44px] gap-1.5 px-3 pb-1 text-caption font-semibold text-ink-2"
           aria-hidden
         >
           <span className="text-center">Serie</span>
           <span>Anterior</span>
           <span className="text-center">{unit}</span>
           <span className="text-center">{metricShort(metric)}</span>
-          <span className="text-center">RIR</span>
           <span />
         </div>
 

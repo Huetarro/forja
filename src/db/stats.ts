@@ -40,6 +40,7 @@ export function useTrainingData(): TrainingData | undefined {
       avgHeartRate: w.avgHeartRate,
       calories: w.calories,
       deload: w.deload === true,
+      cardioMinutes: w.cardio?.minutes ?? undefined,
       exercises: (wesByWorkout.get(w.id) ?? [])
         .sort((a, b) => a.order - b.order)
         .map((we) => ({ exerciseId: we.exerciseId, sets: sortSets(setsByWe.get(we.id) ?? []) })),

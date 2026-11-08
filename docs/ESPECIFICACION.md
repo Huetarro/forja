@@ -106,7 +106,7 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 - Al empezar desde una rutina se crea el entreno y arranca el cronómetro.
 - Cronómetro grande (hh:mm:ss) con pausar/reanudar. Se calcula con marcas de tiempo, así sigue siendo correcto aunque se bloquee el móvil o se cierre la app. El tiempo pausado no cuenta.
 - Cada cambio se guarda al instante. Si la app se cierra, al abrirla se recupera el entreno exactamente donde estaba.
-- Cada serie es una fila: tipo, kg, reps, RIR y check.
+- Cada serie es una fila: tipo, kg, reps y check (v3: sin RIR; los valores ya guardados se conservan sin mostrarse).
   - Al lado, "Anterior: 80 kg × 8": la misma serie en la última sesión de ese ejercicio, en cualquier rutina.
   - Kg y reps prerrellenados en gris con los valores anteriores. Si se marca el check sin tocarlos, se aceptan esos valores.
   - Unidad del ejercicio visible (kg o lb).
@@ -114,12 +114,12 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
   - Tipo de serie con un chip que se toca: Normal, Calentamiento (C), Dropset (D), Rest-pause (RP), Negativa (N).
   - v2: los dropsets y rest-pause de la rutina aparecen ya desplegados; el rest-pause muestra mini-series ("descansa 15 s") con el peso de la serie por defecto. Chips DS, DS x2, RP, NEG y PAUSA que abren la leyenda; nota "1-2 reps en reserva, salvo la última con técnica (al fallo)".
   - Dropset: al marcarlo, la fila se despliega con animación y muestra las bajadas (peso y reps de cada una), con botón "+ bajada" sin límite y opción de eliminar bajadas.
-  - RIR opcional con selector rápido (0, 1, 2, 3, 4, 5+).
   - Check grande para marcar la serie hecha; la fila cambia de estilo.
   - Añadir serie, duplicar la última y eliminar deslizando.
 - Notas del ejercicio en este entreno y acceso a sus notas fijas.
 - Superseries: ejercicios agrupados con una barra lateral de color.
 - Distintivo "Sube peso" en el ejercicio cuando se cumpla la regla de la sección 7, sin indicar cuántos kg.
+- v3: bloque "Cardio" al final de la lista con el interruptor "He hecho cardio", tiempo (min) e inclinación (0-30 %, admite 0,5), prerrellenados en gris con la última vez.
 - Todo modificable en directo: añadir, quitar y reordenar ejercicios; añadir y quitar series; cambiar tipos.
 - Temporizador de descanso OCULTO por defecto. Si se activa en Ajustes: arranca al marcar una serie, duración por defecto y por ejercicio, botones ±15 s y aviso visual y sonoro con la app abierta.
 - Botón "Terminar":
@@ -250,3 +250,12 @@ Detalle completo en [CAMBIOS-V2.md](CAMBIOS-V2.md).
 - **Semana de descarga**: mitad de series (redondeando hacia arriba), todas normales y sin técnicas; sesiones marcadas, fuera del estancamiento y de "Sube peso".
 - **Running**: km de esta semana, de la anterior y máximo recomendado (+10 %).
 - **Teclado**: ningún campo recibe el foco solo; las hojas se cierran tocando fuera, deslizando o con "Hecho" y ocultan el teclado; tocar fuera de un campo lo cierra.
+
+## 15. Actualización v3 (resumen)
+
+Detalle completo en [CAMBIOS-V3.md](CAMBIOS-V3.md).
+
+- **Datos**: Dexie `version(3)` con el campo opcional `Workout.cardio`; copias JSON versión 3 (se aceptan las anteriores).
+- **Teclado**: los campos de kg y reps mantienen el foco mientras se escribe; guardan con un pequeño retardo y, al momento, al salir del campo o pasar a segundo plano.
+- **RIR**: fuera de la interfaz y del CSV; los valores guardados se conservan en la base y en la copia JSON.
+- **Cardio**: se ve en el resumen, el historial (editable), la hoja del día, el calendario (punto rojo) y Estadísticas › Resumen (minutos por semana).
