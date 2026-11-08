@@ -53,7 +53,7 @@ function ProgramsBody() {
           aria-label="Nombre del nuevo programa"
           maxLength={40}
           enterKeyHint="done"
-          className="min-h-touch min-w-0 flex-1 rounded-md bg-card px-4 outline-none focus:ring-2 focus:ring-accent"
+          className="min-h-touch min-w-0 flex-1 rounded-md bg-card px-4 outline-none focus:ring-2 focus:ring-focus"
         />
         <Button type="submit" disabled={!name.trim()} icon={<FolderPlus size={18} />}>
           Crear
@@ -90,7 +90,7 @@ function ProgramsBody() {
                   toast(`“${p.name}” archivado`, () => setProgramArchived(p.id, false))
                 }}
                 aria-label={`Archivar ${p.name}`}
-                className="grid min-h-touch min-w-touch place-items-center text-ink-3"
+                className="grid min-h-touch min-w-touch place-items-center text-ink-2"
               >
                 <Archive size={19} />
               </button>

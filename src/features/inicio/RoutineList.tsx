@@ -102,7 +102,7 @@ export function RoutineList({ routines, programs, counts, lastDates }: Props) {
                           {meta(r)}
                         </span>
                       </span>
-                      <ChevronRight size={18} className="shrink-0 text-ink-3" aria-hidden />
+                      <ChevronRight size={18} className="shrink-0 text-ink-2" aria-hidden />
                     </Link>
                   </li>
                 ))}

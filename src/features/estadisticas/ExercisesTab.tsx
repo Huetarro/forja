@@ -106,7 +106,7 @@ export default function ExercisesTab({
                   ))}
                 {t === null ? '—' : `${formatNumber(Math.abs(t), 0)} %`}
               </span>
-              <ChevronRight size={18} className="text-ink-3" aria-hidden />
+              <ChevronRight size={18} className="text-ink-2" aria-hidden />
             </button>
           </li>
         )

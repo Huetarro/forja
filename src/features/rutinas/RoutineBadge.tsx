@@ -22,7 +22,7 @@ export function RoutineBadge({
       }}
       aria-hidden
     >
-      {createElement(routineIcon(icon), { size: size * 0.5, strokeWidth: 2.2 })}
+      {createElement(routineIcon(icon), { size: size * 0.5 })}
     </span>
   )
 }

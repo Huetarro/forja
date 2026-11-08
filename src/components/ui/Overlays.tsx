@@ -19,7 +19,7 @@ function ConfirmDialog() {
   return (
     <AnimatePresence>
       {req && (
-        <div className="fixed inset-0 z-[60] grid place-items-center px-10">
+        <div className="fixed inset-0 z-[60] grid place-items-center px-6">
           <motion.div
             className="absolute inset-0 bg-overlay"
             initial={{ opacity: 0 }}
@@ -31,23 +31,23 @@ function ConfirmDialog() {
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="confirm-title"
-            className="relative w-full max-w-[290px] overflow-hidden rounded-card bg-card-2 text-center"
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.18 }}
+            className="relative w-full max-w-[360px] rounded-card bg-raised shadow-[var(--sombra-pop)]"
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
           >
-            <div className="px-5 pt-5 pb-4">
-              <h2 id="confirm-title" className="text-body font-semibold">
+            <div className="px-6 pt-6 pb-4">
+              <h2 id="confirm-title" className="text-title3 font-semibold">
                 {req.title}
               </h2>
               {req.text && <p className="mt-1 text-footnote text-ink-2">{req.text}</p>}
             </div>
-            <div className="grid grid-cols-2 border-t border-sep">
+            <div className="flex flex-wrap justify-end gap-2 px-6 pb-6">
               <button
                 type="button"
                 onClick={() => req.resolve(false)}
-                className="min-h-touch border-r border-sep text-body text-accent-ink"
+                className="min-h-touch rounded-full bg-fill px-4 text-subhead text-ink"
               >
                 {req.cancelLabel ?? 'Cancelar'}
               </button>
@@ -55,8 +55,8 @@ function ConfirmDialog() {
                 type="button"
                 onClick={() => req.resolve(true)}
                 className={cn(
-                  'min-h-touch text-body font-semibold',
-                  req.destructive ? 'text-danger' : 'text-accent-ink',
+                  'min-h-touch rounded-full px-4 text-subhead',
+                  req.destructive ? 'bg-danger text-white' : 'bg-accent text-on-accent',
                 )}
               >
                 {req.confirmLabel}
@@ -83,10 +83,11 @@ function Toasts() {
           <motion.div
             key={t.id}
 
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            className="pointer-events-auto flex min-h-11 max-w-md items-center gap-2 rounded-full bg-[#2c2c2e] py-1 pr-1.5 pl-4 text-subhead font-medium text-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] ring-1 ring-white/10"
+            initial={{ opacity: 0, y: 12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.34, ease: [0.23, 1, 0.32, 1] }}
+            exit={{ opacity: 0, y: 6, scale: 0.98, transition: { duration: 0.18 } }}
+            className="pointer-events-auto flex min-h-11 max-w-md items-center gap-2 rounded-full bg-[var(--hud)] py-1 pr-1.5 pl-4 text-subhead text-ink shadow-[var(--sombra-pop)] backdrop-blur-[20px] backdrop-saturate-[1.8]"
           >
             <span>{t.text}</span>
             {t.undo && (
@@ -96,7 +97,7 @@ function Toasts() {
                   void t.undo?.()
                   dismiss(t.id)
                 }}
-                className="min-h-9 rounded-full px-3 font-semibold text-[#ff8a4c]"
+                className="min-h-9 rounded-full px-3 font-semibold text-accent-ink"
               >
                 Deshacer
               </button>

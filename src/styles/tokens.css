@@ -1,115 +1,181 @@
 /*
- * Forja — sistema de diseño. ÚNICO sitio con colores, radios, espaciados y tipografía.
- * Los colores son variables CSS que cambian según el tema (claro / oscuro).
- * Tailwind los expone como utilidades: bg-bg, bg-card, text-ink, text-accent-ink, etc.
+ * Forja — sistema de diseño «Cuaderno» (ver DESIGN.md). ÚNICO sitio con colores, radios,
+ * espaciados y tipografía. La interfaz es gris y azul; el color de los contenidos sale de
+ * la paleta 10 × 6 de DESIGN.md.
  */
 @import 'tailwindcss';
 
-/* Paleta por tema --------------------------------------------------------- */
 :root {
   color-scheme: light;
-  --c-bg: #f2f2f7;
-  --c-card: #ffffff;
-  --c-card-2: #e9e9ee;
-  --c-fill: rgba(120, 120, 128, 0.12);
-  --c-fill-strong: rgba(120, 120, 128, 0.2);
-  --c-sep: rgba(60, 60, 67, 0.16);
-  --c-ink: #000000;
-  --c-ink-2: rgba(60, 60, 67, 0.72);
-  --c-ink-3: rgba(60, 60, 67, 0.45);
-  /* Naranja forja: relleno idéntico en ambos temas, texto encima en negro (7,3:1) */
-  --c-accent: #ff6a1a;
-  --c-on-accent: #000000;
-  /* Naranja para texto/iconos sobre el fondo: oscurecido en claro para AA (4,6:1) */
-  --c-accent-ink: #c2410c;
-  --c-accent-soft: rgba(255, 106, 26, 0.14);
-  --c-success: #1f8a3b;
-  --c-success-soft: rgba(52, 199, 89, 0.16);
-  --c-danger: #d70015;
-  --c-danger-soft: rgba(255, 59, 48, 0.12);
-  --c-run: #0a7cff;
-  --c-run-soft: rgba(10, 124, 255, 0.14);
-  --c-cardio: #dc514d;
-  --c-rest: #8e8e93;
-  --c-warm: #946c00;
-  --c-warm-soft: rgba(255, 204, 0, 0.22);
-  --c-neg: #7c3fb5;
-  --c-neg-soft: rgba(142, 78, 198, 0.16);
-  --c-rp: #0a6680;
-  --c-rp-soft: rgba(10, 132, 160, 0.16);
-  --c-chart-run: #0a7cff;
-  --c-chart-gym: #c2410c;
-  --c-segment: #ffffff;
-  --c-tabbar: rgba(249, 249, 249, 0.86);
-  --c-overlay: rgba(0, 0, 0, 0.32);
+  --font: 'Inter Variable', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-title: var(--font);
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --tray: #e8e8ed;
+  --raised: #ffffff;
+  --fill: rgba(118, 118, 128, 0.12);
+  --fill-2: rgba(118, 118, 128, 0.2);
+  --line: rgba(0, 0, 0, 0.08);
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --btn: #0066cc;
+  --on-btn: #ffffff;
+  --accent: #0066cc;
+  --accent-soft: rgba(0, 113, 227, 0.12);
+  --focus: #0071e3;
+  --sel: rgba(0, 113, 227, 0.22);
+  --ok: #1d8a3b;
+  --ok-soft: rgba(29, 138, 59, 0.1);
+  --danger: #d70015;
+  --danger-soft: rgba(215, 0, 21, 0.08);
+  --run: #097974;
+  --run-soft: rgba(9, 121, 116, 0.14);
+  --cardio: #dc514d;
+  --rest: #83868e;
+  --warm: #896105;
+  --warm-soft: rgba(174, 124, 6, 0.16);
+  --neg: #8349ae;
+  --neg-soft: rgba(163, 99, 214, 0.16);
+  --rp: #a93772;
+  --rp-soft: rgba(209, 80, 145, 0.16);
+  --chart-run: #009a94;
+  --chart-gym: #575ac2;
+  --thumb: #ffffff;
+  --bar: rgba(245, 245, 247, 0.8);
+  --velo: rgba(0, 0, 0, 0.3);
+  --sombra-pop:
+    0 12px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --tono-1: #1d1d1f;
+  --tono-2: #3a3a3c;
+  --tono-3: #4f4f53;
+  --tono-4: #6e6e73;
+  --tono-5: #8e8e93;
+  --tono-6: #aeaeb2;
+  --surface-2: #fafafc;
+  --line-2: rgba(0, 0, 0, 0.16);
+  --btn-hover: #0077ed;
+  --hud: rgba(255, 255, 255, 0.9);
+  --sheet-well: #f5f5f7;
+  --sombra-lift: 0 18px 40px rgba(0, 0, 0, 0.18), 0 3px 10px rgba(0, 0, 0, 0.08);
+  --tono-7: #c7c7cc;
+  --tono-8: #dcdce1;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lista: 14px;
+  --r-lg: 18px;
+  --r-bandeja: 22px;
+  --gutter: 24px;
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+:root.apple {
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  --font-title: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --c-bg: #000000;
-    --c-card: #1c1c1e;
-    --c-card-2: #2c2c2e;
-    --c-fill: rgba(120, 120, 128, 0.24);
-    --c-fill-strong: rgba(120, 120, 128, 0.36);
-    --c-sep: rgba(84, 84, 88, 0.55);
-    --c-ink: #ffffff;
-    --c-ink-2: rgba(235, 235, 245, 0.68);
-    --c-ink-3: rgba(235, 235, 245, 0.4);
-    --c-accent-ink: #ff7a33;
-    --c-accent-soft: rgba(255, 106, 26, 0.2);
-    --c-success: #30d158;
-    --c-success-soft: rgba(48, 209, 88, 0.2);
-    --c-danger: #ff453a;
-    --c-danger-soft: rgba(255, 69, 58, 0.2);
-    --c-run: #409cff;
-    --c-run-soft: rgba(64, 156, 255, 0.2);
-    --c-cardio: #f67972;
-    --c-warm: #ffd60a;
-    --c-warm-soft: rgba(255, 214, 10, 0.2);
-    --c-neg: #c58af9;
-    --c-neg-soft: rgba(191, 90, 242, 0.22);
-    --c-rp: #64d2ff;
-    --c-rp-soft: rgba(100, 210, 255, 0.2);
-    --c-chart-run: #2f8cf5;
-    --c-chart-gym: #e2581a;
-    --c-segment: #636366;
-    --c-tabbar: rgba(22, 22, 24, 0.86);
-    --c-overlay: rgba(0, 0, 0, 0.6);
+    --bg: #000000;
+    --surface: #1c1c1e;
+    --tray: #141416;
+    --raised: #2c2c2e;
+    --fill: rgba(118, 118, 128, 0.24);
+    --fill-2: rgba(118, 118, 128, 0.36);
+    --line: rgba(255, 255, 255, 0.1);
+    --ink: #f5f5f7;
+    --ink-2: #98989d;
+    --ink-2: #98989d;
+    --btn: #0071e3;
+    --accent: #2997ff;
+    --accent-soft: rgba(10, 132, 255, 0.24);
+    --focus: #0a84ff;
+    --sel: rgba(10, 132, 255, 0.4);
+    --ok: #30d158;
+    --ok-soft: rgba(48, 209, 88, 0.16);
+    --danger: #ff453a;
+    --danger-soft: rgba(255, 69, 58, 0.16);
+    --run: #0cbdb6;
+    --run-soft: rgba(12, 189, 182, 0.2);
+    --cardio: #f67972;
+    --warm: #ebbc69;
+    --warm-soft: rgba(235, 188, 105, 0.2);
+    --neg: #c088ef;
+    --neg-soft: rgba(192, 136, 239, 0.22);
+    --rp: #ec78af;
+    --rp-soft: rgba(236, 120, 175, 0.2);
+    --chart-run: #009a94;
+    --chart-gym: #7076ec;
+    --thumb: #636366;
+    --bar: rgba(22, 22, 23, 0.8);
+    --velo: rgba(0, 0, 0, 0.6);
+    --sombra-pop: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+    --tono-1: #f5f5f7;
+    --tono-2: #d1d1d6;
+    --tono-3: #aeaeb2;
+    --tono-4: #8e8e93;
+    --tono-5: #6e6e73;
+    --tono-6: #545458;
+    --surface-2: #232325;
+    --line-2: rgba(255, 255, 255, 0.2);
+    --btn-hover: #0a84ff;
+    --hud: rgba(44, 44, 46, 0.92);
+    --sheet-well: #1c1c1e;
+    --sombra-lift: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+    --tono-7: #3a3a3c;
+    --tono-8: #2c2c2e;
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --c-bg: #000000;
-  --c-card: #1c1c1e;
-  --c-card-2: #2c2c2e;
-  --c-fill: rgba(120, 120, 128, 0.24);
-  --c-fill-strong: rgba(120, 120, 128, 0.36);
-  --c-sep: rgba(84, 84, 88, 0.55);
-  --c-ink: #ffffff;
-  --c-ink-2: rgba(235, 235, 245, 0.68);
-  --c-ink-3: rgba(235, 235, 245, 0.4);
-  --c-accent-ink: #ff7a33;
-  --c-accent-soft: rgba(255, 106, 26, 0.2);
-  --c-success: #30d158;
-  --c-success-soft: rgba(48, 209, 88, 0.2);
-  --c-danger: #ff453a;
-  --c-danger-soft: rgba(255, 69, 58, 0.2);
-  --c-run: #409cff;
-  --c-run-soft: rgba(64, 156, 255, 0.2);
-  --c-cardio: #f67972;
-  --c-warm: #ffd60a;
-  --c-warm-soft: rgba(255, 214, 10, 0.2);
-  --c-neg: #c58af9;
-  --c-neg-soft: rgba(191, 90, 242, 0.22);
-  --c-rp: #64d2ff;
-  --c-rp-soft: rgba(100, 210, 255, 0.2);
-  --c-chart-run: #2f8cf5;
-  --c-chart-gym: #e2581a;
-  --c-segment: #636366;
-  --c-tabbar: rgba(22, 22, 24, 0.86);
-  --c-overlay: rgba(0, 0, 0, 0.6);
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --tray: #141416;
+  --raised: #2c2c2e;
+  --fill: rgba(118, 118, 128, 0.24);
+  --fill-2: rgba(118, 118, 128, 0.36);
+  --line: rgba(255, 255, 255, 0.1);
+  --ink: #f5f5f7;
+  --ink-2: #98989d;
+  --btn: #0071e3;
+  --accent: #2997ff;
+  --accent-soft: rgba(10, 132, 255, 0.24);
+  --focus: #0a84ff;
+  --sel: rgba(10, 132, 255, 0.4);
+  --ok: #30d158;
+  --ok-soft: rgba(48, 209, 88, 0.16);
+  --danger: #ff453a;
+  --danger-soft: rgba(255, 69, 58, 0.16);
+  --run: #0cbdb6;
+  --run-soft: rgba(12, 189, 182, 0.2);
+  --cardio: #f67972;
+  --warm: #ebbc69;
+  --warm-soft: rgba(235, 188, 105, 0.2);
+  --neg: #c088ef;
+  --neg-soft: rgba(192, 136, 239, 0.22);
+  --rp: #ec78af;
+  --rp-soft: rgba(236, 120, 175, 0.2);
+  --chart-run: #009a94;
+  --chart-gym: #7076ec;
+  --thumb: #636366;
+  --bar: rgba(22, 22, 23, 0.8);
+  --velo: rgba(0, 0, 0, 0.6);
+  --sombra-pop: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+  --tono-1: #f5f5f7;
+  --tono-2: #d1d1d6;
+  --tono-3: #aeaeb2;
+  --tono-4: #8e8e93;
+  --tono-5: #6e6e73;
+  --tono-6: #545458;
+  --surface-2: #232325;
+  --line-2: rgba(255, 255, 255, 0.2);
+  --btn-hover: #0a84ff;
+  --hud: rgba(44, 44, 46, 0.92);
+  --sheet-well: #1c1c1e;
+  --sombra-lift: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+  --tono-7: #3a3a3c;
+  --tono-8: #2c2c2e;
 }
 
 /* Tokens de Tailwind ------------------------------------------------------ */
@@ -118,88 +184,88 @@
   --color-transparent: transparent;
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-bg: var(--c-bg);
-  --color-card: var(--c-card);
-  --color-card-2: var(--c-card-2);
-  --color-fill: var(--c-fill);
-  --color-fill-strong: var(--c-fill-strong);
-  --color-sep: var(--c-sep);
-  --color-ink: var(--c-ink);
-  --color-ink-2: var(--c-ink-2);
-  --color-ink-3: var(--c-ink-3);
-  --color-accent: var(--c-accent);
-  --color-on-accent: var(--c-on-accent);
-  --color-accent-ink: var(--c-accent-ink);
-  --color-accent-soft: var(--c-accent-soft);
-  --color-success: var(--c-success);
-  --color-success-soft: var(--c-success-soft);
-  --color-danger: var(--c-danger);
-  --color-danger-soft: var(--c-danger-soft);
-  --color-run: var(--c-run);
-  --color-run-soft: var(--c-run-soft);
-  --color-cardio: var(--c-cardio);
-  --color-rest: var(--c-rest);
-  --color-warm: var(--c-warm);
-  --color-warm-soft: var(--c-warm-soft);
-  --color-neg: var(--c-neg);
-  --color-neg-soft: var(--c-neg-soft);
-  --color-rp: var(--c-rp);
-  --color-rp-soft: var(--c-rp-soft);
-  --color-chart-run: var(--c-chart-run);
-  --color-chart-gym: var(--c-chart-gym);
-  --color-segment: var(--c-segment);
-  --color-tabbar: var(--c-tabbar);
-  --color-overlay: var(--c-overlay);
+  --color-bg: var(--bg);
+  --color-card: var(--surface);
+  --color-card-2: var(--tray);
+  --color-raised: var(--raised);
+  --color-focus: var(--focus);
+  --color-fill: var(--fill);
+  --color-fill-strong: var(--fill-2);
+  --color-sep: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-accent: var(--btn);
+  --color-on-accent: var(--on-btn);
+  --color-accent-ink: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--ok);
+  --color-success-soft: var(--ok-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-run: var(--run);
+  --color-run-soft: var(--run-soft);
+  --color-cardio: var(--cardio);
+  --color-rest: var(--rest);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
+  --color-neg: var(--neg);
+  --color-neg-soft: var(--neg-soft);
+  --color-rp: var(--rp);
+  --color-rp-soft: var(--rp-soft);
+  --color-chart-run: var(--chart-run);
+  --color-chart-gym: var(--chart-gym);
+  --color-segment: var(--thumb);
+  --color-tabbar: var(--bar);
+  --color-overlay: var(--velo);
 
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
-    'Segoe UI', Roboto, system-ui, sans-serif;
-  --font-display:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', 'Segoe UI', Roboto,
-    system-ui, sans-serif;
+  --font-sans: var(--font);
+  --font-display: var(--font-title);
+  /* Los títulos van siempre en 600 */
+  --font-weight-bold: 600;
+  --tracking-tight: -0.03em;
 
-  /* Escala tipográfica estilo iOS */
+  /* Escala de DESIGN.md: 12 etiquetas, 14 controles, 17 lectura */
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
-  --text-footnote: 0.8125rem;
-  --text-footnote--line-height: 1.125rem;
-  --text-subhead: 0.9375rem;
+  --text-footnote: 0.875rem;
+  --text-footnote--line-height: 1.2rem;
+  --text-subhead: 0.875rem;
   --text-subhead--line-height: 1.25rem;
   --text-body: 1.0625rem;
-  --text-body--line-height: 1.375rem;
-  --text-title3: 1.25rem;
-  --text-title3--line-height: 1.5rem;
-  --text-title2: 1.375rem;
-  --text-title2--line-height: 1.75rem;
+  --text-body--line-height: 1.5625rem;
+  --text-title3: 1.3125rem;
+  --text-title3--line-height: 1.5625rem;
+  --text-title2: 1.3125rem;
+  --text-title2--line-height: 1.5625rem;
   --text-title1: 1.75rem;
   --text-title1--line-height: 2.125rem;
-  --text-large: 2.125rem;
-  --text-large--line-height: 2.5rem;
+  --text-large: 2rem;
+  --text-large--line-height: 2.2rem;
   --text-hero: 3.5rem;
   --text-hero--line-height: 1;
 
-  --radius-sm: 10px;
-  --radius-md: 14px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --radius-card: 18px;
-  --radius-sheet: 22px;
+  --radius-sheet: 18px;
   --radius-full: 9999px;
 
   --spacing-gutter: 1rem;
   --spacing-touch: 2.75rem;
 
-  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-ios: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Paleta de rutinas (8-10 colores armónicos, legibles en ambos temas) */
+/* Rutinas: cada índice guardado apunta a una familia de la paleta, tono 4 (DESIGN.md §5) */
 :root {
-  --routine-1: #ff6a1a;
-  --routine-2: #ff9f0a;
-  --routine-3: #e5484d;
-  --routine-4: #d6409f;
-  --routine-5: #8e4ec6;
-  --routine-6: #3e63dd;
-  --routine-7: #0091ff;
-  --routine-8: #12a594;
-  --routine-9: #30a46c;
-  --routine-10: #8d8d86;
+  --routine-1: #d06203;
+  --routine-2: #ae7c06;
+  --routine-3: #dc514d;
+  --routine-4: #d15091;
+  --routine-5: #a363d6;
+  --routine-6: #7076ec;
+  --routine-7: #0289ea;
+  --routine-8: #009a94;
+  --routine-9: #2aa03a;
+  --routine-10: #83868e;
 }

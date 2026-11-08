@@ -65,7 +65,7 @@ export function BarsCard({
             tickFormatter={(v: number) => compact(v)}
           />
           <Tooltip
-            cursor={{ fill: 'var(--c-fill)' }}
+            cursor={{ fill: 'var(--fill)' }}
             content={({ active, payload }) => {
               const p = payload?.[0]?.payload as Point | undefined
               return active && p ? (
@@ -159,7 +159,7 @@ export function LinesCard({
             tickFormatter={(v: number) => compact(v)}
           />
           <Tooltip
-            cursor={{ stroke: 'var(--c-ink-3)', strokeWidth: 1 }}
+            cursor={{ stroke: 'var(--ink-2)', strokeWidth: 1 }}
             content={({ active, payload }) => {
               const p = payload?.[0]?.payload as Record<string, string | number | null> | undefined
               if (!active || !p) return null
@@ -191,7 +191,7 @@ export function LinesCard({
               dot={
                 s.dashed || data.length > 12
                   ? false
-                  : { r: 4, fill: s.color, stroke: 'var(--c-card)', strokeWidth: 2 }
+                  : { r: 4, fill: s.color, stroke: 'var(--surface)', strokeWidth: 2 }
               }
               activeDot={{ r: 6 }}
               isAnimationActive={false}

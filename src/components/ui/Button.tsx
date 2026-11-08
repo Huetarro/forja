@@ -12,16 +12,16 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-on-accent active:opacity-80',
+  primary: 'bg-accent text-on-accent',
   secondary: 'bg-fill text-ink active:bg-fill-strong',
-  plain: 'bg-transparent text-accent-ink active:opacity-60',
-  danger: 'bg-danger-soft text-danger active:opacity-70',
+  plain: 'bg-transparent text-accent-ink ',
+  danger: 'bg-danger-soft text-danger ',
 }
 
 const sizes: Record<Size, string> = {
   sm: 'min-h-9 px-3.5 text-subhead rounded-full',
-  md: 'min-h-touch px-5 text-body rounded-md',
-  lg: 'min-h-13 px-6 text-body rounded-md',
+  md: 'min-h-touch px-5 text-body rounded-full',
+  lg: 'min-h-13 px-6 text-body rounded-full',
 }
 
 export function Button({
@@ -38,7 +38,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold transition-[opacity,background-color] duration-150 disabled:opacity-40',
+        'inline-flex items-center justify-center gap-2 font-normal transition-[transform,background-color] duration-150 ease-ios active:scale-[.97] disabled:opacity-40',
         variants[variant],
         sizes[size],
         block && 'w-full',

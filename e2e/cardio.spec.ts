@@ -10,7 +10,7 @@ async function finish(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Terminar' }).click()
   await page.getByRole('button', { name: 'Descartar y terminar' }).click()
   await page.getByRole('button', { name: 'Guardar' }).click()
-  await expect(page.getByRole('heading', { name: '¡Entreno terminado!' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Entreno terminado' })).toBeVisible()
 }
 
 test('cardio: se apunta, se reutiliza y se ve en toda la app', async ({ page }) => {

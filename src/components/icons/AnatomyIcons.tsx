@@ -11,7 +11,7 @@ export interface AnatomyIconProps extends Omit<SVGProps<SVGSVGElement>, 'ref'> {
 
 function Svg({
   size = 24,
-  strokeWidth = 2,
+  strokeWidth = 1.8,
   children,
   ...rest
 }: AnatomyIconProps & { children: ReactNode }) {
@@ -20,11 +20,10 @@ function Svg({
       xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox="1 1 22 22"
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      // Algo más fino y más grande que lucide: estos iconos tienen más detalle
-      strokeWidth={Number(strokeWidth) * 0.92}
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -39,12 +38,10 @@ function Svg({
 export function ChestIcon(props: AnatomyIconProps) {
   return (
     <Svg {...props}>
-      <path d="M9 3.5c1.6 1.4 4.4 1.4 6 0" />
-      <path d="M9 3.5c-2.5.4-5 1-6 3-.6 1.5-.4 3.5 0 5.5" />
-      <path d="M15 3.5c2.5.4 5 1 6 3 .6 1.5.4 3.5 0 5.5" />
-      <path d="M6 9c.2 4 .8 8 1.6 12M18 9c-.2 4-.8 8-1.6 12" />
-      <path d="M6 9.5c.6 3.6 4 4.6 6 2.4 2 2.2 5.4 1.2 6-2.4" />
-      <path d="M12 7.5v4.4" />
+      <path d="M4 6c2.5-1.5 5-1.5 8 .5 3-2 5.5-2 8-.5" />
+      <path d="M4 6c-1 3-.8 6 .6 7.6 2.2 2 5.6 1.6 7.4-1.1 1.8 2.7 5.2 3.1 7.4 1.1 1.4-1.6 1.6-4.6.6-7.6" />
+      <path d="M12 6.5v6" />
+      <path d="M8.5 18.5c2.3 1 4.7 1 7 0" />
     </Svg>
   )
 }
@@ -53,10 +50,9 @@ export function ChestIcon(props: AnatomyIconProps) {
 export function BackIcon(props: AnatomyIconProps) {
   return (
     <Svg {...props}>
-      <path d="M10 3c-1 1.5-3.5 2-5.5 2.8C3 6.4 2.8 8.3 3.4 10" />
-      <path d="M14 3c1 1.5 3.5 2 5.5 2.8 1.5.6 1.7 2.5 1.1 4.2" />
-      <path d="M5.8 8.5c.9 3.6 2.4 6.5 3 12h6.4c.6-5.5 2.1-8.4 3-12" />
-      <path d="M12 6.5V19" />
+      <path d="M8 4c-1.5 1-3.5 1.5-5 2.5.5 3 2 5.5 4.5 7.5L9 21h6l1.5-7c2.5-2 4-4.5 4.5-7.5-1.5-1-3.5-1.5-5-2.5" />
+      <path d="M8 4c1 1.2 2.4 2 4 2s3-.8 4-2" />
+      <path d="M12 6v15" />
     </Svg>
   )
 }
@@ -65,9 +61,8 @@ export function BackIcon(props: AnatomyIconProps) {
 export function LegIcon(props: AnatomyIconProps) {
   return (
     <Svg {...props}>
-      <path d="M9.5 2.5c2.8 2.7 3.7 6.7 2.7 10.1-.4 1.4-.3 2.6 0 3.8.4 1.6.1 3-.2 4 2 .2 4.2.4 5.5 1H8" />
-      <path d="M5.5 2.5c-.5 4 .1 7.5 1.7 10.3.6 1.2.2 2.2-.6 3.6-.8 1.6-.2 3.6 1.4 5.2" />
-      <path d="M9.6 6c.8 2.4.9 4.4.3 6.2" />
+      <path d="M7.5 2c-.6 3.4-.4 6.6.8 9.6.6 1.6.4 3 0 4.6-.4 1.6-.3 3 .2 5.8h9c.4-1-.6-1.8-2-2.2l-2.8-.8c-.4-1.8-.2-3.6.4-5.4.8-2.4 1.6-4.6 1.6-7 0-1.8-.3-3.4-.8-4.6" />
+      <path d="M10 12.5c1 .6 2 .6 3 0" />
     </Svg>
   )
 }

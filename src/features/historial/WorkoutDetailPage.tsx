@@ -51,11 +51,10 @@ export default function WorkoutDetailPage() {
         }
       />
       <header className="pt-1 pb-5">
-        <p className="text-footnote font-semibold text-ink-2">
-          {capitalize(longDate(workout.date))}
+        <h1 className="font-display text-large font-bold tracking-tight">{workout.routineName}</h1>
+        <p className="tnum text-subhead text-ink-2">
+          {capitalize(longDate(workout.date))} · {formatDuration(workout.activeSeconds)}
         </p>
-        <h1 className="font-display text-title1 font-bold tracking-tight">{workout.routineName}</h1>
-        <p className="tnum text-subhead text-ink-2">{formatDuration(workout.activeSeconds)}</p>
       </header>
 
       {editing ? (
@@ -69,7 +68,7 @@ export default function WorkoutDetailPage() {
           <section>
             <h2 className="mb-2 px-1 text-title3 font-bold">Series</h2>
             <p className="mb-3 px-1 text-footnote text-ink-2">
-              Solo cuentan las series marcadas con ✓.
+              Solo cuentan las series marcadas como hechas.
             </p>
             <WorkoutExercises bundle={bundle} exercises={exercises} mode="edit" />
           </section>
@@ -103,7 +102,7 @@ export default function WorkoutDetailPage() {
           <WorkoutSetsView bundle={bundle} exercises={exercises} />
           <Link
             to={`/historial/${workout.id}/resumen`}
-            className="flex min-h-12 items-center justify-center gap-2 rounded-md bg-fill text-body font-semibold"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-fill text-body"
           >
             <BarChart3 size={18} /> Resumen y compartir
           </Link>

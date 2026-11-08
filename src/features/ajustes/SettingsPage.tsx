@@ -192,7 +192,7 @@ export default function SettingsPage() {
           </button>
         </Group>
 
-        <p className="tnum pt-2 text-center text-footnote text-ink-3">Forja v{__APP_VERSION__}</p>
+        <p className="tnum pt-2 text-center text-footnote text-ink-2">Forja v{__APP_VERSION__}</p>
       </div>
     </>
   )
@@ -211,7 +211,7 @@ function SettingsLink({
     <Link to={to} className="flex min-h-12 items-center gap-3 px-4 active:bg-fill">
       <span className="text-accent-ink">{icon}</span>
       <span className="flex-1 text-body">{children}</span>
-      <ChevronRight size={18} className="text-ink-3" aria-hidden />
+      <ChevronRight size={18} className="text-ink-2" aria-hidden />
     </Link>
   )
 }

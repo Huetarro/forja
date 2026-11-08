@@ -137,7 +137,7 @@ function RoutineMetaForm({ routine, onClose, onCreated, defaultProgramId }: Omit
               )}
               style={{ background: routineColor(c) }}
             >
-              {color === c && <Check size={18} strokeWidth={3} />}
+              {color === c && <Check size={18} />}
             </button>
           ))}
         </div>

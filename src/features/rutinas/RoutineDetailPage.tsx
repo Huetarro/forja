@@ -129,12 +129,7 @@ export default function RoutineDetailPage() {
       )}
 
       {items.length > 0 && !routine.archived && (
-        <Button
-          size="lg"
-          block
-          icon={<Play size={20} fill="currentColor" />}
-          onClick={() => void start(routine.id)}
-        >
+        <Button size="lg" block icon={<Play size={20} />} onClick={() => void start(routine.id)}>
           Empezar entreno
         </Button>
       )}

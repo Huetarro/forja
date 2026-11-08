@@ -23,7 +23,7 @@ export function MonthGrid({ weeks, data, today, onDay, onSwipe }: Props) {
     <div className="rounded-card bg-card px-2 pt-2 pb-3">
       <div className="grid grid-cols-7 pb-1" aria-hidden>
         {WEEKDAYS.map((d) => (
-          <span key={d} className="text-center text-caption font-semibold text-ink-3">
+          <span key={d} className="text-center text-caption font-semibold text-ink-2">
             {d}
           </span>
         ))}
@@ -110,7 +110,7 @@ export function MonthGrid({ weeks, data, today, onDay, onSwipe }: Props) {
 export function CalendarLegend() {
   const items = [
     {
-      el: <span className="h-1 w-4 rounded-full bg-accent" />,
+      el: <span className="h-1 w-4 rounded-full bg-chart-gym" />,
       label: 'Gimnasio (color de la rutina)',
     },
     { el: <span className="h-1 w-4 rounded-full bg-run" />, label: 'Running' },

@@ -81,7 +81,7 @@ export default function RunningPage() {
 
           <section>
             <h2 className="mb-2 flex items-center gap-2 px-1 text-title3 font-bold">
-              <Trophy size={19} className="text-accent-ink" aria-hidden /> Récords
+              <Trophy size={19} className="text-ink-2" aria-hidden /> Récords
             </h2>
             <ul className="divide-y divide-sep overflow-hidden rounded-card bg-card">
               <RecordRow

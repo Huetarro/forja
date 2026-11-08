@@ -32,11 +32,11 @@ export function InstallScreen({ onContinue }: Props) {
         <ol className="mt-8 space-y-3">
           {STEPS.map(({ icon: Icon, text }, i) => (
             <li key={i} className="flex items-center gap-4 rounded-card bg-card p-4">
-              <span className="tnum grid size-8 shrink-0 place-items-center rounded-full bg-accent text-subhead font-bold text-on-accent">
+              <span className="tnum grid size-8 shrink-0 place-items-center rounded-full bg-fill text-subhead font-bold text-ink-2">
                 {i + 1}
               </span>
               <span className="flex-1 text-subhead">{text}</span>
-              <Icon size={22} className="shrink-0 text-accent-ink" aria-hidden />
+              <Icon size={22} className="shrink-0 text-ink-2" aria-hidden />
             </li>
           ))}
         </ol>

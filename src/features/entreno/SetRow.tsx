@@ -135,9 +135,7 @@ export function SetRow({
             {sideLabel && <div className="text-caption font-semibold text-ink-2">{sideLabel}</div>}
             <div className="tnum flex items-center gap-1 truncate text-footnote text-ink-2">
               {prevText}
-              {isRecord && (
-                <Trophy size={13} className="shrink-0 text-accent-ink" aria-label="Récord" />
-              )}
+              {isRecord && <Trophy size={13} className="shrink-0 text-ink-2" aria-label="Récord" />}
             </div>
           </div>
 
@@ -173,7 +171,7 @@ export function SetRow({
             aria-pressed={done}
             className={cn(
               'grid size-11 place-items-center rounded-full transition-colors duration-200',
-              done ? 'bg-success text-white' : 'bg-fill text-ink-3',
+              done ? 'bg-success text-white' : 'bg-fill text-ink-2',
             )}
           >
             <motion.span
@@ -182,7 +180,7 @@ export function SetRow({
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 18 }}
             >
-              <Check size={22} strokeWidth={3} />
+              <Check size={22} />
             </motion.span>
           </motion.button>
         </div>
@@ -225,12 +223,7 @@ function DropsEditor({ set, metric }: { set: WorkoutSet; metric: ExerciseMetric 
   const repsName = metric === 'segundos' ? 'Segundos' : 'Reps'
   const save = (next: Drop[]) => void setDrops(set.id, next)
   return (
-    <div
-      className={cn(
-        'ml-[50px] space-y-1.5 border-l-2 pr-3 pb-2.5 pl-3',
-        rp ? 'border-rp/50' : 'border-accent/50',
-      )}
-    >
+    <div className={cn('ml-[50px] space-y-1.5 pr-3 pb-2.5 pl-3')}>
       {rp && <p className="text-footnote text-ink-2">Entre mini-series: {RP_REST_NOTE}</p>}
       {drops.map((d, i) => (
         <div key={i} className="grid grid-cols-[minmax(0,1fr)_68px_54px_36px] items-center gap-1.5">
@@ -253,7 +246,7 @@ function DropsEditor({ set, metric }: { set: WorkoutSet; metric: ExerciseMetric 
             type="button"
             onClick={() => save(drops.filter((_, k) => k !== i))}
             aria-label={`Eliminar ${name.toLowerCase()} ${i + 1}`}
-            className="grid size-9 place-items-center text-ink-3 active:text-danger"
+            className="grid size-9 place-items-center text-ink-2 active:text-danger"
           >
             <X size={17} />
           </button>

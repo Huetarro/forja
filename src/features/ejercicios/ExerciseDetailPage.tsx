@@ -75,7 +75,7 @@ export default function ExerciseDetailPage() {
         action={<NavButton onClick={() => setEditing(true)}>Editar</NavButton>}
       />
       <header className="pt-1 pb-5">
-        <h1 className="font-display text-title1 font-bold tracking-tight">{exercise.name}</h1>
+        <h1 className="font-display text-large font-bold tracking-tight">{exercise.name}</h1>
         <p className="mt-1 text-subhead text-ink-2">{exerciseMeta(exercise)}</p>
         {exercise.archived && (
           <p className="mt-2 inline-block rounded-full bg-fill px-2.5 py-0.5 text-footnote text-ink-2">

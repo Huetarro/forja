@@ -80,7 +80,7 @@ function SortableItem({ id, children }: { id: string; children: (h: ReactNode) =
       {...attributes}
       {...listeners}
       aria-label="Arrastrar para reordenar"
-      className="grid min-h-touch min-w-touch touch-none place-items-center text-ink-3"
+      className="grid min-h-touch min-w-touch touch-none place-items-center text-ink-2"
     >
       <GripVertical size={20} aria-hidden />
     </button>
@@ -94,7 +94,7 @@ function SortableItem({ id, children }: { id: string; children: (h: ReactNode) =
         zIndex: isDragging ? 10 : undefined,
         position: 'relative',
       }}
-      className={isDragging ? 'scale-[1.02] opacity-95 shadow-[0_10px_30px_rgba(0,0,0,0.25)]' : ''}
+      className={isDragging ? 'scale-[1.02] opacity-95 shadow-[var(--sombra-lift)]' : ''}
     >
       {children(handle)}
     </div>

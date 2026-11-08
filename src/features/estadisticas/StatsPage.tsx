@@ -59,7 +59,7 @@ export default function StatsPage() {
   return (
     <>
       {header}
-      <div className="sticky top-0 z-10 -mx-4 space-y-2 bg-bg/90 px-4 pt-1 pb-3 backdrop-blur-xl">
+      <div className="sticky top-0 z-10 -mx-4 space-y-2 bg-tabbar px-4 pt-1 pb-3 backdrop-blur-[20px] backdrop-saturate-[1.8]">
         <div
           role="tablist"
           aria-label="Secciones"
@@ -73,15 +73,15 @@ export default function StatsPage() {
               aria-selected={tab === t.key}
               onClick={() => set({ tab: t.key })}
               className={cn(
-                'min-h-9 shrink-0 rounded-full px-4 text-subhead font-semibold transition-colors',
-                tab === t.key ? 'bg-ink text-bg' : 'bg-fill text-ink',
+                'min-h-9 shrink-0 rounded-full px-4 text-subhead transition-colors',
+                tab === t.key ? 'bg-accent text-on-accent' : 'bg-fill text-ink',
               )}
             >
               {t.label}
             </button>
           ))}
         </div>
-        <div role="radiogroup" aria-label="Periodo" className="flex rounded-[11px] bg-fill p-0.5">
+        <div role="radiogroup" aria-label="Periodo" className="flex rounded-full bg-fill p-0.5">
           {RANGES.map((r) => (
             <button
               type="button"
@@ -90,7 +90,7 @@ export default function StatsPage() {
               aria-checked={range === r}
               onClick={() => set({ rango: r })}
               className={cn(
-                'min-h-8 flex-1 rounded-[9px] text-footnote font-semibold',
+                'min-h-8 flex-1 rounded-full text-footnote',
                 range === r
                   ? 'bg-segment text-ink shadow-[0_1px_3px_rgba(0,0,0,0.12)]'
                   : 'text-ink-2',

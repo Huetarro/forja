@@ -25,8 +25,8 @@ export function ExerciseBrowser({ exercises, renderItem, renderEmpty }: Props) {
 
   return (
     <div>
-      <div className="flex h-10 items-center gap-2 rounded-sm bg-fill px-2.5">
-        <Search size={17} className="shrink-0 text-ink-3" aria-hidden />
+      <div className="flex h-10 items-center gap-2 rounded-full bg-fill px-2.5">
+        <Search size={17} className="shrink-0 text-ink-2" aria-hidden />
         <input
           type="search"
           value={query}
@@ -41,7 +41,7 @@ export function ExerciseBrowser({ exercises, renderItem, renderEmpty }: Props) {
             type="button"
             onClick={() => setQuery('')}
             aria-label="Borrar búsqueda"
-            className="grid size-8 place-items-center text-ink-3"
+            className="grid size-8 place-items-center text-ink-2"
           >
             <X size={16} />
           </button>

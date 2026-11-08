@@ -66,13 +66,13 @@ export default function SummaryPage() {
     <>
       <NavBar backLabel="Inicio" />
       <header className="pt-1 pb-5">
-        <p className="text-footnote font-semibold text-ink-2">
+        <h1 className="font-display text-large font-bold tracking-tight">
+          {celebrate ? 'Entreno terminado' : workout.routineName}
+        </h1>
+        <p className="text-subhead text-ink-2">
+          {celebrate ? `${workout.routineName} · ` : ''}
           {capitalize(longDate(workout.date))}
         </p>
-        <h1 className="font-display text-large font-bold tracking-tight">
-          {celebrate ? '¡Entreno terminado!' : workout.routineName}
-        </h1>
-        {celebrate && <p className="text-subhead text-ink-2">{workout.routineName}</p>}
       </header>
 
       <div className="grid grid-cols-2 gap-3">
@@ -99,7 +99,7 @@ export default function SummaryPage() {
       {summary.records.length > 0 && (
         <section className="mt-6">
           <h2 className="mb-2 flex items-center gap-2 px-1 text-title3 font-bold">
-            <Trophy size={20} className="text-accent-ink" aria-hidden />
+            <Trophy size={20} className="text-ink-2" aria-hidden />
             {summary.records.length === 1
               ? 'Récord batido'
               : `${summary.records.length} récords batidos`}
@@ -114,7 +114,7 @@ export default function SummaryPage() {
                   </span>
                   <span className="block text-footnote text-ink-2">{RECORD_LABEL[r.kind]}</span>
                 </span>
-                <span className="tnum shrink-0 text-body font-bold text-accent-ink">
+                <span className="tnum shrink-0 text-body font-bold">
                   {recordValue(r, r.unit, r.seconds)}
                 </span>
               </li>

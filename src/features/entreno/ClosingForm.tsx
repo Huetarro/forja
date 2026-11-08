@@ -117,7 +117,7 @@ export function Scale({
             aria-label={`${label}: ${n}`}
             onClick={() => onChange(value === n ? undefined : n)}
             className={cn(
-              'tnum min-h-12 rounded-md text-body font-bold transition-colors',
+              'tnum min-h-12 rounded-full text-body font-bold transition-colors',
               value === n ? 'bg-accent text-on-accent' : 'bg-card text-ink',
             )}
           >

@@ -109,7 +109,7 @@ export default function OverviewTab({ data, bounds }: { data: TrainingData; boun
         <div className="rounded-card bg-card p-3.5">
           <div className="text-footnote text-ink-2">Racha</div>
           <div className="tnum mt-0.5 flex items-center gap-1 font-display text-title2 font-bold">
-            <Flame size={20} className="text-accent-ink" aria-hidden /> {streak.current} sem
+            <Flame size={20} className="text-ink-2" aria-hidden /> {streak.current} sem
           </div>
           <div className="tnum text-footnote text-ink-2">Mejor: {streak.best} sem</div>
         </div>
@@ -187,7 +187,7 @@ export default function OverviewTab({ data, bounds }: { data: TrainingData; boun
       <SectionTitle>Récords recientes</SectionTitle>
       {records.length === 0 ? (
         <p className="rounded-card bg-card px-4 py-4 text-subhead text-ink-2">
-          Ningún récord en este periodo. ¡A por ello!
+          Ningún récord en este periodo.
         </p>
       ) : (
         <ul className="divide-y divide-sep overflow-hidden rounded-card bg-card">
@@ -199,7 +199,7 @@ export default function OverviewTab({ data, bounds }: { data: TrainingData; boun
                   to={`/historial/${r.workoutId}`}
                   className="flex items-center gap-3 px-4 py-3 active:bg-fill"
                 >
-                  <Trophy size={18} className="shrink-0 text-accent-ink" aria-hidden />
+                  <Trophy size={18} className="shrink-0 text-ink-2" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-body font-semibold">
                       {ex?.name ?? 'Ejercicio'}

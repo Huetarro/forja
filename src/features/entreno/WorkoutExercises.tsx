@@ -61,7 +61,7 @@ export function WorkoutExercises({ bundle, exercises, mode }: Props) {
     if (mode !== 'live') return
     if (records.length) {
       setCelebrate((c) => c + 1)
-      toast(`¡Récord! ${records.map((r) => RECORD_LABEL[r]).join(' · ')}`)
+      toast(`Récord: ${records.map((r) => RECORD_LABEL[r]).join(' · ')}`)
     }
     if (settings?.restTimer.visible && set.type !== 'calentamiento') {
       // En superseries se pasa al siguiente ejercicio sin descanso; se descansa tras la pareja

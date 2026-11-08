@@ -20,7 +20,7 @@ export function applyTheme(pref: ThemePref): void {
   const dark = pref === 'dark' || (pref === 'auto' && systemPrefersDark())
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', dark ? '#000000' : '#F2F2F7')
+    ?.setAttribute('content', dark ? '#000000' : '#F5F5F7')
 }
 
 export function useApplyTheme(pref: ThemePref | undefined): void {

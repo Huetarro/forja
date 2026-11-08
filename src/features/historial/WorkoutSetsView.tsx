@@ -28,7 +28,7 @@ export function WorkoutSetsView({
               <div className="text-body font-semibold">{ex?.name ?? 'Ejercicio eliminado'}</div>
               {we.notes && <p className="text-footnote text-ink-2">{we.notes}</p>}
               {sets.length === 0 ? (
-                <p className="mt-1 text-footnote text-ink-3">Sin series hechas</p>
+                <p className="mt-1 text-footnote text-ink-2">Sin series hechas</p>
               ) : (
                 <ul className="mt-1.5 space-y-1">
                   {sets.map((s) => (
@@ -63,8 +63,8 @@ function SetLine({ set, unit, metric }: { set: WorkoutSet; unit: string; metric:
       </span>
       {set.drops.length > 0 && (
         <span className="text-footnote text-ink-2">
-          {set.type === 'restpause' ? 'RP' : '→'}{' '}
-          {set.drops.map((d) => `${formatNumber(d.weight ?? 0, 2)}×${d.reps ?? 0}`).join(' → ')}
+          {set.type === 'restpause' ? 'RP' : 'Bajadas'}{' '}
+          {set.drops.map((d) => `${formatNumber(d.weight ?? 0, 2)}×${d.reps ?? 0}`).join(' · ')}
         </span>
       )}
     </li>

@@ -114,7 +114,7 @@ export function ExerciseBlock({
             aria-expanded={showNotes}
             className={cn(
               'grid size-11 place-items-center rounded-full',
-              showNotes || exercise?.fixedNotes ? 'text-accent-ink' : 'text-ink-3',
+              showNotes || exercise?.fixedNotes ? 'text-accent-ink' : 'text-ink-2',
             )}
           >
             <StickyNote size={20} />
@@ -132,7 +132,7 @@ export function ExerciseBlock({
         {showNotes && (
           <div className="space-y-2 px-4 pt-2">
             {exercise?.fixedNotes && (
-              <p className="rounded-sm bg-accent-soft px-3 py-2 text-footnote whitespace-pre-line">
+              <p className="rounded-md bg-fill px-3 py-2 text-footnote whitespace-pre-line">
                 <span className="font-semibold">Notas fijas: </span>
                 {exercise.fixedNotes}
               </p>
@@ -147,7 +147,7 @@ export function ExerciseBlock({
               placeholder="Notas de hoy"
               aria-label="Notas del ejercicio en este entreno"
               maxLength={200}
-              className="h-10 w-full rounded-sm bg-fill px-3 text-subhead outline-none"
+              className="h-10 w-full rounded-md bg-fill px-3 text-subhead outline-none"
             />
           </div>
         )}
@@ -186,7 +186,7 @@ export function ExerciseBlock({
           <button
             type="button"
             onClick={() => void addSet(we.id, unilateral, false)}
-            className="flex min-h-touch items-center justify-center gap-1.5 rounded-md bg-fill text-subhead font-semibold"
+            className="flex min-h-touch items-center justify-center gap-1.5 rounded-full bg-fill text-subhead transition-transform duration-150 ease-ios active:scale-[.97]"
           >
             <Plus size={17} /> Serie
           </button>
@@ -194,7 +194,7 @@ export function ExerciseBlock({
             type="button"
             onClick={() => void addSet(we.id, unilateral, true)}
             disabled={sets.length === 0}
-            className="flex min-h-touch items-center justify-center gap-1.5 rounded-md bg-fill text-subhead font-semibold disabled:opacity-40"
+            className="flex min-h-touch items-center justify-center gap-1.5 rounded-full bg-fill text-subhead transition-transform duration-150 ease-ios active:scale-[.97] disabled:opacity-40"
           >
             <Copy size={16} /> Duplicar última
           </button>

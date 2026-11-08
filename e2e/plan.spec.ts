@@ -29,7 +29,7 @@ async function finish(page: Page): Promise<void> {
   // En estos flujos siempre quedan series sin marcar
   await page.getByRole('button', { name: 'Descartar y terminar' }).click()
   await page.getByRole('button', { name: 'Guardar' }).click()
-  await expect(page.getByRole('heading', { name: '¡Entreno terminado!' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Entreno terminado' })).toBeVisible()
 }
 
 test('lunes: empuje con NEG, DS x2 y rest-pause', async ({ page }) => {

@@ -51,7 +51,7 @@ export function Welcome() {
             autoComplete="given-name"
             enterKeyHint="done"
             maxLength={30}
-            className="h-13 w-full rounded-md bg-card px-4 text-body font-medium outline-none focus:ring-2 focus:ring-accent"
+            className="h-13 w-full rounded-md bg-card px-4 text-body font-medium outline-none focus:ring-2 focus:ring-focus"
           />
         </label>
 

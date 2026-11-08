@@ -22,7 +22,7 @@ import { parseLocalDate, todayLocal } from '@/domain/dates'
 import { formatPace, kmByMonth, kmByWeek, paceSecPerKm, paceTicks } from '@/domain/pace'
 import { formatNumber } from '@/domain/units'
 
-const RUN = 'var(--c-chart-run)'
+const RUN = 'var(--chart-run)'
 const fmtDay = (d: string) => format(parseLocalDate(d), 'd MMM', { locale: es })
 
 /** Gráficas de running (carga diferida). */
@@ -100,7 +100,7 @@ export default function RunCharts({ runs }: { runs: Run[] }) {
               width={44}
             />
             <Tooltip
-              cursor={{ fill: 'var(--c-fill)' }}
+              cursor={{ fill: 'var(--fill)' }}
               content={({ active, payload }) => {
                 const p = payload?.[0]?.payload as (typeof bars)[number] | undefined
                 return active && p ? (
@@ -149,7 +149,7 @@ export default function RunCharts({ runs }: { runs: Run[] }) {
                 width={44}
               />
               <Tooltip
-                cursor={{ stroke: 'var(--c-ink-3)', strokeWidth: 1 }}
+                cursor={{ stroke: 'var(--ink-2)', strokeWidth: 1 }}
                 content={({ active, payload }) => {
                   const p = payload?.[0]?.payload as (typeof paceData)[number] | undefined
                   return active && p ? (
@@ -168,7 +168,7 @@ export default function RunCharts({ runs }: { runs: Run[] }) {
                 dataKey="pace"
                 stroke={RUN}
                 strokeWidth={2}
-                dot={{ r: 4, fill: RUN, stroke: 'var(--c-card)', strokeWidth: 2 }}
+                dot={{ r: 4, fill: RUN, stroke: 'var(--surface)', strokeWidth: 2 }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>
@@ -224,7 +224,7 @@ export default function RunCharts({ runs }: { runs: Run[] }) {
                   ) : null
                 }}
               />
-              <Scatter data={hrData} fill={RUN} stroke="var(--c-card)" strokeWidth={2} />
+              <Scatter data={hrData} fill={RUN} stroke="var(--surface)" strokeWidth={2} />
             </ScatterChart>
           </ResponsiveContainer>
         </ChartCard>

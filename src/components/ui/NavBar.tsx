@@ -17,13 +17,13 @@ export function NavBar({ title, backLabel = 'Atrás', action }: Props) {
     else navigate('/')
   }
   return (
-    <div className="sticky top-0 z-20 -mx-4 grid grid-cols-[1fr_auto_1fr] items-center bg-bg/90 px-1 pt-1 backdrop-blur-xl">
+    <div className="sticky top-0 z-20 -mx-4 grid grid-cols-[1fr_auto_1fr] items-center bg-tabbar px-1 pt-1 backdrop-blur-[20px] backdrop-saturate-[1.8]">
       <button
         type="button"
         onClick={goBack}
         className="flex min-h-touch items-center justify-self-start pr-2 text-body text-accent-ink"
       >
-        <ChevronLeft size={26} strokeWidth={2.2} aria-hidden className="-mr-0.5" />
+        <ChevronLeft size={26} aria-hidden className="-mr-0.5" />
         {backLabel}
       </button>
       <span className="max-w-[45vw] truncate text-body font-semibold">{title}</span>

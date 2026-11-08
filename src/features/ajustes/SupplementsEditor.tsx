@@ -38,7 +38,7 @@ export function SupplementsEditor() {
                 }}
                 className={cn(
                   'min-h-12 min-w-0 flex-1 bg-transparent text-body outline-none',
-                  !s.active && 'text-ink-3',
+                  !s.active && 'text-ink-2',
                 )}
               />
               <Switch

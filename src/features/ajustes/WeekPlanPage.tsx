@@ -111,7 +111,7 @@ function DayRow({
             const label = e.target.value.trim()
             if (label && label !== plan.label) void setDayPlan(day, { ...plan, label })
           }}
-          className="mb-1 h-10 w-full rounded-sm bg-fill px-3 text-subhead outline-none"
+          className="mb-1 h-10 w-full rounded-md bg-fill px-3 text-subhead outline-none"
         />
       )}
     </div>
@@ -147,7 +147,7 @@ function StretchesEditor({ list }: { list: string[] }) {
             type="button"
             onClick={() => void setStretchList(list.filter((_, k) => k !== i))}
             aria-label={`Quitar ${name}`}
-            className="grid size-11 place-items-center text-ink-3 active:text-danger"
+            className="grid size-11 place-items-center text-ink-2 active:text-danger"
           >
             <X size={18} />
           </button>
@@ -167,7 +167,7 @@ function StretchesEditor({ list }: { list: string[] }) {
           aria-label="Nuevo estiramiento"
           enterKeyHint="done"
           maxLength={40}
-          className="min-h-11 flex-1 bg-transparent text-body outline-none placeholder:text-ink-3"
+          className="min-h-11 flex-1 bg-transparent text-body outline-none placeholder:text-ink-2"
         />
         <button
           type="submit"

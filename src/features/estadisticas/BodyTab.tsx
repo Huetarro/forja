@@ -45,7 +45,7 @@ export default function BodyTab({ data, bounds }: { data: TrainingData; bounds: 
               }))}
               series={[
                 { key: 'peso', name: 'Peso', color: GYM },
-                { key: 'media', name: 'Media 7 días', color: 'var(--c-ink-2)', dashed: true },
+                { key: 'media', name: 'Media 7 días', color: 'var(--ink-2)', dashed: true },
               ]}
               format={(v) => `${formatNumber(v, 1)} kg`}
               domain={['dataMin - 1', 'dataMax + 1']}

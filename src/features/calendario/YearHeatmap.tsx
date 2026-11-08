@@ -37,7 +37,7 @@ export function YearHeatmap({ today, onDay }: { today: LocalDate; onDay: (d: Loc
             const showMonth = firstDay && Number(firstDay.slice(8)) <= 7
             return (
               <div key={ci} className="flex flex-col gap-[3px]">
-                <span className="h-3 text-[9px] leading-3 whitespace-nowrap text-ink-3" aria-hidden>
+                <span className="h-3 text-[9px] leading-3 whitespace-nowrap text-ink-2" aria-hidden>
                   {showMonth ? format(parseLocalDate(firstDay), 'MMM', { locale: es }) : ''}
                 </span>
                 {col.map((d, di) =>
@@ -62,7 +62,7 @@ export function YearHeatmap({ today, onDay }: { today: LocalDate; onDay: (d: Loc
           })}
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-end gap-1 text-caption text-ink-3" aria-hidden>
+      <div className="mt-2 flex items-center justify-end gap-1 text-caption text-ink-2" aria-hidden>
         Menos
         {LEVEL_CLASS.map((c) => (
           <span key={c} className={cn('size-[11px] rounded-[3px]', c)} />

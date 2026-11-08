@@ -150,7 +150,7 @@ export default function ExerciseStats({ exercise, sessions, allSessions }: Props
       {tables.map(({ title, t }) => (
         <section key={title} className="rounded-card bg-card p-4">
           <h2 className="mb-2 flex items-center gap-2 text-body font-semibold">
-            <Trophy size={17} className="text-accent-ink" aria-hidden /> {title}
+            <Trophy size={17} className="text-ink-2" aria-hidden /> {title}
           </h2>
           <dl className="grid grid-cols-3 gap-2 border-b border-sep pb-3">
             {byReps && (

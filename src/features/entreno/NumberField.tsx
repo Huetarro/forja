@@ -110,7 +110,7 @@ export const NumberField = forwardRef<HTMLInputElement, Props>(function NumberFi
         timer.current = setTimeout(flush, SAVE_DELAY_MS)
       }}
       className={cn(
-        'tnum h-10 w-full min-w-0 rounded-sm bg-fill text-center text-body font-semibold outline-none placeholder:font-normal placeholder:text-ink-3 focus:ring-2 focus:ring-accent',
+        'tnum h-10 w-full min-w-0 rounded-md bg-fill text-center text-body font-semibold outline-none placeholder:font-normal placeholder:text-ink-2 focus:ring-2 focus:ring-focus',
         invalid && 'ring-2 ring-danger',
         className,
       )}

@@ -45,7 +45,7 @@ export default function ExercisesPage() {
                   <div className="truncate text-body font-medium">{e.name}</div>
                   <div className="truncate text-footnote text-ink-2">{exerciseMeta(e)}</div>
                 </div>
-                <ChevronRight size={18} className="text-ink-3" aria-hidden />
+                <ChevronRight size={18} className="text-ink-2" aria-hidden />
               </Link>
             )}
             renderEmpty={(q) => (

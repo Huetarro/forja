@@ -59,7 +59,7 @@ export function RoutineExerciseCard({
             type="button"
             onClick={onRemove}
             aria-label={`Quitar ${exercise?.name ?? 'ejercicio'}`}
-            className="grid min-h-touch min-w-touch place-items-center text-ink-3 active:text-danger"
+            className="grid min-h-touch min-w-touch place-items-center text-ink-2 active:text-danger"
           >
             <Trash2 size={19} />
           </button>
@@ -122,7 +122,7 @@ export function RoutineExerciseCard({
             placeholder="Notas del ejercicio en esta rutina"
             aria-label="Notas del ejercicio"
             maxLength={200}
-            className="mt-3 h-10 w-full rounded-sm bg-fill px-3 text-subhead outline-none placeholder:text-ink-3"
+            className="mt-3 h-10 w-full rounded-md bg-fill px-3 text-subhead outline-none placeholder:text-ink-2"
           />
         </div>
 
@@ -174,7 +174,7 @@ export function SupersetBar({ position }: { position: SupersetPosition }) {
     <span
       aria-hidden
       className={cn(
-        'absolute left-0 w-1 bg-accent',
+        'absolute left-0 w-0.5 bg-fill-strong',
         position === 'start' && 'top-4 -bottom-3 rounded-t-full',
         position === 'middle' && '-top-3 -bottom-3',
         position === 'end' && '-top-3 bottom-4 rounded-b-full',

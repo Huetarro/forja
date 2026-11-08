@@ -237,7 +237,7 @@ function TimeWheel({
       aria-label={label}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="h-10 appearance-none rounded-sm bg-fill px-2 text-center font-semibold outline-none"
+      className="h-10 appearance-none rounded-md bg-fill px-2 text-center font-semibold outline-none"
     >
       {Array.from({ length: max + 1 }, (_, i) => (
         <option key={i} value={i}>

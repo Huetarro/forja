@@ -90,7 +90,7 @@ export default function RoutineEditorPage() {
             {program?.name ?? 'Sin programa'}
           </span>
         </span>
-        <Pencil size={18} className="mr-1 text-ink-3" aria-label="Editar nombre, color e icono" />
+        <Pencil size={18} className="mr-1 text-ink-2" aria-label="Editar nombre, color e icono" />
       </button>
 
       <div className="mb-2 flex items-end justify-between px-1">

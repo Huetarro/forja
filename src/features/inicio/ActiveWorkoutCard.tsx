@@ -12,7 +12,7 @@ export function ActiveWorkoutCard({ workout }: { workout: Workout }) {
   return (
     <Link
       to="/entreno"
-      className="flex items-center gap-4 rounded-card bg-accent p-4 text-on-accent active:opacity-90"
+      className="flex items-center gap-4 rounded-card bg-accent p-4 text-on-accent "
       aria-label={`Entreno en curso: ${workout.routineName}. Continuar`}
     >
       <span className="min-w-0 flex-1">

@@ -30,16 +30,16 @@ export function BodyWeightCard() {
         }
         className="flex w-full items-center gap-3 rounded-card bg-card p-4 text-left active:bg-fill"
       >
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-ink">
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-fill text-ink-2">
           <Scale size={20} aria-hidden />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-footnote font-semibold text-ink-2">Peso de hoy</span>
+          <span className="block text-footnote text-ink-2">Peso de hoy</span>
           <span className="tnum block text-title3 font-bold">
             {s.today !== null ? (
               `${formatNumber(s.today, 1)} kg`
             ) : (
-              <span className="text-ink-3">Apuntar</span>
+              <span className="text-ink-2">Apuntar</span>
             )}
           </span>
           {s.today === null && s.last && (

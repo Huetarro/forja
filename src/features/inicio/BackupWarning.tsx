@@ -20,14 +20,14 @@ export function BackupWarning() {
       to="/ajustes#copia"
       className="flex items-center gap-3 rounded-card bg-card px-4 py-3 active:bg-fill"
     >
-      <ShieldAlert size={20} className="shrink-0 text-accent-ink" aria-hidden />
+      <ShieldAlert size={20} className="shrink-0 text-ink-2" aria-hidden />
       <span className="flex-1 text-subhead">
         {days === null
           ? 'Aún no has hecho ninguna copia de seguridad.'
           : `Tu última copia es de hace ${days} días.`}{' '}
         <span className="font-semibold text-accent-ink">Hacer copia</span>
       </span>
-      <ChevronRight size={18} className="text-ink-3" aria-hidden />
+      <ChevronRight size={18} className="text-ink-2" aria-hidden />
     </Link>
   )
 }

@@ -97,10 +97,10 @@ function PickerBody({
                   <span
                     className={cn(
                       'grid size-6 shrink-0 place-items-center rounded-full border-2 transition-colors',
-                      on ? 'border-accent bg-accent text-on-accent' : 'border-ink-3',
+                      on ? 'border-accent bg-accent text-on-accent' : 'border-ink-2',
                     )}
                   >
-                    {on && <Check size={14} strokeWidth={3} />}
+                    {on && <Check size={14} />}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-body font-medium">{e.name}</span>

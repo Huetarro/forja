@@ -16,7 +16,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
   ref,
 ) {
   const { workout, routine, summary } = data
-  const color = routine ? routineColor(routine.color) : '#ff6a1a'
+  const color = routine ? routineColor(routine.color) : '#83868e'
   const stats = [
     { label: 'Duración', value: formatDuration(summary.durationSec) },
     { label: 'Volumen', value: `${formatNumber(Math.round(summary.volumeKg), 0)} kg` },
@@ -29,10 +29,9 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
       style={{
         width: 360,
         height: 640,
-        background:
-          'radial-gradient(120% 70% at 85% 0%, rgba(255,106,26,0.55) 0%, rgba(255,106,26,0) 60%), #0a0a0a',
+        background: '#1d1d1f',
         fontFamily:
-          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter Variable", "Segoe UI", sans-serif',
       }}
       className="relative flex flex-col overflow-hidden p-7 text-white"
     >
@@ -44,7 +43,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
           height={30}
           style={{ borderRadius: 8 }}
         />
-        <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: -0.2 }}>Forja</span>
+        <span style={{ fontWeight: 600, fontSize: 17, letterSpacing: -0.2 }}>Forja</span>
       </div>
 
       <div className="mt-auto">
@@ -55,7 +54,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
           style={{
             fontSize: 40,
             lineHeight: 1.05,
-            fontWeight: 800,
+            fontWeight: 600,
             letterSpacing: -1,
             marginTop: 6,
           }}
@@ -80,7 +79,7 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
             <div
               style={{
                 fontSize: 30,
-                fontWeight: 800,
+                fontWeight: 600,
                 letterSpacing: -0.6,
                 fontVariantNumeric: 'tabular-nums',
               }}
@@ -101,8 +100,8 @@ export const ShareCard = forwardRef<HTMLDivElement, { data: SummaryData }>(funct
         >
           {summary.records.slice(0, 3).map((r, i) => (
             <div key={i} className="flex items-center gap-2" style={{ fontSize: 14 }}>
-              <Trophy size={16} color="#ff8a4c" />
-              <span style={{ fontWeight: 700 }}>{r.exerciseName}</span>
+              <Trophy size={16} color="#ffffff" />
+              <span style={{ fontWeight: 600 }}>{r.exerciseName}</span>
               <span style={{ color: 'rgba(255,255,255,0.7)' }}>{RECORD_LABEL[r.kind]}</span>
             </div>
           ))}

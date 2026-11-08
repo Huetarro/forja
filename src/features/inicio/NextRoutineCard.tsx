@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { CalendarDays, Coffee, Footprints, Play } from 'lucide-react'
 import type { DayPlan, Routine, RunType } from '@/db/schema'
-import { routineColor } from '@/lib/routineStyle'
 import { RUN_TYPES } from '@/lib/runTypes'
 import { RoutineBadge } from '@/features/rutinas/RoutineBadge'
 import { useStartWorkout } from '@/features/rutinas/useStartWorkout'
@@ -47,17 +46,10 @@ export function TodayCard({
   )
 }
 
-function Shell({ children, color }: { children: React.ReactNode; color?: string }) {
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <section className="relative overflow-hidden rounded-card bg-card p-4" aria-label="Te toca hoy">
-      {color && (
-        <span
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-1.5"
-          style={{ background: color }}
-        />
-      )}
-      <p className="text-footnote font-semibold text-ink-2">Te toca hoy</p>
+    <section className="rounded-card bg-card p-4" aria-label="Te toca hoy">
+      <p className="text-footnote text-ink-2">Te toca hoy</p>
       {children}
     </section>
   )
@@ -74,7 +66,7 @@ function Icon({ children }: { children: React.ReactNode }) {
 function RunDayCard({ label, runType }: { label: string; runType: RunType }) {
   const typeLabel = RUN_TYPES.find((t) => t.value === runType)?.label ?? 'Carrera'
   return (
-    <Shell color="var(--c-chart-run)">
+    <Shell>
       <div className="mt-2 flex items-center gap-3">
         <span className="grid size-12 shrink-0 place-items-center rounded-[14px] bg-chart-run text-white">
           <Footprints size={24} aria-hidden />
@@ -86,7 +78,7 @@ function RunDayCard({ label, runType }: { label: string; runType: RunType }) {
       </div>
       <Link
         to={`/running?nueva=1&tipo=${runType}`}
-        className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-accent text-body font-semibold text-on-accent active:opacity-80"
+        className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent text-body text-on-accent transition-transform duration-150 ease-ios active:scale-[.97]"
       >
         <Footprints size={18} aria-hidden />
         Registrar carrera
@@ -105,7 +97,7 @@ export function NextRoutineCard({
 }) {
   const start = useStartWorkout()
   return (
-    <Shell color={routineColor(routine.color)}>
+    <Shell>
       <Link to={`/rutinas/${routine.id}`} className="mt-2 flex items-center gap-3">
         <RoutineBadge color={routine.color} icon={routine.icon} size={48} />
         <span className="min-w-0">
@@ -121,9 +113,9 @@ export function NextRoutineCard({
         type="button"
         onClick={() => void start(routine.id)}
         disabled={exerciseCount === 0}
-        className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-accent text-body font-semibold text-on-accent active:opacity-80 disabled:opacity-40"
+        className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent text-body text-on-accent transition-transform duration-150 ease-ios active:scale-[.97] disabled:opacity-40"
       >
-        <Play size={18} fill="currentColor" aria-hidden />
+        <Play size={18} aria-hidden />
         Empezar
       </button>
     </Shell>

@@ -48,7 +48,7 @@ function Calculator() {
         </label>
       </div>
 
-      <div className="rounded-card bg-accent p-4 text-on-accent" aria-live="polite">
+      <div className="rounded-card bg-card p-4" aria-live="polite">
         <div className="text-footnote font-semibold opacity-80">1RM estimado (Epley)</div>
         <div className="tnum font-display text-hero font-bold tracking-tight">
           {rm === null ? '—' : formatNumber(rm, 1)}

@@ -63,7 +63,7 @@ export function ExerciseSessions({ exercise }: { exercise: Exercise }) {
         <button
           type="button"
           onClick={() => setAll(true)}
-          className="mt-2 min-h-touch w-full rounded-md bg-fill text-subhead font-semibold"
+          className="mt-2 min-h-touch w-full rounded-full bg-fill text-subhead"
         >
           Ver las {sessions.length} sesiones
         </button>

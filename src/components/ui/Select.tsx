@@ -17,7 +17,7 @@ export function Select({ className, children, ...rest }: SelectHTMLAttributes<HT
       </select>
       <ChevronsUpDown
         size={16}
-        className="pointer-events-none absolute right-0 text-ink-3"
+        className="pointer-events-none absolute right-0 text-ink-2"
         aria-hidden
       />
     </span>

@@ -41,20 +41,22 @@ export function RestTimerBar() {
         >
           <div
             className={cn(
-              'relative flex w-full max-w-md items-center gap-2 overflow-hidden rounded-full py-1.5 pr-1.5 pl-4 shadow-[0_10px_30px_rgba(0,0,0,0.3)]',
-              finished ? 'animate-pulse bg-accent text-on-accent' : 'bg-[#2c2c2e] text-white',
+              'relative flex w-full max-w-md items-center gap-2 overflow-hidden rounded-full py-1.5 pr-1.5 pl-4 shadow-[var(--sombra-pop)]',
+              finished
+                ? 'bg-accent text-on-accent'
+                : 'bg-[var(--hud)] text-ink backdrop-blur-[20px] backdrop-saturate-[1.8]',
             )}
           >
             {!finished && (
               <span
-                className="absolute inset-y-0 left-0 bg-white/10 transition-[width] duration-300"
+                className="absolute inset-y-0 left-0 bg-fill transition-[width] duration-300"
                 style={{ width: `${pct * 100}%` }}
                 aria-hidden
               />
             )}
             <Timer size={18} className="relative" aria-hidden />
             <span className="tnum relative flex-1 text-body font-bold">
-              {finished ? '¡A por la siguiente!' : formatClock(left, true)}
+              {finished ? 'Descanso terminado' : formatClock(left, true)}
             </span>
             {!finished && (
               <>

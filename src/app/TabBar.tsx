@@ -14,7 +14,7 @@ export function TabBar() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-sep bg-tabbar backdrop-blur-xl backdrop-saturate-150"
+      className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-sep bg-tabbar backdrop-blur-[20px] backdrop-saturate-[1.8]"
     >
       <ul className="mx-auto flex max-w-xl">
         {TABS.map(({ to, label, icon: Icon }) => (
@@ -24,14 +24,14 @@ export function TabBar() {
               end={to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'flex min-h-[50px] flex-col items-center justify-center gap-0.5 pt-1.5 text-[10px] font-medium tracking-tight transition-colors',
-                  isActive ? 'text-accent-ink' : 'text-ink-3',
+                  'flex min-h-[50px] flex-col items-center justify-center gap-0.5 pt-1.5 text-[10px] font-medium transition-colors',
+                  isActive ? 'text-accent-ink' : 'text-ink-2',
                 )
               }
             >
-              {({ isActive }) => (
+              {() => (
                 <>
-                  <Icon size={24} strokeWidth={isActive ? 2.3 : 1.9} aria-hidden />
+                  <Icon size={24} aria-hidden />
                   <span>{label}</span>
                 </>
               )}

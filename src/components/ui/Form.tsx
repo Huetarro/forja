@@ -46,7 +46,7 @@ export function TextInput({ className, ...rest }: InputHTMLAttributes<HTMLInputE
   return (
     <input
       className={cn(
-        'min-h-12 w-full bg-transparent px-4 text-body outline-none placeholder:text-ink-3',
+        'min-h-12 w-full bg-transparent px-4 text-body outline-none placeholder:text-ink-2',
         className,
       )}
       {...rest}
@@ -59,7 +59,7 @@ export function TextArea({ className, ...rest }: TextareaHTMLAttributes<HTMLText
     <textarea
       rows={3}
       className={cn(
-        'block w-full resize-none bg-transparent px-4 py-3 text-body outline-none placeholder:text-ink-3',
+        'block w-full resize-none bg-transparent px-4 py-3 text-body outline-none placeholder:text-ink-2',
         className,
       )}
       {...rest}
@@ -86,7 +86,7 @@ export function Switch({
       onClick={() => onChange(!checked)}
       className={cn(
         'relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors duration-200',
-        checked ? 'bg-success' : 'bg-fill-strong',
+        checked ? 'bg-accent' : 'bg-fill-strong',
       )}
     >
       <span

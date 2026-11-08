@@ -31,10 +31,10 @@ export function SupplementChips({
             onClick={() => void toggleSupplement(date, s.id)}
             className={cn(
               'flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-subhead font-medium transition-colors',
-              on ? 'bg-success text-white' : 'bg-fill text-ink',
+              on ? 'bg-accent text-on-accent' : 'bg-fill text-ink',
             )}
           >
-            {on && <Check size={15} strokeWidth={3} aria-hidden />}
+            {on && <Check size={15} aria-hidden />}
             {s.name}
           </button>
         )
@@ -72,9 +72,8 @@ export function NutritionToggle({ date, log }: { date: string; log: DayLog }) {
             aria-checked={on}
             onClick={() => void updateDayLog(date, { nutrition: on ? null : v })}
             className={cn(
-              'min-h-11 rounded-md text-subhead font-semibold transition-colors',
-              on && v === 'bien' && 'bg-success text-white',
-              on && v === 'mal' && 'bg-danger text-white',
+              'min-h-11 rounded-full text-subhead transition-colors',
+              on && 'bg-accent text-on-accent',
               !on && 'bg-fill text-ink',
             )}
           >

@@ -58,7 +58,7 @@ function PastWorkoutForm({ routineId, onClose }: { routineId: string; onClose: (
     >
       <p className="px-1 text-subhead text-ink-2">
         Se crea con los ejercicios de la rutina. Después apunta los kilos y reps y marca cada serie
-        con ✓.
+        como hechas.
       </p>
       <Group>
         <Row label="Fecha" htmlFor="past-date">

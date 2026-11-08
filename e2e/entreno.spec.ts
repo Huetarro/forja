@@ -83,7 +83,7 @@ test('entreno completo con dropset, negativa, unilateral y superserie; cierre y 
   await page.getByRole('button', { name: 'Guardar' }).click()
 
   // Resumen
-  await expect(page.getByRole('heading', { name: '¡Entreno terminado!' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Entreno terminado' })).toBeVisible()
   await expect(page.getByText('Series efectivas')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Compartir' })).toBeVisible()
   // Volumen: 80×8 + 14×10 + 14×9 = 906 kg
@@ -164,7 +164,7 @@ test('anterior, prerrelleno, "Sube peso" y récord en la segunda sesión', async
   // Récord de peso
   await logSet(press2, 'serie 2', '85', '5')
   await check(page, 'Press banca', 0)
-  await expect(page.getByText(/¡Récord!/)).toBeVisible()
+  await expect(page.getByText(/Récord:/)).toBeVisible()
 })
 
 test('añadir un entreno olvidado y editarlo desde el historial', async ({ page }) => {

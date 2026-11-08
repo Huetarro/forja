@@ -25,12 +25,12 @@ export function WeekCard() {
         <h2 className="text-body font-semibold">Esta semana</h2>
         <span
           className={cn(
-            'flex items-center gap-1 rounded-full px-2.5 py-1 text-footnote font-bold',
-            streak.current > 0 ? 'bg-accent-soft text-accent-ink' : 'bg-fill text-ink-2',
+            'flex items-center gap-1 rounded-full px-2.5 py-1 text-footnote',
+            'bg-fill text-ink-2',
           )}
           aria-label={`Racha: ${streak.current} ${streak.current === 1 ? 'semana' : 'semanas'}`}
         >
-          <Flame size={15} aria-hidden fill={streak.current > 0 ? 'currentColor' : 'none'} />
+          <Flame size={15} aria-hidden />
           <span className="tnum">
             {streak.current} {streak.current === 1 ? 'semana' : 'semanas'}
           </span>
@@ -44,16 +44,16 @@ export function WeekCard() {
             m.gymColors[0] !== undefined
               ? routineColor(m.gymColors[0])
               : m.runs > 0
-                ? 'var(--c-run)'
+                ? 'var(--run)'
                 : m.rest
-                  ? 'var(--c-rest)'
+                  ? 'var(--rest)'
                   : undefined
           return (
             <li key={d} className="flex flex-col items-center gap-1.5">
               <span
                 className={cn(
                   'text-caption font-semibold',
-                  d === today ? 'text-accent-ink' : 'text-ink-3',
+                  d === today ? 'text-accent-ink' : 'text-ink-2',
                 )}
               >
                 {LETTERS[i]}

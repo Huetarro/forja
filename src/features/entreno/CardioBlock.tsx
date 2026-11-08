@@ -39,9 +39,8 @@ export function CardioBlock({ workout, mode }: Props) {
       {cardio && (
         <>
           <Row label="Tiempo">
-            <span className="flex items-center gap-1.5 text-ink-2">
+            <span className="flex w-24 items-center gap-1.5 text-ink-2">
               <NumberField
-                className="w-16"
                 label="Tiempo de cardio en minutos"
                 value={cardio.minutes}
                 placeholder={last?.minutes ?? null}
@@ -51,11 +50,10 @@ export function CardioBlock({ workout, mode }: Props) {
             </span>
           </Row>
           <Row label="Inclinación">
-            <span className="flex items-center gap-1.5 text-ink-2">
+            <span className="flex w-24 items-center gap-1.5 text-ink-2">
               <NumberField
                 decimal
                 max={MAX_INCLINE}
-                className="w-16"
                 label="Inclinación del cardio en porcentaje"
                 value={cardio.incline}
                 placeholder={last?.incline ?? null}

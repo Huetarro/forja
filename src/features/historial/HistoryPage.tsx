@@ -66,7 +66,7 @@ export default function HistoryPage() {
                           {formatDuration(w.activeSeconds)}
                         </span>
                       </span>
-                      <ChevronRight size={18} className="text-ink-3" aria-hidden />
+                      <ChevronRight size={18} className="text-ink-2" aria-hidden />
                     </Link>
                   </li>
                 ))}

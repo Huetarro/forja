@@ -2,9 +2,11 @@
 
 App personal de gimnasio y running para iPhone (PWA instalada desde Safari). Interfaz en español de España. Usuario principal: Dani (no programa). Especificación completa y vinculante: [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md), con los cambios de la v2 en [docs/CAMBIOS-V2.md](docs/CAMBIOS-V2.md) y de la v3 en [docs/CAMBIOS-V3.md](docs/CAMBIOS-V3.md).
 
+**Diseño:** [DESIGN.md](DESIGN.md) es el sistema «Cuaderno» y manda sobre cualquier otra indicación de estilo; sustituye a la sección 3 de la especificación.
+
 ## Stack
 
-Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tokens.css`) · HashRouter · Dexie + dexie-react-hooks · Zustand (solo UI) · Recharts (lazy) · date-fns/es · lucide-react · motion · dnd-kit · vite-plugin-pwa · html-to-image · Vitest · ESLint + Prettier · Playwright.
+Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens de DESIGN.md en `src/styles/tokens.css`, CSS literal de su sección 6 en `src/styles/cuaderno.css`, capa base) · HashRouter · Dexie + dexie-react-hooks · Zustand (solo UI) · Recharts (lazy) · date-fns/es · lucide-react · motion · dnd-kit · vite-plugin-pwa · html-to-image · Vitest · ESLint + Prettier · Playwright.
 
 ## Comandos (PowerShell)
 
@@ -35,7 +37,7 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 ## Gráficas
 
 - Recharts solo en componentes cargados con `React.lazy` (p. ej. `RunCharts.tsx`); piezas comunes en `src/components/charts/`.
-- Colores de gráfica: tokens `--c-chart-run` y `--c-chart-gym` (validados con la skill dataviz en claro y oscuro). Un solo eje, sin leyenda si hay una serie, tooltip siempre y tabla `sr-only`.
+- Colores de gráfica: tokens `--chart-run` y `--chart-gym` (validados con la skill dataviz en claro y oscuro). Un solo eje, sin leyenda si hay una serie, tooltip siempre y tabla `sr-only`.
 
 ## Convenciones
 
@@ -63,6 +65,7 @@ Vite + React + TypeScript estricto · Tailwind CSS v4 (tokens en `src/styles/tok
 - Fase 6 (Estadísticas, figura muscular, récords, calculadora 1RM): terminada.
 - Fase 7 (Ajustes, copias JSON/CSV, datos de ejemplo, borrar todo, pulido y pruebas finales): terminada.
 
-- v2 (CAMBIOS-V2): terminada. Versión 2.1.0: iconos anatómicos de rutina.
+- v2 (CAMBIOS-V2): terminada.
+- v3 (CAMBIOS-V3): terminada. Versión 3.0.0: arreglo del teclado, sin RIR, cardio y rediseño «Cuaderno».
 
 Formato de copia: `src/domain/backup.ts` (`BACKUP_VERSION` = 3, acepta 1 y 2); si cambia el esquema de Dexie, subir la versión de copia y aceptar las anteriores al importar.

@@ -93,7 +93,7 @@ export default function HomePage() {
 
           <BackupWarning />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="divide-y divide-sep overflow-hidden rounded-card bg-card">
             <QuickAction icon={Plus} onClick={() => setCreating(true)}>
               Nueva rutina
             </QuickAction>
@@ -134,8 +134,7 @@ function QuickAction({
   to?: string
   onClick?: () => void
 }) {
-  const cls =
-    'flex min-h-14 items-center gap-2.5 rounded-card bg-card px-4 text-body font-medium active:bg-fill'
+  const cls = 'flex min-h-14 w-full items-center gap-3 px-4 text-body active:bg-fill'
   const content = (
     <>
       <Icon size={20} className="text-accent-ink" aria-hidden />

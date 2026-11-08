@@ -79,11 +79,11 @@ export function BottomSheet({ open, onClose, title, children, action, tall }: Pr
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className={`absolute inset-x-0 bottom-0 mx-auto flex max-w-xl flex-col rounded-t-sheet bg-bg ${tall ? 'h-[92dvh]' : 'max-h-[92dvh]'}`}
+            className={`absolute inset-x-0 bottom-0 mx-auto flex max-w-xl flex-col rounded-t-sheet bg-raised [--surface:var(--sheet-well)] shadow-[var(--sombra-pop)] ${tall ? 'h-[92dvh]' : 'max-h-[92dvh]'}`}
             initial={reduce ? { opacity: 0 } : { y: '100%' }}
             animate={reduce ? { opacity: 1 } : { y: 0 }}
             exit={reduce ? { opacity: 0 } : { y: '100%' }}
-            transition={{ type: 'tween', duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
+            transition={{ type: 'tween', duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
             drag={reduce ? false : 'y'}
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.6 }}

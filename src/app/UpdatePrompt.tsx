@@ -23,8 +23,8 @@ export function UpdatePrompt() {
       className="fixed inset-x-0 z-50 flex justify-center px-4"
       style={{ top: 'calc(env(safe-area-inset-top) + 8px)' }}
     >
-      <div className="flex items-center gap-3 rounded-full bg-card py-1.5 pr-1.5 pl-4 shadow-[0_6px_24px_rgba(0,0,0,0.18)] ring-1 ring-sep">
-        <RefreshCw size={16} className="text-accent-ink" aria-hidden />
+      <div className="flex items-center gap-3 rounded-full bg-card py-1.5 pr-1.5 pl-4 shadow-[var(--sombra-pop)] ring-1 ring-sep">
+        <RefreshCw size={16} className="text-ink-2" aria-hidden />
         <span className="text-subhead font-medium">Nueva versión disponible</span>
         <button
           type="button"

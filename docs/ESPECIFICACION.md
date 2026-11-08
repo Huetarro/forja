@@ -39,6 +39,8 @@ Vas a construir desde cero una app llamada **Forja**. El usuario principal es Da
 
 ## 3. Diseño
 
+> **v3:** esta sección queda sustituida por [DESIGN.md](../DESIGN.md) (sistema «Cuaderno»): el único color de acción es el azul del sistema y ya no hay acento naranja. Se conserva como referencia histórica.
+
 - Estilo minimalista y profesional inspirado en Apple Fitness y en iOS nativo: limpio, mucho aire, jerarquía tipográfica clara, tarjetas con esquinas de 16-20 px, sin sombras pesadas.
 - Tipografía del sistema (-apple-system / SF Pro). Números con `font-variant-numeric: tabular-nums` (cronómetro, kg, reps).
 - Tema automático según el iPhone, con opción en Ajustes de forzar claro u oscuro. Oscuro: fondo negro #000 y tarjetas gris muy oscuro. Claro: fondo #F2F2F7 y tarjetas blancas.
@@ -258,4 +260,5 @@ Detalle completo en [CAMBIOS-V3.md](CAMBIOS-V3.md).
 - **Datos**: Dexie `version(3)` con el campo opcional `Workout.cardio`; copias JSON versión 3 (se aceptan las anteriores).
 - **Teclado**: los campos de kg y reps mantienen el foco mientras se escribe; guardan con un pequeño retardo y, al momento, al salir del campo o pasar a segundo plano.
 - **RIR**: fuera de la interfaz y del CSV; los valores guardados se conservan en la base y en la copia JSON.
+- **Diseño**: sistema «Cuaderno» de DESIGN.md en todas las pantallas (solo visual, sin cambios en la base de datos). Pista de series en el entreno, iconos de trazo y colores de contenido de la paleta 10 × 6.
 - **Cardio**: se ve en el resumen, el historial (editable), la hoja del día, el calendario (punto rojo) y Estadísticas › Resumen (minutos por semana).

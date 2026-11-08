@@ -13,7 +13,7 @@ export function TooltipBox({
   rows: Array<{ label: string; value: string; color?: string }>
 }) {
   return (
-    <div className="rounded-sm bg-card-2 px-3 py-2 text-footnote shadow-[0_6px_20px_rgba(0,0,0,0.2)] ring-1 ring-sep">
+    <div className="rounded-sm bg-raised px-3 py-2 text-footnote shadow-[var(--sombra-pop)] ring-1 ring-sep">
       <div className="mb-0.5 font-semibold text-ink">{title}</div>
       {rows.map((r) => (
         <div key={r.label} className="tnum flex items-center gap-1.5 text-ink-2">

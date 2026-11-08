@@ -100,7 +100,7 @@ export function BodyFigure({ sets, selected, onSelect }: Props) {
         aria-label={`Cuerpo, ${title}`}
       >
         {neutral.map((s, i) => (
-          <ShapeEl key={i} s={s} fill="var(--c-fill-strong)" />
+          <ShapeEl key={i} s={s} fill="var(--fill-2)" />
         ))}
         {(Object.entries(map) as Array<[Muscle, Shape[]]>).map(([muscle, shapes]) => {
           const n = sets.get(muscle) ?? 0
@@ -118,15 +118,15 @@ export function BodyFigure({ sets, selected, onSelect }: Props) {
               className="cursor-pointer outline-none"
             >
               {shapes.map((s, i) => (
-                <ShapeEl key={`b${i}`} s={s} fill="var(--c-fill-strong)" />
+                <ShapeEl key={`b${i}`} s={s} fill="var(--fill-2)" />
               ))}
               {shapes.map((s, i) => (
                 <ShapeEl
                   key={i}
                   s={s}
-                  fill="var(--c-accent)"
+                  fill="var(--chart-gym)"
                   fillOpacity={LEVEL_OPACITY[level]}
-                  stroke={isSel ? 'var(--c-ink)' : 'var(--c-card)'}
+                  stroke={isSel ? 'var(--ink)' : 'var(--surface)'}
                   strokeWidth={isSel ? 1.6 : 1}
                 />
               ))}
@@ -151,7 +151,7 @@ export function BodyFigure({ sets, selected, onSelect }: Props) {
         0
         {LEVEL_OPACITY.map((o, i) => (
           <span key={i} className="h-2.5 w-6 rounded-sm bg-fill-strong">
-            <span className="block size-full rounded-sm bg-accent" style={{ opacity: o }} />
+            <span className="block size-full rounded-sm bg-chart-gym" style={{ opacity: o }} />
           </span>
         ))}
         16+ series

@@ -37,7 +37,7 @@ export default function ArchivedPage() {
               >
                 <RoutineBadge color={r.color} icon={r.icon} size={34} />
                 <span className="min-w-0 flex-1 truncate text-body">{r.name}</span>
-                <ChevronRight size={18} className="text-ink-3" aria-hidden />
+                <ChevronRight size={18} className="text-ink-2" aria-hidden />
               </Link>
             ))}
           </Group>

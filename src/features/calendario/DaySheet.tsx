@@ -73,7 +73,7 @@ function DayContent({ date }: { date: LocalDate }) {
                 <span className="tnum text-footnote text-ink-2">
                   {formatDuration(w.activeSeconds)}
                 </span>
-                <ChevronRight size={18} className="text-ink-3" aria-hidden />
+                <ChevronRight size={18} className="text-ink-2" aria-hidden />
               </Link>
               {w.cardio && (
                 <div className="flex min-h-12 items-center gap-3 px-4">
@@ -99,7 +99,7 @@ function DayContent({ date }: { date: LocalDate }) {
               <span className="tnum text-footnote text-ink-2">
                 {formatNumber(r.distanceKm, 2)} km
               </span>
-              <ChevronRight size={18} className="text-ink-3" aria-hidden />
+              <ChevronRight size={18} className="text-ink-2" aria-hidden />
             </Link>
           ))}
         </Group>

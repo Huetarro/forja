@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { Pause, Play } from 'lucide-react'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { db } from '@/db/db'
+import type { WorkoutExercise, WorkoutSet } from '@/db/schema'
 import {
   discardIncompleteSets,
   finishWorkout,
@@ -24,6 +25,7 @@ import { useRestTimer } from '@/stores/restTimer'
 import { confirm, toast } from '@/stores/ui'
 import { CardioBlock } from './CardioBlock'
 import { ClosingForm } from './ClosingForm'
+import { WorkoutTrack } from './WorkoutTrack'
 import { RestTimerBar } from './RestTimerBar'
 import { WorkoutExercises } from './WorkoutExercises'
 import { StretchList } from './StretchList'
@@ -121,6 +123,8 @@ export default function ActiveWorkoutPage() {
         name={workout.deload ? `${workout.routineName} · Descarga` : workout.routineName}
         startedAt={workout.startedAt}
         pauses={workout.pauses}
+        exercises={bundle.exercises}
+        sets={sets}
         onTogglePause={() => void togglePause(workout.id)}
         onFinish={() => void startFinish()}
       />
@@ -134,7 +138,7 @@ export default function ActiveWorkoutPage() {
         <button
           type="button"
           onClick={() => void cancel()}
-          className="mt-8 min-h-touch w-full rounded-md text-body font-medium text-danger"
+          className="mt-8 min-h-touch w-full rounded-full text-body text-danger"
         >
           Cancelar entreno
         </button>
@@ -167,12 +171,16 @@ function WorkoutHeader({
   name,
   startedAt,
   pauses,
+  exercises,
+  sets,
   onTogglePause,
   onFinish,
 }: {
   name: string
   startedAt: number
   pauses: Parameters<typeof activeSeconds>[1]
+  exercises: WorkoutExercise[]
+  sets: WorkoutSet[]
   onTogglePause: () => void
   onFinish: () => void
 }) {
@@ -180,46 +188,45 @@ function WorkoutHeader({
   const now = useNow(1000, !paused)
   const secs = activeSeconds(startedAt, pauses, now)
   return (
-    <header className="px-safe sticky top-0 z-20 border-b border-sep bg-bg/90 pt-2 pb-3 backdrop-blur-xl">
+    <header className="px-safe sticky top-0 z-20 border-b border-sep bg-tabbar pt-2 pb-3 backdrop-blur-[20px] backdrop-saturate-[1.8]">
       <div className="mx-auto max-w-xl">
-        <div className="flex items-center justify-between gap-3">
-          <p className="truncate text-subhead font-semibold text-ink-2">{name}</p>
-          <button
-            type="button"
-            onClick={onFinish}
-            className="min-h-10 shrink-0 rounded-full bg-accent px-5 text-subhead font-bold text-on-accent active:opacity-80"
-          >
-            Terminar
-          </button>
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="truncate text-footnote text-ink-2">{name}</p>
+            <span
+              role="timer"
+              aria-label={`Tiempo activo ${formatClock(secs)}${paused ? ', en pausa' : ''}`}
+              className={cn(
+                'tnum block font-display text-large font-bold tracking-tight',
+                paused && 'text-ink-2',
+              )}
+            >
+              {formatClock(secs)}
+            </span>
+            {paused && <span className="text-footnote text-ink-2">En pausa</span>}
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={onTogglePause}
+              aria-label={paused ? 'Reanudar' : 'Pausar'}
+              className={cn(
+                'grid size-11 place-items-center rounded-full transition-transform duration-150 ease-ios active:scale-[.92]',
+                paused ? 'bg-accent-soft text-accent-ink' : 'bg-fill text-ink-2',
+              )}
+            >
+              {paused ? <Play size={18} /> : <Pause size={18} />}
+            </button>
+            <button
+              type="button"
+              onClick={onFinish}
+              className="min-h-11 rounded-full bg-accent px-5 text-subhead text-on-accent transition-transform duration-150 ease-ios active:scale-[.97]"
+            >
+              Terminar
+            </button>
+          </div>
         </div>
-        <div className="mt-1 flex items-center gap-3">
-          <span
-            role="timer"
-            aria-label={`Tiempo activo ${formatClock(secs)}${paused ? ', en pausa' : ''}`}
-            className={cn(
-              'tnum font-display text-[3.25rem] leading-none font-bold tracking-tight',
-              paused && 'text-ink-3',
-            )}
-          >
-            {formatClock(secs)}
-          </span>
-          <button
-            type="button"
-            onClick={onTogglePause}
-            aria-label={paused ? 'Reanudar' : 'Pausar'}
-            className={cn(
-              'grid size-11 place-items-center rounded-full',
-              paused ? 'bg-accent text-on-accent' : 'bg-fill text-ink',
-            )}
-          >
-            {paused ? (
-              <Play size={20} fill="currentColor" />
-            ) : (
-              <Pause size={20} fill="currentColor" />
-            )}
-          </button>
-          {paused && <span className="text-subhead font-semibold text-ink-2">En pausa</span>}
-        </div>
+        <WorkoutTrack exercises={exercises} sets={sets} />
       </div>
     </header>
   )

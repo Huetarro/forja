@@ -69,7 +69,7 @@ export function StretchList({ workout }: { workout: Workout }) {
                     isDone ? 'bg-success text-white' : 'border-2 border-fill-strong',
                   )}
                 >
-                  {isDone && <Check size={16} strokeWidth={3} />}
+                  {isDone && <Check size={16} />}
                 </span>
                 <span className={cn('text-body', isDone && 'text-ink-2')}>{name}</span>
               </button>

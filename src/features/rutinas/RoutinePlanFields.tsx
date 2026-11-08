@@ -136,7 +136,7 @@ export function RoutinePlanFields({ item, metric, position, onChange }: Props) {
           placeholder="Detalle (p. ej. abajo 2 s, estirado)"
           aria-label="Detalle de la pausa"
           maxLength={60}
-          className="h-10 w-full rounded-sm bg-card px-3 text-subhead outline-none placeholder:text-ink-3"
+          className="h-10 w-full rounded-md bg-card px-3 text-subhead outline-none placeholder:text-ink-2"
         />
       )}
     </div>
@@ -177,7 +177,7 @@ function RangeInput({
         setLast(next)
         if (next !== value) onCommit(next)
       }}
-      className="tnum h-9 w-12 rounded-sm bg-card text-center text-body font-semibold text-ink outline-none"
+      className="tnum h-9 w-12 rounded-md bg-card text-center text-body font-semibold text-ink outline-none"
     />
   )
 }
